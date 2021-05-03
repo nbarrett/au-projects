@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import firebase from "firebase";
 import { useState } from "react";
 import { ArrowLeft } from "react-feather";
-import { useHistory } from "react-router-dom";
+import { createBrowserHistory } from "history";
 import { useBooleanState } from "react-use-object-state";
 import { Theme } from "../theme";
 import EmailTextField from "./EmailTextField";
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ResetPassword = () => {
   const classes = useStyles();
-  const history = useHistory();
+  const history = createBrowserHistory();
 
   const [email, setEmail] = useState("");
   const emailValid = useBooleanState(true);
@@ -76,7 +76,7 @@ const ResetPassword = () => {
     <>
       <IconButton
         style={{ position: "absolute", left: 40 }}
-        onClick={history.goBack}
+        onClick={history.back}
       >
         <ArrowLeft />
       </IconButton>

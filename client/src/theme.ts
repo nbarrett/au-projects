@@ -1,7 +1,7 @@
 import createMuiTheme, {
   Theme as T_Theme,
 } from "@material-ui/core/styles/createMuiTheme";
-import { PaletteType } from "@material-ui/core";
+import { PaletteMode } from "@material-ui/core";
 
 const PRIMARY_LIGHT = "#E5F9FF";
 const PRIMARY_MAIN = "#33C1EA";
@@ -14,10 +14,9 @@ const SECONDARY_DARK = "#2F4E8D";
 export const PRIMARY_GRADIENT = `linear-gradient( 135deg, ${PRIMARY_MAIN} 0%, ${PRIMARY_DARK} 50%, ${SECONDARY_LIGHT} 100%)`;
 export const SECONDARY_GRADIENT = `linear-gradient( 135deg, ${SECONDARY_LIGHT} 0%, ${SECONDARY_MAIN} 50%, ${SECONDARY_DARK} 100%)`;
 
-export const createTheme = (type: PaletteType): Theme =>
+export const createTheme = (type: PaletteMode): Theme =>
   createMuiTheme({
     palette: {
-      type,
       primary: {
         light: PRIMARY_LIGHT,
         main: PRIMARY_MAIN,
@@ -34,36 +33,36 @@ export const createTheme = (type: PaletteType): Theme =>
     typography: {
       fontFamily: ["Montserrat", "Lato", "Roboto"].join(","),
     },
-    overrides: {
-      MuiButton: {
-        root: {
-          textTransform: "none",
-        },
-      },
-      MuiCard: {
-        root: {
-          borderRadius: 8,
-        },
-      },
-      MuiPaper: {
-        elevation1: {
-          boxShadow: "none",
-        },
-        elevation2: {
-          boxShadow: "none",
-        },
-        rounded: {
-          borderRadius: 8,
-        },
-      },
-      MuiStepper: {
-        root: {
-          background: "none",
-          border: "none",
-          padding: 0,
-        },
-      },
-    },
+    // overrides: {
+    //   MuiButton: {
+    //     root: {
+    //       textTransform: "none",
+    //     },
+    //   },
+    //   MuiCard: {
+    //     root: {
+    //       borderRadius: 8,
+    //     },
+    //   },
+    //   MuiPaper: {
+    //     elevation1: {
+    //       boxShadow: "none",
+    //     },
+    //     elevation2: {
+    //       boxShadow: "none",
+    //     },
+    //     rounded: {
+    //       borderRadius: 8,
+    //     },
+    //   },
+    //   MuiStepper: {
+    //     root: {
+    //       background: "none",
+    //       border: "none",
+    //       padding: 0,
+    //     },
+    //   },
+    // },
   });
 
 export type Theme = T_Theme;

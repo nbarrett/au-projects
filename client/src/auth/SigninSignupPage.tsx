@@ -4,19 +4,18 @@ import {
   makeStyles,
   useMediaQuery,
 } from "@material-ui/core";
-import { Redirect, useLocation, useRouteMatch } from "react-router-dom";
-import { APP_LANDING, RESET_PASSWORD_PATH } from "../constants";
+import { useLocation, useNavigate } from "react-router-dom";
+import { APP_DASHBOARD, APP_LANDING, RESET_PASSWORD_PATH } from "../constants";
 import { SECONDARY_GRADIENT, Theme } from "../theme";
 import AuthContainer from "./AuthContainer";
-import EmailVerification from "./EmailVerification";
 import { ReactComponent as ForgotPasswordImg } from "./forgot_password.svg";
 import { ReactComponent as LoginImg } from "./login_dashboard.svg";
 import { ReactComponent as Logo } from "./logo.svg";
 import { ReactComponent as NewAccountImg } from "./new_account.svg";
-import { ReactComponent as NewEmailImg } from "./new_email.svg";
 import ResetPassword from "./ResetPassword";
 import SigninSignupForm from "./SigninSignupForm";
 import { useSession } from "./useSession";
+import { useEffect } from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -55,29 +54,43 @@ const SigninSignupPage = ({ variant }: SigninSignupPageProps) => {
   const classes = useStyles();
 
   const isSm = useMediaQuery((theme: Theme) => theme.breakpoints.down("sm"));
-
+  const navigate = useNavigate();
   const location = useLocation();
   const from = (location?.state as any)?.from?.pathname || APP_LANDING;
+  const resetPasswordMatch = location.pathname.includes(RESET_PASSWORD_PATH);
+  const { user, loading } = useSession();
 
-  const resetPasswordMatch = useRouteMatch({
-    path: RESET_PASSWORD_PATH,
-  });
+  console.log(
+    "SigninSignupPage:location.pathname",
+    location.pathname,
+    "user:",
+    user,
+    "loading:",
+    loading
+  );
 
-  const { user } = useSession();
-  // if user authed, redirect to home dashboard
-  if (user?.emailVerified) {
-    return <Redirect to={from} />;
-  }
+  useEffect(
+    () => {
+      console.info("useEffect:user:", user?.email);
+      if (user?.email && !location.pathname.includes(APP_DASHBOARD)) {
+        console.info(
+          "useEffect:navigating to",
+          APP_DASHBOARD,
+          "from",
+          location.pathname
+        );
+        navigate(APP_DASHBOARD, { replace: true });
+      }
+    }
+    // [navigate, user?.email, loading, location.pathname]
+  );
 
   let component = null;
   let Img = LoginImg;
 
-  if (resetPasswordMatch) {
+  if (location.pathname.includes(RESET_PASSWORD_PATH)) {
     component = <ResetPassword />;
     Img = ForgotPasswordImg;
-  } else if (user) {
-    component = <EmailVerification />;
-    Img = NewEmailImg;
   } else {
     component = <SigninSignupForm variant={variant} from={from} />;
     Img = variant === "signin" ? LoginImg : NewAccountImg;

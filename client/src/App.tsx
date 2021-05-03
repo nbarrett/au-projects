@@ -1,61 +1,68 @@
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { SnackbarNotificationProvider } from "./snackbarNotification";
 import { createTheme } from "./theme";
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter, useRoutes } from "react-router-dom";
 import {
   APP_LANDING,
+  AUTH_ACTION_PATH,
+  FIREBASE_CONFIG,
   SIGNIN_ROUTE,
   SIGNUP_ROUTE,
-  FIREBASE_CONFIG,
-  AUTH_ACTION_PATH,
 } from "./constants";
 import SigninSignupPage from "./auth/SigninSignupPage";
-import PrivateRoute from "./auth/PrivateRoute";
-import { SessionProvider } from "./auth/useSession";
+import { SessionProvider, useSession } from "./auth/useSession";
 import firebase from "firebase";
 import AuthAction from "./auth/authActions/AuthAction";
-import { Suspense } from "react";
-import LandingPage from "./landing/LandingPage";
+import React from "react";
+import ProtectedRoute from "./admin/ProtectedRoute";
 
-// init firebase
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-// init and expose db
-export const db = firebaseApp.firestore();
+const db = firebaseApp.firestore();
 
-const App = (): JSX.Element => {
+export default function App(): JSX.Element {
+  const { user, loading } = useSession();
+  console.log("App:user:pathname", "user:", user, "loading:", loading);
+
+  firebase
+    .auth()
+    .onAuthStateChanged((user) =>
+      console.info("onAuthStateChanged:user:", user)
+    );
+
+  console.log("App:user:", user, "loading:", loading);
+  const routes = [
+    {
+      path: SIGNIN_ROUTE,
+      element: <SigninSignupPage variant="signin" />,
+    },
+    {
+      path: SIGNUP_ROUTE,
+      element: <SigninSignupPage variant="signup" />,
+    },
+    {
+      path: AUTH_ACTION_PATH,
+      element: <AuthAction />,
+    },
+    {
+      path: APP_LANDING,
+      element: <ProtectedRoute />,
+    },
+  ];
+
+  const AppRoutes = () => {
+    return useRoutes(routes);
+  };
+
   return (
-    <ThemeProvider theme={createTheme("light")}>
-      <CssBaseline />
-      <SnackbarNotificationProvider>
-        <SessionProvider>
-          <Router>
-            <Suspense fallback={<div />}>
-              <Switch>
-                <Route path={SIGNIN_ROUTE}>
-                  <SigninSignupPage variant="signin" />
-                </Route>
-                <Route path={SIGNUP_ROUTE}>
-                  <SigninSignupPage variant="signup" />
-                </Route>
-                <Route path={AUTH_ACTION_PATH}>
-                  <AuthAction />
-                </Route>
-                <PrivateRoute path={APP_LANDING}>
-                  <LandingPage />
-                </PrivateRoute>
-                <Redirect to={APP_LANDING} />
-              </Switch>
-            </Suspense>
-          </Router>
-        </SessionProvider>
-      </SnackbarNotificationProvider>
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={createTheme("dark")}>
+        <CssBaseline />
+        <SnackbarNotificationProvider>
+          <SessionProvider>
+            <AppRoutes />
+          </SessionProvider>
+        </SnackbarNotificationProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
-};
-
-export default App;
+}

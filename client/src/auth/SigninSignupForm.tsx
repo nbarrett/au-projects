@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useBooleanState } from "react-use-object-state";
 import {
   APP_NAME,
@@ -27,6 +27,7 @@ import {
   useSigninWithEmail,
   useSignupWithEmail,
 } from "./signinProviders";
+import { createBrowserHistory } from "history";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -100,36 +101,27 @@ type SigninSignupPageProps = {
 };
 
 const SigninSignupForm = ({ variant, from }: SigninSignupPageProps) => {
+  console.log("SigninSignupForm:from", from);
   const classes = useStyles();
-
   const [email, setEmail] = useState("");
   const emailValid = useBooleanState(true);
-
   const [password, setPassword] = useState("");
   const passwordValid = useBooleanState(true);
-
   const confirmPasswordValid = useBooleanState(true);
-
   const showPassword = useBooleanState(false);
-
   const rememberMe = useBooleanState(false);
-
-  const history = useHistory();
-
+  const history = createBrowserHistory();
   const signinWithEmail = useSigninWithEmail();
   const handleSigninWithEmail = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!emailValid.state || !passwordValid.state) {
       return;
     }
-    signinWithEmail(
-      {
-        email,
-        password,
-        rememberMe: rememberMe.state,
-      },
-      () => history.push(from)
-    );
+    signinWithEmail({
+      email,
+      password,
+      rememberMe: rememberMe.state,
+    });
   };
 
   const signupWithEmail = useSignupWithEmail();
@@ -168,17 +160,17 @@ const SigninSignupForm = ({ variant, from }: SigninSignupPageProps) => {
         Google {variant === "signin" ? "sign in" : "sign up"}
       </Button>
       {/* <Button variant="outlined" className={classes.button}>
-                <MicrosoftLogo className={classes.buttonLogo} />
-                Microsoft {variant}
-              </Button> */}
+    <MicrosoftLogo className={classes.buttonLogo} />
+    Microsoft {variant}
+  </Button> */}
       {/* <Button
-        variant="outlined"
-        onClick={signinWithGithub}
-        className={classes.button}
-      >
-        <GithubLogo className={classes.buttonLogo} />
-        Github {variant}
-      </Button> */}
+variant="outlined"
+onClick={signinWithGithub}
+className={classes.button}
+>
+<GithubLogo className={classes.buttonLogo} />
+Github {variant}
+</Button> */}
       <div className={classes.dividerSection}>
         <Divider className={classes.divider} />
         <Typography

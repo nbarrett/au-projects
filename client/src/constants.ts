@@ -1,4 +1,4 @@
-export const APP_NAME = "FireReactTS";
+export const APP_NAME = "AU Projects";
 
 // auth routes
 export const SIGNUP_ROUTE = "/signup";
@@ -8,14 +8,16 @@ export const EMAIL_VERIFIED_PATH = "/email-verified";
 export const AUTH_ACTION_PATH = "/auth-action";
 
 // app routes
-export const APP_LANDING = "/";
+export const APP_LANDING = "//*";
+export const APP_ROOT = "/";
+export const APP_DASHBOARD = "/app/dashboard";
 
 export const FIREBASE_CONFIG = {
-  apiKey: "AIzaSyDRZ440b25PgXyhFg22AoJj79T7qVonDqA",
-  authDomain: "frt-project-template.firebaseapp.com",
-  projectId: "frt-project-template",
-  storageBucket: "frt-project-template.appspot.com",
-  messagingSenderId: "987168014273",
-  appId: "1:987168014273:web:af5565313778fb5167b940",
-  measurementId: "G-99E3H21ZM3",
+  apiKey: "AIzaSyAi_2ndipc1AOGbwc3j4xMTqicD2_y4RK4",
+  authDomain: "au-projects-f9643.firebaseapp.com",
+  projectId: "au-projects-f9643",
+  storageBucket: "au-projects-f9643.appspot.com",
+  messagingSenderId: "866932995375",
+  appId: "1:866932995375:web:43307e7412f28d46051dda",
+  measurementId: "G-P0X1XKCY49",
 };

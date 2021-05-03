@@ -12,7 +12,7 @@ export const useSigninWithEmail = () => {
 
   return async (
     { email, password, rememberMe }: UseSigninWithEmailProps,
-    cb?: VoidFunction
+    callback?: VoidFunction
   ) => {
     try {
       // local or session storage auth
@@ -25,7 +25,7 @@ export const useSigninWithEmail = () => {
         );
       // Login user
       await firebase.auth().signInWithEmailAndPassword(email, password);
-      cb?.();
+      callback?.();
     } catch (error) {
       // compute error message to user
       if (
