@@ -4,7 +4,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import firebase from "firebase";
 import clsx from "clsx";
-import { Theme } from "../../theme";
+import { Theme } from "../../theme/theme";
 import { makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({

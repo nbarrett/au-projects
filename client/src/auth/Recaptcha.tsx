@@ -6,7 +6,7 @@ import {
 } from "@material-ui/core";
 import { useEffect, useRef } from "react";
 import { useBooleanState } from "react-use-object-state";
-import { Theme } from "../theme";
+import { Theme } from "../theme/theme";
 import firebase from "firebase";
 
 const useStyles = makeStyles((theme: Theme) =>

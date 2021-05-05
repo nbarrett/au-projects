@@ -4,11 +4,11 @@ import { useSession } from "../auth/useSession";
 import SigninSignupPage from "../auth/SigninSignupPage";
 import React from "react";
 import AppContainer from "./AppContainer";
+import { log } from "../util/logging-config";
 
 export default function ProtectedRoute() {
-  const { user, loading } = useSession();
-  console.log("ProtectedRoute:user:", user, "loading:", loading);
-
+  const { user } = useSession();
+  log.info("user?.emailVerified", user?.emailVerified);
   return user?.emailVerified ? (
     <AppContainer />
   ) : (

@@ -9,7 +9,7 @@ import { useBooleanState } from "react-use-object-state";
 import CheckMark from "../../components/checkMark/CheckMark";
 import LoadingDiv from "../../components/LoadingDiv";
 import { useSnackbarNotification } from "../../snackbarNotification";
-import { Theme } from "../../theme";
+import { Theme } from "../../theme/theme";
 import ConfirmPasswordTextField from "../ConfirmPasswordTextField";
 import PasswordTextField from "../PasswordTextField";
 

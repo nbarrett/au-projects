@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useBooleanState } from "react-use-object-state";
 import {
   APP_NAME,
@@ -16,7 +16,7 @@ import {
   SIGNIN_ROUTE,
   SIGNUP_ROUTE,
 } from "../constants";
-import { Theme } from "../theme";
+import { Theme } from "../theme/theme";
 import ConfirmPasswordTextField from "./ConfirmPasswordTextField";
 import EmailTextField from "./EmailTextField";
 import { ReactComponent as GoogleLogo } from "./google_logo.svg";
@@ -159,18 +159,6 @@ const SigninSignupForm = ({ variant, from }: SigninSignupPageProps) => {
         <GoogleLogo className={classes.buttonLogo} />
         Google {variant === "signin" ? "sign in" : "sign up"}
       </Button>
-      {/* <Button variant="outlined" className={classes.button}>
-    <MicrosoftLogo className={classes.buttonLogo} />
-    Microsoft {variant}
-  </Button> */}
-      {/* <Button
-variant="outlined"
-onClick={signinWithGithub}
-className={classes.button}
->
-<GithubLogo className={classes.buttonLogo} />
-Github {variant}
-</Button> */}
       <div className={classes.dividerSection}>
         <Divider className={classes.divider} />
         <Typography

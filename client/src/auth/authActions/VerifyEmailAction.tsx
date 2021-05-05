@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import CheckMark from "../../components/checkMark/CheckMark";
 import LoadingDiv from "../../components/LoadingDiv";
 import { SIGNIN_ROUTE } from "../../constants";
-import { Theme } from "../../theme";
+import { Theme } from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => ({
   progress: {

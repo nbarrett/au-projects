@@ -4,7 +4,7 @@ import IconButton from "@material-ui/core/IconButton";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import React, { useState } from "react";
 import { Eye, EyeOff } from "react-feather";
-import { Theme } from "../theme";
+import { Theme } from "../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

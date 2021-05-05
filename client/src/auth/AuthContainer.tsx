@@ -7,7 +7,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { ReactNode } from "react";
-import { PRIMARY_GRADIENT, Theme } from "../theme";
+import { PRIMARY_GRADIENT, Theme } from "../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -38,7 +38,10 @@ type AuthContainerProps = {
   maxWidth?: ContainerProps["maxWidth"];
 };
 
-const AuthContainer = ({ children, maxWidth = "lg" }: AuthContainerProps) => {
+export default function AuthContainer({
+  children,
+  maxWidth = "lg",
+}: AuthContainerProps) {
   const classes = useStyles();
 
   const isXs = useMediaQuery((theme: Theme) => theme.breakpoints.down("xs"));
@@ -52,6 +55,4 @@ const AuthContainer = ({ children, maxWidth = "lg" }: AuthContainerProps) => {
       </Container>
     </div>
   );
-};
-
-export default AuthContainer;
+}

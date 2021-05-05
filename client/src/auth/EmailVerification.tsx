@@ -5,7 +5,7 @@ import Typography from "@material-ui/core/Typography";
 import { useEffect } from "react";
 import { useBooleanState } from "react-use-object-state";
 import { useSnackbarNotification } from "../snackbarNotification";
-import { Theme } from "../theme";
+import { Theme } from "../theme/theme";
 import { useSession } from "./useSession";
 
 const useStyles = makeStyles((theme: Theme) => ({

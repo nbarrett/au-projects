@@ -6,7 +6,7 @@ import { useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { createBrowserHistory } from "history";
 import { useBooleanState } from "react-use-object-state";
-import { Theme } from "../theme";
+import { Theme } from "../theme/theme";
 import EmailTextField from "./EmailTextField";
 
 const useStyles = makeStyles((theme: Theme) =>
