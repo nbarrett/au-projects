@@ -6,17 +6,16 @@ import {
   Box,
   Button,
   Container,
-  Grid,
   Link,
   TextField,
   Typography,
 } from "@material-ui/core";
-import FacebookIcon from "../icons/Facebook";
-import GoogleIcon from "../icons/Google";
+import { useSigninWithEmail } from "../../auth/signinProviders";
+import { log } from "../../util/logging-config";
 
 const Login = () => {
   const navigate = useNavigate();
-
+  const signinWithEmail = useSigninWithEmail();
   return (
     <>
       <Helmet>
@@ -34,8 +33,9 @@ const Login = () => {
         <Container maxWidth="sm">
           <Formik
             initialValues={{
-              email: "demo@devias.io",
-              password: "Password123",
+              email: "",
+              password: "",
+              rememberMe: false,
             }}
             validationSchema={Yup.object().shape({
               email: Yup.string()
@@ -44,7 +44,14 @@ const Login = () => {
                 .required("Email is required"),
               password: Yup.string().max(255).required("Password is required"),
             })}
-            onSubmit={() => {
+            onSubmit={(values, actions) => {
+              const signinData = {
+                email: values.email,
+                password: values.password,
+                rememberMe: values.rememberMe,
+              };
+              log.info(":signinData", signinData);
+              signinWithEmail(signinData);
               navigate("/app/dashboard", { replace: true });
             }}
           >
@@ -60,53 +67,14 @@ const Login = () => {
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
                   <Typography color="textPrimary" variant="h2">
-                    Sign in
+                    AU Projects
                   </Typography>
                   <Typography
                     color="textSecondary"
                     gutterBottom
                     variant="body2"
                   >
-                    Sign in on the internal platform
-                  </Typography>
-                </Box>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box
-                  sx={{
-                    pb: 1,
-                    pt: 3,
-                  }}
-                >
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
+                    Sign in to the portal
                   </Typography>
                 </Box>
                 <TextField
@@ -115,6 +83,7 @@ const Login = () => {
                   helperText={touched.email && errors.email}
                   label="Email Address"
                   margin="normal"
+                  size={"small"}
                   name="email"
                   onBlur={handleBlur}
                   onChange={handleChange}
@@ -125,6 +94,7 @@ const Login = () => {
                 <TextField
                   error={Boolean(touched.password && errors.password)}
                   fullWidth
+                  size={"small"}
                   helperText={touched.password && errors.password}
                   label="Password"
                   margin="normal"
@@ -135,6 +105,7 @@ const Login = () => {
                   value={values.password}
                   variant="outlined"
                 />
+
                 <Box sx={{ py: 2 }}>
                   <Button
                     color="primary"

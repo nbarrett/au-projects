@@ -11,6 +11,7 @@ export const AUTH_ACTION_PATH = "/auth-action";
 export const APP_LANDING = "//*";
 export const APP_ROOT = "/";
 export const APP_DASHBOARD = "/app/dashboard";
+export const APP_LOGIN = "/login";
 
 export const FIREBASE_CONFIG = {
   apiKey: "AIzaSyAi_2ndipc1AOGbwc3j4xMTqicD2_y4RK4",

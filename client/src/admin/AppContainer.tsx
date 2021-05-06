@@ -1,22 +1,41 @@
 import "react-perfect-scrollbar/dist/css/styles.css";
-import { useRoutes } from "react-router-dom";
+import { BrowserRouter, useRoutes } from "react-router-dom";
 import "./mixins/chartjs";
-import routes from "./routes";
+import appRoutes from "./routes";
 import GlobalStyles from "./components/GlobalStyles";
-import { useSession } from "../auth/useSession";
+import { SessionProvider, useSession } from "../auth/useSession";
 import React from "react";
 import theme from "../theme";
-import { ThemeProvider } from "@material-ui/core";
+import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { SnackbarNotificationProvider } from "../snackbarNotification";
+import firebase from "firebase";
+import { log } from "../util/logging-config";
+import { FIREBASE_CONFIG } from "../constants";
 
-export default function AppContainer() {
-  const routing = useRoutes(routes);
-  const { user, loading } = useSession();
-  console.log("AppContainer:user:", user, "loading:", loading);
+const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+const db = firebaseApp.firestore();
+
+export default function AppContainer(): JSX.Element {
+  firebase
+    .auth()
+    .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user));
+
+  function AppRoutes() {
+    const { user } = useSession();
+    return useRoutes(appRoutes(user?.emailVerified));
+  }
 
   return (
-    <ThemeProvider theme={theme}>
-      <GlobalStyles />
-      {routing}
-    </ThemeProvider>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <SnackbarNotificationProvider>
+          <SessionProvider>
+            <GlobalStyles />
+            <AppRoutes />
+          </SessionProvider>
+        </SnackbarNotificationProvider>
+      </ThemeProvider>
+    </BrowserRouter>
   );
 }

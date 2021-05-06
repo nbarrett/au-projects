@@ -1,6 +1,7 @@
-import { createMuiTheme, colors } from "@material-ui/core";
+import { colors, createMuiTheme } from "@material-ui/core";
 import shadows from "./shadows";
 import typography from "./typography";
+import { ADMIN_BACKGROUND } from "./theme";
 
 const theme = createMuiTheme({
   palette: {
@@ -10,7 +11,7 @@ const theme = createMuiTheme({
     },
     primary: {
       contrastText: colors.common.white,
-      main: "#5664d2",
+      main: ADMIN_BACKGROUND,
     },
     text: {
       primary: "#172b4d",
