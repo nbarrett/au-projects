@@ -1,5 +1,4 @@
 import { Link as RouterLink } from "react-router-dom";
-import PropTypes from "prop-types";
 import {
   Avatar,
   Box,
@@ -10,13 +9,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import {
-  AlertCircle as AlertCircleIcon,
   BarChart as BarChartIcon,
-  Lock as LockIcon,
   Settings as SettingsIcon,
   ShoppingBag as ShoppingBagIcon,
   User as UserIcon,
-  UserPlus as UserPlusIcon,
   Users as UsersIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
@@ -54,24 +50,12 @@ const items = [
     icon: SettingsIcon,
     title: "Settings",
   },
-  {
-    href: "/login",
-    icon: LockIcon,
-    title: "Login",
-  },
-  {
-    href: "/register",
-    icon: UserPlusIcon,
-    title: "Register",
-  },
-  {
-    href: "/404",
-    icon: AlertCircleIcon,
-    title: "Error",
-  },
 ];
 
-const DashboardSidebar = ({ onMobileClose, openMobile }) => {
+export default function DashboardSidebar(props: {
+  onMobileClose: () => any;
+  openMobile: boolean;
+}) {
   const { user, loading } = useSession();
   const content = (
     <Box
@@ -128,8 +112,8 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       <Hidden lgUp>
         <Drawer
           anchor="left"
-          onClose={onMobileClose}
-          open={openMobile}
+          onClose={props.onMobileClose}
+          open={props.openMobile}
           variant="temporary"
           PaperProps={{
             sx: {
@@ -158,16 +142,4 @@ const DashboardSidebar = ({ onMobileClose, openMobile }) => {
       </Hidden>
     </>
   );
-};
-
-DashboardSidebar.propTypes = {
-  onMobileClose: PropTypes.func,
-  openMobile: PropTypes.bool,
-};
-
-DashboardSidebar.defaultProps = {
-  onMobileClose: () => {},
-  openMobile: false,
-};
-
-export default DashboardSidebar;
+}

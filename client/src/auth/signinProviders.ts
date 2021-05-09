@@ -1,5 +1,7 @@
 import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
+import { SignupWithEmailProps, UserData } from "../auth-models";
+import { log } from "../util/logging-config";
 
 type UseSigninWithEmailProps = {
   email: string;
@@ -46,25 +48,26 @@ export const useSigninWithEmail = () => {
   };
 };
 
-type UseSignupWithEmailProps = {
-  email: string;
-  password: string;
-};
-
-export const useSignupWithEmail = () => {
+export function useSignupWithEmail() {
   const notification = useSnackbarNotification();
 
-  return async (
-    { email, password }: UseSignupWithEmailProps,
-    cb?: VoidFunction
-  ) => {
+  return async function ({
+    email,
+    password,
+    firstName,
+    lastName,
+  }: SignupWithEmailProps): Promise<UserData> {
     const emailNoSpaces = email.replace(/ /g, "");
     try {
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-      await firebase
+      const userCredential: firebase.auth.UserCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(emailNoSpaces, password);
-      cb?.();
+      const uid = userCredential.user?.uid;
+      const user: UserData = { uid, firstName, lastName };
+      const newUser = await firebase.firestore().collection("users").add(user);
+      log.info("created new User:", newUser);
+      return newUser;
     } catch (error) {
       let registrationError = "Error registering account";
       if (error.code === "auth/email-already-in-use") {
@@ -74,7 +77,7 @@ export const useSignupWithEmail = () => {
       notification.error(registrationError);
     }
   };
-};
+}
 
 export const signinWithGoogle = () => {
   const provider = new firebase.auth.GoogleAuthProvider();

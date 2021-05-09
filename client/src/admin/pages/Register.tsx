@@ -2,6 +2,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
+
 import {
   Box,
   Button,
@@ -12,10 +13,16 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { useSession } from "../../auth/useSession";
+import { useSignupWithEmail } from "../../auth/signinProviders";
 
 const Register = () => {
   const navigate = useNavigate();
-
+  const { user } = useSession();
+  const signupWithEmail = useSignupWithEmail();
+  const subHeading = user?.emailVerified
+    ? "Register new account for customer"
+    : "Use your email to create new account";
   return (
     <>
       <Helmet>
@@ -51,7 +58,13 @@ const Register = () => {
               password: Yup.string().max(255).required("password is required"),
               policy: Yup.boolean().oneOf([true], "This field must be checked"),
             })}
-            onSubmit={() => {
+            onSubmit={(values) => {
+              signupWithEmail({
+                email: values.email,
+                password: values.password,
+                firstName: values.firstName,
+                lastName: values.lastName,
+              });
               navigate("/app/dashboard", { replace: true });
             }}
           >
@@ -74,7 +87,7 @@ const Register = () => {
                     gutterBottom
                     variant="body2"
                   >
-                    Use your email to create new account
+                    {subHeading}
                   </Typography>
                 </Box>
                 <TextField
@@ -84,6 +97,7 @@ const Register = () => {
                   label="First name"
                   margin="normal"
                   name="firstName"
+                  size={"small"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.firstName}
@@ -96,6 +110,7 @@ const Register = () => {
                   label="Last name"
                   margin="normal"
                   name="lastName"
+                  size={"small"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.lastName}
@@ -108,6 +123,7 @@ const Register = () => {
                   label="Email Address"
                   margin="normal"
                   name="email"
+                  size={"small"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="email"
@@ -121,6 +137,7 @@ const Register = () => {
                   label="Password"
                   margin="normal"
                   name="password"
+                  size={"small"}
                   onBlur={handleBlur}
                   onChange={handleChange}
                   type="password"
