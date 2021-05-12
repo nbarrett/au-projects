@@ -1,6 +1,8 @@
 import { createContext, ReactNode, useContext } from "react";
-import firebase, { User } from "firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
+import firebase from "firebase/app";
+
+type User = firebase.User;
 
 type Session = {
   user?: User;

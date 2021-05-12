@@ -1,23 +1,21 @@
 import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
-import { SignupWithEmailProps, UserData } from "../auth-models";
+import {
+  SignupWithEmailProps,
+  UserData,
+  UseSigninWithEmailProps,
+} from "../models/auth-models";
 import { log } from "../util/logging-config";
-
-type UseSigninWithEmailProps = {
-  email: string;
-  password: string;
-  rememberMe?: boolean;
-};
 
 export const useSigninWithEmail = () => {
   const notification = useSnackbarNotification();
 
-  return async (
-    { email, password, rememberMe }: UseSigninWithEmailProps,
-    callback?: VoidFunction
-  ) => {
+  return async function signinWithEmail({
+    email,
+    password,
+    rememberMe,
+  }: UseSigninWithEmailProps): Promise<any> {
     try {
-      // local or session storage auth
       await firebase
         .auth()
         .setPersistence(
@@ -25,24 +23,25 @@ export const useSigninWithEmail = () => {
             ? firebase.auth.Auth.Persistence.LOCAL
             : firebase.auth.Auth.Persistence.SESSION
         );
-      // Login user
-      await firebase.auth().signInWithEmailAndPassword(email, password);
-      callback?.();
+      return firebase.auth().signInWithEmailAndPassword(email, password);
     } catch (error) {
-      // compute error message to user
       if (
         error.code === "auth/user-not-found" ||
         error.code === "auth/wrong-password"
       ) {
-        notification.error("Email or password is incorrect");
+        return Promise.reject(
+          notification.error("Email or password is incorrect")
+        );
       } else if (error.code === "auth/invalid-email") {
-        notification.error("Please enter a valid email");
+        return Promise.reject(notification.error("Please enter a valid email"));
       } else if (error.code === "auth/too-many-requests") {
-        notification.error(
-          "Too many unsuccessful login attempts. Try again later or reset password now."
+        return Promise.reject(
+          notification.error(
+            "Too many unsuccessful login attempts. Try again later or reset password now."
+          )
         );
       } else {
-        notification.error(error.message);
+        return Promise.reject(notification.error(error.message));
       }
     }
   };
@@ -51,22 +50,34 @@ export const useSigninWithEmail = () => {
 export function useSignupWithEmail() {
   const notification = useSnackbarNotification();
 
-  return async function ({
+  return async function signupWithEmail({
     email,
     password,
     firstName,
     lastName,
-  }: SignupWithEmailProps): Promise<UserData> {
+  }: SignupWithEmailProps): Promise<any> {
     const emailNoSpaces = email.replace(/ /g, "");
     try {
+      log.info("SignupWithEmail:email", emailNoSpaces, "password:", password);
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
       const userCredential: firebase.auth.UserCredential = await firebase
         .auth()
         .createUserWithEmailAndPassword(emailNoSpaces, password);
       const uid = userCredential.user?.uid;
       const user: UserData = { uid, firstName, lastName };
-      const newUser = await firebase.firestore().collection("users").add(user);
-      log.info("created new User:", newUser);
+      const newUser = await firebase
+        .firestore()
+        .collection("users")
+        .doc(uid)
+        .set(user);
+      log.info("created new user with email:", emailNoSpaces, "uid:", newUser);
+      const verificationResult = await userCredential.user
+        ?.sendEmailVerification()
+        .catch(function (error) {
+          log.error("sendEmailVerification failed with error:", error);
+          return Promise.reject(notification.error(error));
+        });
+      log.info("sendEmailVerification result:", verificationResult);
       return newUser;
     } catch (error) {
       let registrationError = "Error registering account";
@@ -74,7 +85,7 @@ export function useSignupWithEmail() {
         registrationError =
           "There is already an account associated with this email address. Please login to continue.";
       }
-      notification.error(registrationError);
+      return Promise.reject(notification.error(registrationError));
     }
   };
 }

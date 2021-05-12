@@ -2,6 +2,7 @@ import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
+import { log } from "../../util/logging-config";
 
 import {
   Box,
@@ -64,8 +65,10 @@ const Register = () => {
                 password: values.password,
                 firstName: values.firstName,
                 lastName: values.lastName,
+              }).then((response) => {
+                log.info("response:", response);
+                navigate("/app/dashboard", { replace: true });
               });
-              navigate("/app/dashboard", { replace: true });
             }}
           >
             {({

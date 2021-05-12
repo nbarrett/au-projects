@@ -20,7 +20,7 @@ const NotFound = () => (
           404: The page you are looking for isn’t here
         </Typography>
         <Typography align="center" color="textPrimary" variant="subtitle2">
-          You came here by mistake.Try using the navigation
+          You came here by mistake. Try pressing the back button
         </Typography>
         <Box sx={{ textAlign: "center" }}>
           <img

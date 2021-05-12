@@ -13,7 +13,7 @@ import {
 import { useSigninWithEmail } from "../../auth/signinProviders";
 import { log } from "../../util/logging-config";
 
-const Login = () => {
+export default function Login() {
   const navigate = useNavigate();
   const signinWithEmail = useSigninWithEmail();
   return (
@@ -131,6 +131,4 @@ const Login = () => {
       </Box>
     </>
   );
-};
-
-export default Login;
+}

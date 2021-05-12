@@ -1,4 +1,3 @@
-import moment from "moment";
 import {
   Avatar,
   Box,
@@ -9,7 +8,9 @@ import {
   Divider,
   Typography,
 } from "@material-ui/core";
-import { useSession } from "../../../auth/useSession";
+import { useRecoilValue } from "recoil";
+import { currentUserDataState, currentUserState } from "../../../atoms/atoms";
+import { FirebaseUser, UserData } from "../../../models/auth-models";
 
 export default function AccountProfile() {
   const dummyUser = {
@@ -21,8 +22,9 @@ export default function AccountProfile() {
     timezone: "GMT",
   };
 
-  const { user, loading } = useSession();
-  console.info("AccountProfile:user:", user);
+  const user = useRecoilValue<FirebaseUser>(currentUserState);
+  const userData = useRecoilValue<UserData>(currentUserDataState);
+
   return (
     <Card>
       <CardContent>
@@ -41,13 +43,10 @@ export default function AccountProfile() {
             }}
           />
           <Typography color="textPrimary" gutterBottom variant="h3">
-            {user?.displayName || user?.email || dummyUser.name}
+            {`${userData?.firstName} ${userData?.lastName}`}
           </Typography>
           <Typography color="textSecondary" variant="body1">
-            {`${dummyUser.city} ${dummyUser.country}`}
-          </Typography>
-          <Typography color="textSecondary" variant="body1">
-            {`${moment().format("hh:mm A")} ${dummyUser.timezone}`}
+            {user?.email}
           </Typography>
         </Box>
       </CardContent>

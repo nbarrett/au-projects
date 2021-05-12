@@ -9,6 +9,7 @@ import NotFound from "./pages/NotFound";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Settings from "./pages/Settings";
+import EmailVerification from "./pages/EmailVerification";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -28,6 +29,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
       path: "//*",
       element: !isLoggedIn ? <MainLayout /> : <Navigate to="/app/dashboard" />,
       children: [
+        { path: "email-verification", element: <EmailVerification /> },
         { path: "login", element: <Login /> },
         { path: "register", element: <Register /> },
         { path: "404", element: <NotFound /> },
