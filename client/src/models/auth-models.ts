@@ -14,8 +14,8 @@ export interface UserData {
 }
 
 export interface FirebaseUser {
-  email: string;
-  uid: string;
+  email?: string;
+  uid?: string;
   emailVerified?: boolean;
 }
 

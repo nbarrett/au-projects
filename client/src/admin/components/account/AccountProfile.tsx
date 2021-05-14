@@ -9,17 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useRecoilValue } from "recoil";
-import { currentUserDataState, currentUserState } from "../../../atoms/atoms";
+import { currentUserDataState, currentUserState } from "../../../atoms/user-atoms";
 import { FirebaseUser, UserData } from "../../../models/auth-models";
 
 export default function AccountProfile() {
   const dummyUser = {
     avatar: "/static/images/avatars/nick.png",
-    city: "Ashford",
-    country: "UK",
-    jobTitle: "Developer",
-    name: "AccountProfile.name",
-    timezone: "GMT",
   };
 
   const user = useRecoilValue<FirebaseUser>(currentUserState);

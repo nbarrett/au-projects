@@ -5,7 +5,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CheckMark from "../../components/checkMark/CheckMark";
 import LoadingDiv from "../../components/LoadingDiv";
-import { SIGNIN_ROUTE } from "../../constants";
+import { LOGIN_ROUTE } from "../../constants";
 import { Theme } from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -65,7 +65,7 @@ const VerifyEmailAction = ({ actionCode }: Props) => {
         <Typography variant="body1" align="center" gutterBottom>
           You can now sign in with your new account.
         </Typography>
-        <Link to={SIGNIN_ROUTE} className={classes.link}>
+        <Link to={LOGIN_ROUTE} className={classes.link}>
           <Button type="submit" variant="contained" color="primary">
             Sign in
           </Button>

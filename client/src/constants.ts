@@ -2,8 +2,8 @@ export const APP_NAME = "AU Projects";
 
 // auth routes
 export const SIGNUP_ROUTE = "/signup";
-export const SIGNIN_ROUTE = "/signin";
-export const RESET_PASSWORD_PATH = `${SIGNIN_ROUTE}/reset-password`;
+export const LOGIN_ROUTE = "/login";
+export const RESET_PASSWORD_PATH = `${LOGIN_ROUTE}/reset-password`;
 export const EMAIL_VERIFIED_PATH = "/email-verified";
 export const AUTH_ACTION_PATH = "/auth-action";
 

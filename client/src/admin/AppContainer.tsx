@@ -8,18 +8,9 @@ import React from "react";
 import theme from "../theme";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { SnackbarNotificationProvider } from "../snackbarNotification";
-import firebase from "firebase";
-import { log } from "../util/logging-config";
-import { FIREBASE_CONFIG } from "../constants";
 import { RecoilRoot } from "recoil";
 
-// const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
-// const db = firebaseApp.firestore();
-
 export default function AppContainer(): JSX.Element {
-  // firebase
-  //   .auth()
-  //   .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user));
 
   function AppRoutes() {
     const { user } = useSession();

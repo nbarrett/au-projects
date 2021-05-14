@@ -1,13 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
-import {
-  Avatar,
-  Box,
-  Divider,
-  Drawer,
-  Hidden,
-  List,
-  Typography,
-} from "@material-ui/core";
+import { Avatar, Box, Divider, Drawer, Hidden, List, Typography, } from "@material-ui/core";
 import {
   BarChart as BarChartIcon,
   Settings as SettingsIcon,
@@ -16,12 +8,12 @@ import {
   Users as UsersIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
-import { useSession } from "../../auth/useSession";
+import { useRecoilValue } from 'recoil';
+import { FirebaseUser, UserData } from '../../models/auth-models';
+import { currentUserDataState, currentUserState } from '../../atoms/user-atoms';
 
 const dummyUser = {
   avatar: "/static/images/avatars/nick.png",
-  jobTitle: "Developer",
-  name: "DashboardSidebar.name",
 };
 
 const items = [
@@ -56,38 +48,40 @@ export default function DashboardSidebar(props: {
   onMobileClose: () => any;
   openMobile: boolean;
 }) {
-  const { user, loading } = useSession();
+  const user = useRecoilValue<FirebaseUser>(currentUserState);
+  const userData = useRecoilValue<UserData>(currentUserDataState);
+
   const content = (
-    <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
-      }}
-    >
       <Box
-        sx={{
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "column",
-          p: 2,
-        }}
-      >
-        <Avatar
-          component={RouterLink}
-          src={dummyUser.avatar}
           sx={{
-            cursor: "pointer",
-            width: 64,
-            height: 64,
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
           }}
-          to="/app/account"
-        />
-        <Typography color="textPrimary" variant="h5">
-          {user?.displayName || user?.email || dummyUser.name}
-        </Typography>
+      >
+        <Box
+            sx={{
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
+              p: 2,
+            }}
+        >
+          <Avatar
+              component={RouterLink}
+              src={dummyUser.avatar}
+              sx={{
+                cursor: "pointer",
+                width: 64,
+                height: 64,
+              }}
+              to="/app/account"
+          />
+          <Typography color="textPrimary" variant="h5">
+            {user?.email}
+          </Typography>
         <Typography color="textSecondary" variant="body2">
-          {dummyUser.jobTitle}
+          {`${userData.firstName} ${userData.lastName}`}
         </Typography>
       </Box>
       <Divider />

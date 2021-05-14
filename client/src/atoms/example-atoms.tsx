@@ -1,10 +1,9 @@
-import { firestoreState, firestoreStorageState } from "./firestore";
-import { atom, selector, selectorFamily } from "recoil";
-import firebase from "firebase/app";
+import { firestoreState, firestoreStorageState } from "./firestore-atoms";
+import { selector, selectorFamily } from "recoil";
 
 export const allMovieState = selector({
   key: "allMovieState",
-  get: async ({ get }) => {
+  get: async ({get}) => {
     // Get your firestore instance
     const firestore = get(firestoreState);
     // Use it!

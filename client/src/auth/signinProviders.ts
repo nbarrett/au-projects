@@ -1,10 +1,6 @@
 import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
-import {
-  SignupWithEmailProps,
-  UserData,
-  UseSigninWithEmailProps,
-} from "../models/auth-models";
+import { SignupWithEmailProps, UserData, UseSigninWithEmailProps, } from "../models/auth-models";
 import { log } from "../util/logging-config";
 
 export const useSigninWithEmail = () => {
@@ -15,35 +11,29 @@ export const useSigninWithEmail = () => {
     password,
     rememberMe,
   }: UseSigninWithEmailProps): Promise<any> {
-    try {
-      await firebase
+    log.info("about to login:setPersistence");
+    await firebase
         .auth()
         .setPersistence(
-          rememberMe
-            ? firebase.auth.Auth.Persistence.LOCAL
-            : firebase.auth.Auth.Persistence.SESSION
+            rememberMe
+                ? firebase.auth.Auth.Persistence.LOCAL
+                : firebase.auth.Auth.Persistence.SESSION
         );
-      return firebase.auth().signInWithEmailAndPassword(email, password);
-    } catch (error) {
-      if (
-        error.code === "auth/user-not-found" ||
-        error.code === "auth/wrong-password"
-      ) {
-        return Promise.reject(
-          notification.error("Email or password is incorrect")
-        );
+    log.info("about to login:signInWithEmailAndPassword");
+    return firebase.auth().signInWithEmailAndPassword(email, password).catch(error => {
+      log.error("error happened during login:", error);
+      if (error.code === "auth/wrong-password") {
+        return Promise.reject(notification.error("The password you entered was not recognised"));
+      } else if (error.code === "auth/user-not-found") {
+        return Promise.reject(notification.error("The email address you entered was not recognised"));
       } else if (error.code === "auth/invalid-email") {
-        return Promise.reject(notification.error("Please enter a valid email"));
+        return Promise.reject(notification.error("The email address you entered was not in the right format"));
       } else if (error.code === "auth/too-many-requests") {
-        return Promise.reject(
-          notification.error(
-            "Too many unsuccessful login attempts. Try again later or reset password now."
-          )
-        );
+        return Promise.reject(notification.error("Too many unsuccessful login attempts. Try again later or reset password now."));
       } else {
         return Promise.reject(notification.error(error.message));
       }
-    }
+    });
   };
 };
 
