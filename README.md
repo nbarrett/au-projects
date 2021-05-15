@@ -1,30 +1,8 @@
-# Firebase + React + TypeScript Project Template
+# AU Projects
 
-> Template for new Firebase + React + TypeScript project. View the demo [here](https://frt-project-template.firebaseapp.com/).
-
-## Getting started
-
-### Firebase
-
-1. Create new project in the [Firebase Console](https://console.firebase.google.com/).
-
-2. Enable Email + Google Authentication for project.
-
-3. Update authentication template action url to: `https://<YOUR_DOMAIN_HERE>.firebaseapp.com/auth-action`.
-
-4. Enable hosting for project.
-
-### Config
-
-- Update `.firebaserc` with your new Firebase project ID.
-
-- Update `client/src/constants.ts` with `APP_NAME` and `FIREBASE_CONFIG`.
-
-- Update `client/public/index.html` with `Title` and `Description`.
-
-- Update `client/public/manifest.json` with `short_name` and `name`.
-
-- Update `client/package.json` with `name`.
+> Created from 2 templates: 
+> 1. New Firebase + React + TypeScript project. View the demo [here](https://frt-project-template.firebaseapp.com/).
+> 2. Material Kit - React with [code here](https://github.com/devias-io/material-kit-react) and [demo here](https://material-kit-react.devias.io/app/dashboard) 
 
 ## Running locally
 
