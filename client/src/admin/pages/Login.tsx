@@ -11,6 +11,7 @@ import { useLogout } from '../../auth/logout';
 import { useRecoilValue } from 'recoil';
 import { FirebaseUser } from '../../models/auth-models';
 import { currentUserState } from '../../atoms/user-atoms';
+import firebase from "firebase/app";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -19,14 +20,22 @@ export default function Login() {
     const user = useRecoilValue<FirebaseUser>(currentUserState);
     const logout = useLogout();
     const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
-    log.info("user:", user);
 
     useEffect(() => {
         log.info("useEffect:user:", user);
-        if (user) {
-            // logout();
+        if (user.email) {
+            log.info("useEffect:logging out:", user);
+            logout();
         }
     }, [])
+
+    function resendVerification() {
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser) {
+            currentUser.sendEmailVerification();
+            logout();
+        }
+    }
 
     return (
         <>
@@ -75,7 +84,6 @@ export default function Login() {
                             }).catch(error => {
                                 actions.setSubmitting(false);
                                 log.error("Login:error:", error);
-                                // notification.error(error?.message);
                             });
 
                         }}
@@ -152,7 +160,7 @@ export default function Login() {
                                                         disabled={isSubmitting}
                                                         fullWidth
                                                         size="large"
-                                                        type="submit"
+                                                        onClick={resendVerification}
                                                         variant="contained">
                                                         Resend Verification
                                                     </Button>

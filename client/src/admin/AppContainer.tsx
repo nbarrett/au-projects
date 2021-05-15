@@ -21,15 +21,15 @@ export default function AppContainer(): JSX.Element {
     <RecoilRoot>
       <BrowserRouter>
         <React.Suspense fallback={<div>Loading...</div>}>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <SnackbarNotificationProvider>
+          <SnackbarNotificationProvider>
+            <ThemeProvider theme={theme}>
+              <CssBaseline/>
               <SessionProvider>
-                <GlobalStyles />
-                <AppRoutes />
+                <GlobalStyles/>
+                <AppRoutes/>
               </SessionProvider>
-            </SnackbarNotificationProvider>
-          </ThemeProvider>
+            </ThemeProvider>
+          </SnackbarNotificationProvider>
         </React.Suspense>
       </BrowserRouter>
     </RecoilRoot>

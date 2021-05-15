@@ -6,7 +6,6 @@ import { FIREBASE_CONFIG } from '../constants';
 firebase.initializeApp(FIREBASE_CONFIG).auth()
     .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user?.email));
 
-
 export function currentUser(): FirebaseUser | undefined {
     const currentUser = firebase.auth().currentUser as firebase.User;
     log.info("currentUser:get", currentUser?.email);
@@ -16,6 +15,8 @@ export function currentUser(): FirebaseUser | undefined {
             emailVerified: currentUser?.emailVerified,
             uid: currentUser?.uid,
         } as FirebaseUser;
+    } else {
+        return undefined
     }
 }
 
@@ -28,6 +29,6 @@ export async function currentUserData(): Promise<UserData | undefined> {
         log.info("currentUserData:get:", userData);
         return userData;
     } else {
-        return undefined;
+        return undefined
     }
 }
