@@ -1,10 +1,6 @@
 import { FirebaseUser, UserData } from "../models/auth-models";
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
-import { FIREBASE_CONFIG } from "../constants";
-
-firebase.initializeApp(FIREBASE_CONFIG).auth()
-    .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user?.email));
 
 export function currentUser(): FirebaseUser | undefined {
     const currentUser = firebase.auth().currentUser as firebase.User;

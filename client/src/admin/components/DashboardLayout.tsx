@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { experimentalStyled } from "@material-ui/core";
-import DashboardNavbar from "./DashboardNavbar";
 import DashboardSidebar from "./DashboardSidebar";
+import DashboardNavBar from './DashboardNavBar';
 
 const DashboardLayoutRoot = experimentalStyled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.default,
@@ -36,7 +36,7 @@ const DashboardLayoutContent = experimentalStyled("div")({
 export default function DashboardLayout() {
   return (
       <DashboardLayoutRoot>
-        <DashboardNavbar/>
+        <DashboardNavBar/>
         <DashboardSidebar/>
         <DashboardLayoutWrapper>
           <DashboardLayoutContainer>

@@ -4,7 +4,7 @@ import { Theme } from "../../theme/theme";
 export default function Logo() {
   const useStyles = makeStyles((theme: Theme) => ({
     loading: {
-      height: 40,
+      height: 30,
       padding: 0,
       marginTop: 5,
       marginLeft: 0,
