@@ -8,40 +8,46 @@ import {
     Users as UsersIcon,
 } from "react-feather";
 import NavItem from "./NavItem";
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { FirebaseUser, UserData } from '../../models/auth-models';
-import { currentUserDataState, currentUserState } from '../../atoms/user-atoms';
-import { mobileNavOpenState } from '../../atoms/dashboard-atoms';
+import { useRecoilState, useRecoilValue } from "recoil";
+import { FirebaseUser, UserData } from "../../models/auth-models";
+import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
+import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
+import { AppRoute } from "../../constants";
 
 const dummyUser = {
     avatar: "/static/images/avatars/nick.png",
 };
 
-const items = [
+const navItems = [
     {
-        href: "/app/dashboard",
-        icon: BarChartIcon,
-        title: "Dashboard",
-    },
-    {
-        href: "/app/customers",
+        href: AppRoute.USERS,
         icon: UsersIcon,
-        title: "Customers",
+        title: "Users",
     },
     {
-        href: "/app/products",
+        href: AppRoute.COMPANIES,
+        icon: UsersIcon,
+        title: "Companies",
+    },
+    {
+        href: AppRoute.PRODUCTS,
         icon: ShoppingBagIcon,
         title: "Products",
     },
     {
-        href: "/app/account",
+        href: AppRoute.ACCOUNT,
         icon: UserIcon,
         title: "Account",
     },
     {
-        href: "/app/settings",
+        href: AppRoute.SETTINGS,
         icon: SettingsIcon,
         title: "Settings",
+    },
+    {
+        href: AppRoute.EXAMPLE_DASHBOARD,
+        icon: BarChartIcon,
+        title: "Example Dashboard",
     },
 ];
 
@@ -85,7 +91,7 @@ export default function DashboardSidebar() {
             <Divider/>
             <Box sx={{p: 2}}>
                 <List>
-                    {items.map((item) => (
+                    {navItems.map((item) => (
                         <NavItem
                             href={item.href}
                             key={item.title}

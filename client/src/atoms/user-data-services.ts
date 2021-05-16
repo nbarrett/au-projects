@@ -1,7 +1,7 @@
 import { FirebaseUser, UserData } from "../models/auth-models";
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
-import { FIREBASE_CONFIG } from '../constants';
+import { FIREBASE_CONFIG } from "../constants";
 
 firebase.initializeApp(FIREBASE_CONFIG).auth()
     .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user?.email));

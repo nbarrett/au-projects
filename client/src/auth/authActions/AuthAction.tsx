@@ -8,7 +8,7 @@ import AuthContainer from "../AuthContainer";
 
 // mode - The user management action to be completed
 // oobCode - A one-time code, used to identify and verify a request
-// apiKey - Firebase project's API key, provided for convenience
+// apiKey - Firebase project"s API key, provided for convenience
 const AuthAction = () => {
   const location = useLocation();
   const search = location.search;
@@ -18,7 +18,7 @@ const AuthAction = () => {
   // Get the one-time code from the query parameter.
   const actionCode = urlSearchParams.get("oobCode") || "";
   // (Optional) Get the API key from the query parameter.
-  // const apiKey = urlSearchParams.get('apiKey');
+  // const apiKey = urlSearchParams.get("apiKey");
 
   // Handle the user management action.
   let authActionComponent = null;

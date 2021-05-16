@@ -29,17 +29,16 @@ const MainLayoutContent = experimentalStyled("div")({
   overflow: "auto",
 });
 
-const MainLayout = () => (
-  <MainLayoutRoot>
-    <MainNavbar />
-    <MainLayoutWrapper>
-      <MainLayoutContainer>
-        <MainLayoutContent>
-          <Outlet />
-        </MainLayoutContent>
-      </MainLayoutContainer>
-    </MainLayoutWrapper>
-  </MainLayoutRoot>
-);
-
-export default MainLayout;
+export default function MainLayout() {
+  return (
+      <MainLayoutRoot>
+        <MainNavbar/>
+        <MainLayoutWrapper>
+          <MainLayoutContainer>
+            <MainLayoutContent>
+              <Outlet/>
+            </MainLayoutContent>
+          </MainLayoutContainer>
+        </MainLayoutWrapper>
+      </MainLayoutRoot>);
+}

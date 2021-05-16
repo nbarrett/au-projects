@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const EmailVerification = () => {
+export default function EmailVerification() {
   const classes = useStyles({});
   const notification = useSnackbarNotification();
-  const { user } = useSession();
+  const {user} = useSession();
 
   const loading = useBooleanState(false);
 
@@ -125,6 +125,4 @@ const EmailVerification = () => {
       </Box>
     </>
   );
-};
-
-export default EmailVerification;
+}

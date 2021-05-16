@@ -1,15 +1,27 @@
 export const APP_NAME = "AU Projects";
 
-// auth routes
-export const SIGNUP_ROUTE = "/signup";
-export const LOGIN_ROUTE = "/login";
-export const RESET_PASSWORD_PATH = `${LOGIN_ROUTE}/reset-password`;
-export const EMAIL_VERIFIED_PATH = "/email-verified";
-export const AUTH_ACTION_PATH = "/auth-action";
+export enum AppRoute {
+  LOGIN = "login",
+  ACCOUNT = "account",
+  USERS = "users",
+  COMPANIES = "companies",
+  DASHBOARD = "dashboard",
+  PRODUCTS = "products",
+  EXAMPLE_DASHBOARD = "example-dashboard",
+  SETTINGS = "settings"
+}
 
-// app routes
-export const APP_LANDING = "//*";
-export const APP_DASHBOARD = "/app/dashboard";
+export enum PublicRoute {
+  EMAIL_VERIFICATION = "email-verification",
+  LOGIN = "login",
+  REGISTER = "register",
+  NOT_FOUND = "404",
+  ASTERISK = "*",
+}
+
+export const APP_PATH = "app";
+export const PUBLIC_PATH = "//*";
+export const APP_DASHBOARD = `/${APP_PATH}/${AppRoute.EXAMPLE_DASHBOARD}`;
 
 export const FIREBASE_CONFIG = {
   apiKey: "AIzaSyAi_2ndipc1AOGbwc3j4xMTqicD2_y4RK4",

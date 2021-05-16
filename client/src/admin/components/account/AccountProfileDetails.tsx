@@ -2,8 +2,8 @@ import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField, }
 import { useRecoilState } from "recoil";
 import { currentUserDataState, currentUserState } from "../../../atoms/user-atoms";
 import { FirebaseUser, UserData } from "../../../models/auth-models";
-import { useEffect, useState } from 'react';
-import { log } from '../../../util/logging-config';
+import { useEffect, useState } from "react";
+import { log } from "../../../util/logging-config";
 
 export default function AccountProfileDetails(props: any) {
     const [user, setUser] = useRecoilState<FirebaseUser>(currentUserState);

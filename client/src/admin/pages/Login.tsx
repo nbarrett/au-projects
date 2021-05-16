@@ -5,13 +5,14 @@ import { Formik } from "formik";
 import { Box, Button, Container, Grid, Link, TextField, Typography, } from "@material-ui/core";
 import { useSigninWithEmail } from "../../auth/signinProviders";
 import { log } from "../../util/logging-config";
-import { useSnackbarNotification } from '../../snackbarNotification';
-import { useEffect, useState } from 'react';
-import { useLogout } from '../../auth/logout';
-import { useRecoilValue } from 'recoil';
-import { FirebaseUser } from '../../models/auth-models';
-import { currentUserState } from '../../atoms/user-atoms';
+import { useSnackbarNotification } from "../../snackbarNotification";
+import { useEffect, useState } from "react";
+import { useLogout } from "../../auth/logout";
+import { useRecoilValue } from "recoil";
+import { FirebaseUser } from "../../models/auth-models";
+import { currentUserState } from "../../atoms/user-atoms";
 import firebase from "firebase/app";
+import { APP_DASHBOARD } from "../../constants";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -73,9 +74,9 @@ export default function Login() {
                             };
                             log.info("Login:signinData", signinData);
                             signinWithEmail(signinData).then(response => {
-                                log.info("response:", response);
+                                log.info("signinWithEmail response:", response);
                                 if (response.emailVerified) {
-                                    navigate("/app/dashboard", {replace: true});
+                                    navigate(APP_DASHBOARD, {replace: true});
                                 } else {
                                     actions.setSubmitting(false);
                                     setShowVerifyEmail(true);

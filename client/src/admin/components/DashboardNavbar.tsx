@@ -7,8 +7,8 @@ import NotificationsIcon from "@material-ui/icons/NotificationsOutlined";
 import InputIcon from "@material-ui/icons/Input";
 import Logo from "./Logo";
 import { useLogout } from "../../auth/logout";
-import { useSetRecoilState } from 'recoil';
-import { mobileNavOpenState } from '../../atoms/dashboard-atoms';
+import { useSetRecoilState } from "recoil";
+import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 
 export default function DashboardNavbar({...rest}) {
   const [notifications] = useState([]);

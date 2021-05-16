@@ -10,32 +10,34 @@ import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
 import Settings from "./pages/Settings";
 import EmailVerification from "./pages/EmailVerification";
-import { LOGIN_ROUTE } from '../constants';
+import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
+import Companies from "./pages/Companies";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
     {
-      path: "app",
-      element: isLoggedIn ? <DashboardLayout /> : <Navigate to="/login" />,
+      path: APP_PATH,
+      element: isLoggedIn ? <DashboardLayout/> : <Navigate to={`/${AppRoute.LOGIN}`}/>,
       children: [
-        { path: "account", element: <Account /> },
-        { path: "customers", element: <CustomerList /> },
-        { path: "dashboard", element: <Dashboard /> },
-        { path: "products", element: <ProductList /> },
-        { path: "settings", element: <Settings /> },
-        { path: "*", element: <Navigate to="/404" /> },
+        {path: AppRoute.ACCOUNT, element: <Account/>},
+        {path: AppRoute.USERS, element: <CustomerList/>},
+        {path: AppRoute.COMPANIES, element: <Companies/>},
+        {path: AppRoute.EXAMPLE_DASHBOARD, element: <Dashboard/>},
+        {path: AppRoute.PRODUCTS, element: <ProductList/>},
+        {path: AppRoute.SETTINGS, element: <Settings/>},
+        {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],
     },
     {
-      path: "//*",
-      element: !isLoggedIn ? <MainLayout /> : <Navigate to="/app/dashboard" />,
+      path: PUBLIC_PATH,
+      element: !isLoggedIn ? <MainLayout/> : <Navigate to={APP_DASHBOARD}/>,
       children: [
-        { path: "email-verification", element: <EmailVerification /> },
-        { path: LOGIN_ROUTE, element: <Login /> },
-        { path: "register", element: <Register /> },
-        { path: "404", element: <NotFound /> },
-        { path: "//*", element: <Navigate to="/app/dashboard" /> },
-        { path: "*", element: <Navigate to="/404" /> },
+        {path: PublicRoute.EMAIL_VERIFICATION, element: <EmailVerification/>},
+        {path: PublicRoute.LOGIN, element: <Login/>},
+        {path: PublicRoute.REGISTER, element: <Register/>},
+        {path: PublicRoute.NOT_FOUND, element: <NotFound/>},
+        {path: PUBLIC_PATH, element: <Navigate to={APP_DASHBOARD}/>},
+        {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],
     },
   ];

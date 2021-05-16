@@ -7,7 +7,7 @@ import ProductListToolbar from "../components/product/ProductListToolbar";
 const ProductList = () => (
   <>
     <Helmet>
-      <title>AU Rubber Products</title>
+      <title>AU Products</title>
     </Helmet>
     <Box
       sx={{ backgroundColor: "background.default", minHeight: "100%", py: 3 }}

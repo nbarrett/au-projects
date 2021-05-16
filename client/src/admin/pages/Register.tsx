@@ -16,6 +16,7 @@ import {
 } from "@material-ui/core";
 import { useSession } from "../../auth/useSession";
 import { useSignupWithEmail } from "../../auth/signinProviders";
+import { APP_DASHBOARD } from "../../constants";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const Register = () => {
                 lastName: values.lastName,
               }).then((response) => {
                 log.info("response:", response);
-                navigate("/app/dashboard", { replace: true });
+                navigate(APP_DASHBOARD, { replace: true });
               });
             }}
           >

@@ -3,7 +3,7 @@ import { StoredValue } from "../util/ui-stored-values";
 import { FirebaseUser, UserData } from "../models/auth-models";
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
-import { currentUser, currentUserData } from './user-data-services';
+import { currentUser, currentUserData } from "./user-data-services";
 
 export const currentUserState: RecoilState<FirebaseUser> = atom({
   key: StoredValue.CURRENT_USER,

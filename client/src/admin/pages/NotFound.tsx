@@ -1,17 +1,18 @@
 import { Helmet } from "react-helmet";
 import { Box, Container, Typography } from "@material-ui/core";
 
-const NotFound = () => (
-  <>
-    <Helmet>
-      <title>404 | AU Projects</title>
-    </Helmet>
-    <Box
-      sx={{
-        backgroundColor: "background.default",
-        display: "flex",
-        flexDirection: "column",
-        height: "100%",
+export default function NotFound() {
+    return (
+        <>
+            <Helmet>
+                <title>404 | AU Projects</title>
+            </Helmet>
+            <Box
+                sx={{
+                    backgroundColor: "background.default",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
         justifyContent: "center",
       }}
     >
@@ -38,5 +39,5 @@ const NotFound = () => (
     </Box>
   </>
 );
+}
 
-export default NotFound;
