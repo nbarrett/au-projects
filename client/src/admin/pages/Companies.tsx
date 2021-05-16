@@ -1,8 +1,17 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
-import CustomerListToolbar from "../components/customer/CustomerListToolbar";
+import { useSetRecoilState } from 'recoil';
+import { toolbarButtonState } from '../../atoms/dashboard-atoms';
+import { useEffect } from 'react';
+import { log } from '../../util/logging-config';
 
 export default function Companies() {
+    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+    useEffect(() => {
+        log.info("CustomerListResults triggered");
+        setButtonCaptions(["add company", "export", "import"])
+    },[])
+
     return (
         <>
             <Helmet>
@@ -16,7 +25,6 @@ export default function Companies() {
                 }}
             >
                 <Container maxWidth={false}>
-                    <CustomerListToolbar/>
                     <Box sx={{pt: 3}}>
                         <div>to add</div>
                         {/*<CustomerListResults customers={customers}/>*/}

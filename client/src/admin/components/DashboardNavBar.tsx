@@ -21,6 +21,7 @@ import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { useLogout } from "../../auth/logout";
 import InputIcon from "@material-ui/icons/Input";
 import { Tooltip } from '@material-ui/core';
+import ToolbarButtons from './toolbar/ToolbarButtons';
 
 const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -31,6 +32,7 @@ const Search = styled("div")(({theme}) => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
+    minWidth: 600,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
         marginLeft: theme.spacing(3),
@@ -139,6 +141,7 @@ export default function DashboardNavBar() {
                         />
                     </Search>
                     <Box sx={{flexGrow: 1}}/>
+                    <ToolbarButtons/>
                     <Box sx={{display: {xs: "none", md: "flex"}}}>
                         <Tooltip title={"Show new emails (doesn't do anything yet)"}>
                             <IconButton aria-label="show 4 new mails" color="inherit">

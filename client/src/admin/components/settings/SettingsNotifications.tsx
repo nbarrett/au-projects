@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-const SettingsNotifications = (props) => (
+const SettingsNotifications = (props: any) => (
   <form {...props}>
     <Card>
       <CardHeader subheader="Manage the notifications" title="Notifications" />

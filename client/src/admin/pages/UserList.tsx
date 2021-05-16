@@ -1,10 +1,18 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
-import CustomerListResults from "../components/customer/CustomerListResults";
-import CustomerListToolbar from "../components/customer/CustomerListToolbar";
+import UserListResults from "../components/user/UserListResults";
 import customers from "../__mocks__/customers";
+import { useSetRecoilState } from 'recoil';
+import { toolbarButtonState } from '../../atoms/dashboard-atoms';
+import { useEffect } from 'react';
+import { log } from '../../util/logging-config';
 
-export default function CustomerList() {
+export default function UserList() {
+    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+    useEffect(() => {
+        log.info("CustomerListResults triggered");
+        setButtonCaptions(["add user"])
+    },[])
     return (
         <>
             <Helmet>
@@ -18,9 +26,8 @@ export default function CustomerList() {
                 }}
             >
                 <Container maxWidth={false}>
-                    <CustomerListToolbar/>
                     <Box sx={{pt: 3}}>
-                        <CustomerListResults customers={customers}/>
+                        <UserListResults customers={customers}/>
                     </Box>
                 </Container>
             </Box>

@@ -2,16 +2,16 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import MainLayout from "./components/MainLayout";
 import Account from "./pages/Account";
-import CustomerList from "./pages/CustomerList";
+import UserList from "./pages/UserList";
 import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import NotFound from "./pages/NotFound";
 import ProductList from "./pages/ProductList";
 import Register from "./pages/Register";
-import Settings from "./pages/Settings";
 import EmailVerification from "./pages/EmailVerification";
 import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
 import Companies from "./pages/Companies";
+import { Settings } from './pages/Settings';
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -20,7 +20,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
       element: isLoggedIn ? <DashboardLayout/> : <Navigate to={`/${AppRoute.LOGIN}`}/>,
       children: [
         {path: AppRoute.ACCOUNT, element: <Account/>},
-        {path: AppRoute.USERS, element: <CustomerList/>},
+        {path: AppRoute.USERS, element: <UserList/>},
         {path: AppRoute.COMPANIES, element: <Companies/>},
         {path: AppRoute.EXAMPLE_DASHBOARD, element: <Dashboard/>},
         {path: AppRoute.PRODUCTS, element: <ProductList/>},

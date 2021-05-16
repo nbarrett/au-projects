@@ -17,11 +17,10 @@ import {
 import getInitials from "../../utils/getInitials";
 import { Customer } from '../../../models/product-models';
 
-export default function CustomerListResults(props: { customers: Customer[], rest?: any[] }) {
+export default function UserListResults(props: { customers: Customer[], rest?: any[] }) {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
-
   const handleSelectAll = (event: any) => {
     const newSelectedCustomerIds = event.target.checked ? props.customers.map((customer) => customer.id) : [];
     setSelectedCustomerIds(newSelectedCustomerIds);
