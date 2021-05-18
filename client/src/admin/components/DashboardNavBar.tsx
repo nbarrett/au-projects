@@ -32,11 +32,13 @@ const Search = styled("div")(({theme}) => ({
     },
     marginRight: theme.spacing(2),
     marginLeft: 0,
-    minWidth: 600,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
         marginLeft: theme.spacing(3),
         width: "auto",
+    },[theme.breakpoints.up("lg")]: {
+        marginLeft: theme.spacing(3),
+        minWidth: 800,
     },
 }));
 
@@ -114,6 +116,12 @@ export default function DashboardNavBar() {
                 </IconButton>
                 <p>Notifications</p>
             </MenuItem>
+            <MenuItem>
+                <IconButton color="inherit" onClick={logout}>
+                    <InputIcon/>
+                </IconButton>
+                <p>Logout</p>
+            </MenuItem>
         </Menu>
     );
 
@@ -184,9 +192,6 @@ export default function DashboardNavBar() {
                 </Toolbar>
             </AppBar>
             {renderMobileMenu}
-            <IconButton color="inherit" onClick={logout}>
-                <InputIcon/>
-            </IconButton>
         </Box>
     );
 }

@@ -1,4 +1,4 @@
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -8,32 +8,29 @@ import { log } from "../../util/logging-config";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import { useEffect, useState } from "react";
 import { useLogout } from "../../auth/logout";
-import { useRecoilValue } from "recoil";
-import { FirebaseUser } from "../../models/auth-models";
-import { currentUserState } from "../../atoms/user-atoms";
-import firebase from "firebase/app";
-import { APP_DASHBOARD } from "../../constants";
+import { useSession } from '../../auth/useSession';
 
 export default function Login() {
-    const navigate = useNavigate();
+    const {user, loading} = useSession();
     const notification = useSnackbarNotification();
     const signinWithEmail = useSigninWithEmail();
-    const user = useRecoilValue<FirebaseUser>(currentUserState);
     const logout = useLogout();
     const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
 
     useEffect(() => {
-        log.info("useEffect:user:", user);
-        if (user.email) {
-            log.info("useEffect:logging out:", user);
-            logout();
+        log.info("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+        if (!loading && user?.uid && !user?.emailVerified) {
+            setShowVerifyEmail(true);
+            const message = `${user.email} has not yet been verified so please respond to an email in your inbox`;
+            log.info("showing message:", message);
+            notification.error(message);
         }
-    }, [])
+    }, [user, loading])
 
     function resendVerification() {
-        const currentUser = firebase.auth().currentUser;
-        if (currentUser) {
-            currentUser.sendEmailVerification();
+        log.info("Login:resendVerification user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+        if (user) {
+            user.sendEmailVerification();
             logout();
         }
     }
@@ -74,13 +71,9 @@ export default function Login() {
                             };
                             log.info("Login:signinData", signinData);
                             signinWithEmail(signinData).then(response => {
-                                log.info("signinWithEmail response:", response);
-                                if (response.emailVerified) {
-                                    navigate(APP_DASHBOARD, {replace: true});
-                                } else {
+                                log.info("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+                                if (!loading) {
                                     actions.setSubmitting(false);
-                                    setShowVerifyEmail(true);
-                                    notification.error(`${signinData.email} has not yet been verified so please respond to an email in your inbox`);
                                 }
                             }).catch(error => {
                                 actions.setSubmitting(false);

@@ -8,6 +8,7 @@ export default function Logo() {
       padding: 0,
       marginTop: 5,
       marginLeft: 0,
+      marginRight: 10,
     },
   }));
   const classes = useStyles({});

@@ -4,8 +4,10 @@ import { currentUserDataState, currentUserState } from "../../../atoms/user-atom
 import { FirebaseUser, UserData } from "../../../models/auth-models";
 import { useEffect, useState } from "react";
 import { log } from "../../../util/logging-config";
+import { useSnackbarNotification } from '../../../snackbarNotification';
 
 export default function AccountProfileDetails(props: any) {
+    const notification = useSnackbarNotification();
     const [user, setUser] = useRecoilState<FirebaseUser>(currentUserState);
     const [userEdit, setUserEdit] = useState<FirebaseUser>(user);
     const [userData, setUserData] = useRecoilState<UserData>(currentUserDataState);
@@ -111,7 +113,9 @@ export default function AccountProfileDetails(props: any) {
                         log.info("saving ", userEdit, "and", userDataEdit)
                         if (user.email !== userEdit.email) {
                             setUser(userEdit)
-                            log.info("updating user's email and sending email verification")
+                            const message = `${userEdit.email} will need to be verified before your next login, so please respond to an email in your inbox`;
+                            log.info("showing message:", message);
+                            notification.success(message);
                         } else {
                             log.info("no change to user's email")
                         }

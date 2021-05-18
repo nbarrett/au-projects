@@ -3,10 +3,13 @@ import { useSnackbarNotification } from "../snackbarNotification";
 import { useNavigate } from "react-router-dom";
 import { currentUser } from "../atoms/user-data-services";
 import { PublicRoute } from "../constants";
+import { useLocation } from 'react-router';
+import { log } from '../util/logging-config';
 
 export const useLogout = () => {
     const notification = useSnackbarNotification();
     const navigate = useNavigate();
+    const location = useLocation();
     return () => {
         if (currentUser()?.email)
             firebase
@@ -14,8 +17,10 @@ export const useLogout = () => {
                 .signOut()
                 .then(() => {
                     localStorage.removeItem("account_ids");
-                    notification.success("Successfully signed out");
-                    navigate(PublicRoute.LOGIN, {replace: true});
+                    log.info?.("location.pathname", location.pathname)
+                    if (!location.pathname.includes(PublicRoute.LOGIN)) {
+                        navigate(`/${PublicRoute.LOGIN}`, {replace: true});
+                    }
                 })
                 .catch(() => {
                     notification.error(

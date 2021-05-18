@@ -44,6 +44,7 @@ module.exports = {
     "jsx-a11y/anchor-is-valid": "off",
     "linebreak-style": "off",
     "max-len": "off",
+    "no-nested-ternary": "off",
     "no-console": "off",
     "no-constant-condition": "off",
     "no-debugger": "warn",
