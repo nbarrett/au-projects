@@ -12,9 +12,8 @@ export async function document<T>(document: string, uid: string): Promise<T> {
 export async function queryCollection<T>(collection: string): Promise<T[]> {
     const firestore = firebase.app().firestore()
     const collectionSnapshot = await firestore.collection(collection).get();
-    const collectionDocuments = [...collectionSnapshot.docs].map((documentSnapshot) => {
-        return documentSnapshot.data() as T;
-    });
+    const collectionDocuments = [...collectionSnapshot.docs]
+        .map((documentSnapshot) => (documentSnapshot.data() as T));
     log.info("found", collectionDocuments.length, "documents from", `${collection}:`, collectionDocuments);
     return collectionDocuments;
 }

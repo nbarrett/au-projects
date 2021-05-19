@@ -14,10 +14,6 @@ import { FirebaseUser} from "../../../models/authentication-models";
 import { UserData } from '../../../models/user-models';
 
 export default function AccountProfile() {
-  const dummyUser = {
-    // avatar: "/static/images/avatars/nick.png",
-    avatar: "/static/images/avatars/andy.png",
-  };
 
   const user = useRecoilValue<FirebaseUser>(currentUserState);
   const userData = useRecoilValue<UserData>(currentUserDataState);
@@ -33,7 +29,7 @@ export default function AccountProfile() {
           }}
         >
           <Avatar
-            src={dummyUser.avatar}
+            src={userData.avatarUrl}
             sx={{
               height: 100,
               width: 100,

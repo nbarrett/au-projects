@@ -2,8 +2,8 @@ import { FirebaseUser } from "../models/authentication-models";
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
 import { UserData } from "../models/user-models";
-import { auth } from 'firebase-admin/lib/auth';
-import admin from "firebase-admin";
+
+// import admin from "firebase-admin";
 
 export function currentUser(): FirebaseUser | undefined {
     const currentUser = firebase.auth().currentUser as firebase.User;
@@ -19,11 +19,11 @@ export function currentUser(): FirebaseUser | undefined {
     }
 }
 
-export function allUsers(): Promise<auth.UserRecord[]> {
-    return admin.auth().listUsers().then((userRecords) => {
-        return userRecords.users;
-    });
-}
+// export function allUsers(): Promise<auth.UserRecord[]> {
+//     return admin.auth().listUsers().then((userRecords) => {
+//         return userRecords.users;
+//     });
+// }
 
 export async function currentUserData(): Promise<UserData | undefined> {
     const firestore = firebase.app().firestore()

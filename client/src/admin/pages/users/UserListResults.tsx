@@ -16,9 +16,8 @@ import {
 } from "@material-ui/core";
 import { AuthenticatedUserData } from '../../../models/user-models';
 import { fullNameForUser, initialsForUser } from "../../utils/strings";
-import { auth } from 'firebase-admin/lib/auth';
 
-export default function UserListResults(props: { userRecords: auth.UserRecord[], users: AuthenticatedUserData[], rest?: any[] }) {
+export default function UserListResults(props: { userRecords: any[], users: AuthenticatedUserData[], rest?: any[] }) {
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
@@ -86,7 +85,6 @@ export default function UserListResults(props: { userRecords: auth.UserRecord[],
                   </TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
                   <TableCell>Phone</TableCell>
                   <TableCell>Registration date</TableCell>
                 </TableRow>
@@ -106,12 +104,7 @@ export default function UserListResults(props: { userRecords: auth.UserRecord[],
                         />
                       </TableCell>
                       <TableCell>
-                        <Box
-                            sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}
-                        >
+                        <Box sx={{alignItems: "center", display: "flex",}}>
                           <Avatar src={user.avatarUrl} sx={{mr: 2}}>
                             {initialsForUser(user)}
                           </Avatar>
@@ -120,11 +113,9 @@ export default function UserListResults(props: { userRecords: auth.UserRecord[],
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.email||"need admin for this"}</TableCell>
                       <TableCell>{user.phone}</TableCell>
-                      <TableCell>
-                        {moment(user.metadata.creationTime).format("DD/MM/YYYY")}
-                      </TableCell>
+                      <TableCell>{moment(user?.metadata?.creationTime).format("DD/MM/YYYY")}</TableCell>
                     </TableRow>
                 ))}
               </TableBody>

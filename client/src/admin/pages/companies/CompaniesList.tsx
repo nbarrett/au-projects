@@ -5,7 +5,7 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox,
+  Checkbox, makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -14,12 +14,20 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { fullNameForUser, initialsForUser } from '../../utils/strings';
 import { Company } from '../../../models/company-models';
 import { UserData } from '../../../models/user-models';
 import { FirebaseUser } from '../../../models/authentication-models';
+import { Theme } from '../../../theme/theme';
 
 export default function CompaniesList(props: { companies: Company[], rest?: any[] }) {
+  const useStyles = makeStyles((theme: Theme) => ({
+    Media: {
+      // height: '10%',
+      width: '10px'
+    }
+  }));
+  const classes = useStyles({props});
+
   const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
@@ -90,9 +98,9 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                     />
                   </TableCell>
                   <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Location</TableCell>
                   <TableCell>Phone</TableCell>
+                  <TableCell>Contact</TableCell>
+                  <TableCell>Location</TableCell>
                   <TableCell>Registration date</TableCell>
                 </TableRow>
               </TableHead>
@@ -100,6 +108,18 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                 {props.companies.slice(0, limit).map((company) => {
                   const contact: UserData = primaryContact(company.primaryContact);
                   const user: FirebaseUser = primaryContactUser(company.primaryContact);
+
+                  function companyAddress(company: Company): string {
+                    return [
+                      company?.address?.building,
+                      company?.address?.street,
+                      company?.address?.suburb,
+                      company?.address?.province,
+                      company?.address?.postcode,
+                      company?.address?.city,
+                      company?.address?.country].filter(item => item).join(", ");
+                  }
+
                   return (
                       <TableRow
                           hover
@@ -120,17 +140,15 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                                 display: "flex",
                               }}
                           >
-                            <Avatar src={company.avatarUrl} sx={{mr: 2}}>
-                              {initialsForUser(contact)}
-                            </Avatar>
+                            <Avatar sizes={"sm"} src={company.avatarUrl} sx={{mr: 2}}/>
                             <Typography color="textPrimary" variant="body1">
-                              {fullNameForUser(contact)}
+                              {company.name}
                             </Typography>
                           </Box>
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                          {`${company.address.city}, ${company.address.street}, ${company.address.country}`}
+                          {`${companyAddress(company)}`}
                         </TableCell>
                         <TableCell>{contact.phone}</TableCell>
                         <TableCell>
