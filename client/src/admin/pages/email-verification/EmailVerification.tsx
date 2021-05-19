@@ -3,9 +3,9 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { useBooleanState } from "react-use-object-state";
-import { useSnackbarNotification } from "../../snackbarNotification";
-import { Theme } from "../../theme/theme";
-import { useSession } from "../../auth/useSession";
+import { useSnackbarNotification } from "../../../snackbarNotification";
+import { Theme } from "../../../theme/theme";
+import { useSession } from "../../../auth/useSession";
 import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme: Theme) => ({

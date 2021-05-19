@@ -9,10 +9,11 @@ import {
 } from "react-feather";
 import NavItem from "./NavItem";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { FirebaseUser, UserData } from "../../models/auth-models";
+import { FirebaseUser} from "../../models/authentication-models";
 import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
+import { UserData } from '../../models/user-models';
 
 const dummyUser = {
     avatar: "/static/images/avatars/nick.png",

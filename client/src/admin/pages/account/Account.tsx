@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet";
 import { Box, Container, Grid } from "@material-ui/core";
-import AccountProfile from "../components/account/AccountProfile";
-import AccountProfileDetails from "../components/account/AccountProfileDetails";
+import AccountProfile from "../../components/account/AccountProfile";
+import AccountProfileDetails from "../../components/account/AccountProfileDetails";
 
 export default function Account() {
     return (

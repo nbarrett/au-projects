@@ -1,11 +1,12 @@
-import { atom, DefaultValue, RecoilState } from "recoil";
+import { atom, DefaultValue } from "recoil";
 import { StoredValue } from "../util/ui-stored-values";
-import { FirebaseUser, UserData } from "../models/auth-models";
+import { FirebaseUser } from "../models/authentication-models";
 import firebase from "firebase/app";
 import { currentUser, currentUserData } from "./user-data-services";
 import { log } from "../util/logging-config";
+import { UserData } from '../models/user-models';
 
-export const currentUserState: RecoilState<FirebaseUser> = atom({
+export const currentUserState = atom<FirebaseUser>({
   key: StoredValue.CURRENT_USER,
   default: {},
   effects_UNSTABLE: [
@@ -34,9 +35,9 @@ export const currentUserState: RecoilState<FirebaseUser> = atom({
   ]
 });
 
-export const currentUserDataState: RecoilState<UserData> = atom({
+export const currentUserDataState = atom<UserData>({
   key: StoredValue.CURRENT_USER_DATA,
-  default: {},
+  default: {} as UserData,
   effects_UNSTABLE: [
     ({setSelf, onSet}) => {
       currentUserData().then(data => {

@@ -1,22 +1,24 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
-import UserListResults from "../components/user/UserListResults";
-import customers from "../__mocks__/customers";
 import { useSetRecoilState } from 'recoil';
-import { toolbarButtonState } from '../../atoms/dashboard-atoms';
+import { toolbarButtonState } from '../../../atoms/dashboard-atoms';
 import { useEffect } from 'react';
-import { log } from '../../util/logging-config';
+import { log } from '../../../util/logging-config';
+import CompaniesList from './CompaniesList';
+import { COMPANIES } from '../../__mocks__/companies';
 
-export default function UserList() {
+export default function Companies() {
     const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+
     useEffect(() => {
-        log.info("CustomerListResults triggered");
-        setButtonCaptions(["add user"])
-    },[])
+        log.info("Companies rendered");
+        setButtonCaptions(["add company", "export", "import"])
+    }, [])
+
     return (
         <>
             <Helmet>
-                <title>Customers | AU Projects</title>
+                <title>Companies | AU Projects</title>
             </Helmet>
             <Box
                 sx={{
@@ -27,7 +29,8 @@ export default function UserList() {
             >
                 <Container maxWidth={false}>
                     <Box sx={{pt: 3}}>
-                        <UserListResults customers={customers}/>
+                        <div>to add</div>
+                        <CompaniesList companies={COMPANIES}/>
                     </Box>
                 </Container>
             </Box>

@@ -1,9 +1,9 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
-import SettingsNotifications from "../components/settings/SettingsNotifications";
-import { SettingsPassword } from '../components/settings/SettingsPassword';
+import SettingsNotifications from "../../components/settings/SettingsNotifications";
+import { SettingsPassword } from '../../components/settings/SettingsPassword';
 import { useSetRecoilState } from 'recoil';
-import { toolbarButtonState } from '../../atoms/dashboard-atoms';
+import { toolbarButtonState } from '../../../atoms/dashboard-atoms';
 import { useEffect } from 'react';
 
 export function Settings() {

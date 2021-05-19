@@ -1,8 +1,8 @@
 import firebase from "firebase";
 import { useSession } from "./useSession";
 import { useEffect, useState } from "react";
-import { UserData } from "../models/auth-models";
 import { log } from "../util/logging-config";
+import { UserData } from '../models/user-models';
 
 export function useCurrentUserData() {
   const { user } = useSession();

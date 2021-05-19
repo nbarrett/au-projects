@@ -10,11 +10,13 @@ import {
 } from "@material-ui/core";
 import { useRecoilValue } from "recoil";
 import { currentUserDataState, currentUserState } from "../../../atoms/user-atoms";
-import { FirebaseUser, UserData } from "../../../models/auth-models";
+import { FirebaseUser} from "../../../models/authentication-models";
+import { UserData } from '../../../models/user-models';
 
 export default function AccountProfile() {
   const dummyUser = {
-    avatar: "/static/images/avatars/nick.png",
+    // avatar: "/static/images/avatars/nick.png",
+    avatar: "/static/images/avatars/andy.png",
   };
 
   const user = useRecoilValue<FirebaseUser>(currentUserState);

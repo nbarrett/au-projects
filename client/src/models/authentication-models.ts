@@ -5,18 +5,24 @@ export interface SignupWithEmailProps {
   lastName: string;
 }
 
-export interface UserData {
-  uid?: string;
-  firstName?: string;
-  lastName?: string;
-  mobile?: string;
-  phone?: string;
-}
-
 export interface FirebaseUser {
   email?: string;
   uid?: string;
   emailVerified?: boolean;
+}
+
+export interface FirebaseAdminUser {
+  uid?: string;
+  email: string;
+  emailVerified: boolean;
+  displayName: string;
+  photoURL: string;
+  phoneNumber: string;
+  disabled: boolean;
+  metadata: {
+    lastSignInTime: string;
+    creationTime: string
+  };
 }
 
 export interface UseSigninWithEmailProps {

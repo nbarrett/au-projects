@@ -14,43 +14,45 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import getInitials from "../../utils/getInitials";
-import { Customer } from '../../../models/product-models';
+import { AuthenticatedUserData } from '../../../models/user-models';
+import { fullNameForUser, initialsForUser } from "../../utils/strings";
+import { auth } from 'firebase-admin/lib/auth';
 
-export default function UserListResults(props: { customers: Customer[], rest?: any[] }) {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([]);
+export default function UserListResults(props: { userRecords: auth.UserRecord[], users: AuthenticatedUserData[], rest?: any[] }) {
+  const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
+
   const handleSelectAll = (event: any) => {
-    const newSelectedCustomerIds = event.target.checked ? props.customers.map((customer) => customer.id) : [];
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    const newSelectedUserIds = (event.target.checked ? props.users.map((user) => user.uid) : []) as string[];
+    setSelectedUserIds(newSelectedUserIds);
   };
 
   const handleSelectOne = (event: any, id: string) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds: any[] | ((prevState: string[]) => string[]) = [];
+    const selectedIndex = selectedUserIds.indexOf(id);
+    let newSelectedUserIds: any[] | ((prevState: string[]) => string[]) = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-          selectedCustomerIds,
+      newSelectedUserIds = newSelectedUserIds.concat(
+          selectedUserIds,
           id
       );
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(1)
+      newSelectedUserIds = newSelectedUserIds.concat(
+          selectedUserIds.slice(1)
       );
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, -1)
+    } else if (selectedIndex === selectedUserIds.length - 1) {
+      newSelectedUserIds = newSelectedUserIds.concat(
+          selectedUserIds.slice(0, -1)
       );
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
+      newSelectedUserIds = newSelectedUserIds.concat(
+          selectedUserIds.slice(0, selectedIndex),
+          selectedUserIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedUserIds(newSelectedUserIds);
   };
 
   const handleLimitChange = (event: any) => {
@@ -61,6 +63,9 @@ export default function UserListResults(props: { customers: Customer[], rest?: a
     setPage(newPage);
   };
 
+  const userId = function (user: AuthenticatedUserData) {
+    return user.uid || "";
+  };
   return (
       <Card {...props.rest}>
         <PerfectScrollbar>
@@ -70,11 +75,11 @@ export default function UserListResults(props: { customers: Customer[], rest?: a
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                        checked={selectedCustomerIds.length === props.customers.length}
+                        checked={selectedUserIds.length === props.users.length}
                         color="primary"
                         indeterminate={
-                          selectedCustomerIds.length > 0 &&
-                          selectedCustomerIds.length < props.customers.length
+                          selectedUserIds.length > 0 &&
+                          selectedUserIds.length < props.users.length
                         }
                         onChange={handleSelectAll}
                     />
@@ -87,16 +92,16 @@ export default function UserListResults(props: { customers: Customer[], rest?: a
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.customers.slice(0, limit).map((customer) => (
+                {props.users.slice(0, limit).map((user) => (
                     <TableRow
                         hover
-                        key={customer.id}
-                        selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                        key={user.uid}
+                        selected={selectedUserIds.indexOf(userId(user)) !== -1}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                            checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                            onChange={(event) => handleSelectOne(event, customer.id)}
+                            checked={selectedUserIds.indexOf(userId(user)) !== -1}
+                            onChange={(event) => handleSelectOne(event, userId(user))}
                             value="true"
                         />
                       </TableCell>
@@ -107,21 +112,18 @@ export default function UserListResults(props: { customers: Customer[], rest?: a
                               display: "flex",
                             }}
                         >
-                          <Avatar src={customer.avatarUrl} sx={{mr: 2}}>
-                            {getInitials(customer.name)}
+                          <Avatar src={user.avatarUrl} sx={{mr: 2}}>
+                            {initialsForUser(user)}
                           </Avatar>
                           <Typography color="textPrimary" variant="body1">
-                            {customer.name}
+                            {fullNameForUser(user)}
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>{customer.email}</TableCell>
+                      <TableCell>{user.email}</TableCell>
+                      <TableCell>{user.phone}</TableCell>
                       <TableCell>
-                        {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
-                      </TableCell>
-                      <TableCell>{customer.phone}</TableCell>
-                      <TableCell>
-                        {moment(customer.createdAt).format("DD/MM/YYYY")}
+                        {moment(user.metadata.creationTime).format("DD/MM/YYYY")}
                       </TableCell>
                     </TableRow>
                 ))}
@@ -131,7 +133,7 @@ export default function UserListResults(props: { customers: Customer[], rest?: a
         </PerfectScrollbar>
         <TablePagination
             component="div"
-            count={props.customers.length}
+            count={props.users.length}
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleLimitChange}
             page={page}

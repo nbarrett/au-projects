@@ -1,10 +1,11 @@
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField, } from "@material-ui/core";
 import { useRecoilState } from "recoil";
 import { currentUserDataState, currentUserState } from "../../../atoms/user-atoms";
-import { FirebaseUser, UserData } from "../../../models/auth-models";
+import { FirebaseUser} from "../../../models/authentication-models";
 import { useEffect, useState } from "react";
 import { log } from "../../../util/logging-config";
 import { useSnackbarNotification } from '../../../snackbarNotification';
+import { UserData } from '../../../models/user-models';
 
 export default function AccountProfileDetails(props: any) {
     const notification = useSnackbarNotification();
