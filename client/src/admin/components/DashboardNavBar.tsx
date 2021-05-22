@@ -22,6 +22,7 @@ import { useLogout } from "../../auth/logout";
 import InputIcon from "@material-ui/icons/Input";
 import { Tooltip } from '@material-ui/core';
 import ToolbarButtons from './toolbar/ToolbarButtons';
+import { useNavbarSearch } from '../../use-navbar-search';
 
 const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -36,7 +37,7 @@ const Search = styled("div")(({theme}) => ({
     [theme.breakpoints.up("sm")]: {
         marginLeft: theme.spacing(3),
         width: "auto",
-    },[theme.breakpoints.up("lg")]: {
+    }, [theme.breakpoints.up("lg")]: {
         marginLeft: theme.spacing(3),
         minWidth: 800,
     },
@@ -66,6 +67,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 }));
 
 export default function DashboardNavBar() {
+    const navbarSearch = useNavbarSearch();
     const setMobileNavOpen = useSetRecoilState<boolean>(mobileNavOpenState);
     const logout = useLogout();
     const [
@@ -143,9 +145,10 @@ export default function DashboardNavBar() {
                         <SearchIconWrapper>
                             <SearchIcon/>
                         </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{"aria-label": "search"}}
+                        <StyledInputBase value={navbarSearch.search}
+                                         onChange={(event) => navbarSearch.onChange(event.target.value)}
+                                         placeholder="Search…"
+                                         inputProps={{"aria-label": "search"}}
                         />
                     </Search>
                     <Box sx={{flexGrow: 1}}/>

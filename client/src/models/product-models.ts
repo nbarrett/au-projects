@@ -1,9 +1,18 @@
 export interface Product {
-    id: string;
-    createdAt: string;
-    description: string;
-    media: string;
+    id?: string;
+    createdAt?: number;
     title: string;
-    totalDownloads: string;
+    description?: string;
+    specificGravity: number;
+    type?: string;
+    price?: number;
+    colour?: string;
+    hardness?: string;
+    grade?: string;
+    media?: any;
 }
 
+export interface ProductConfiguration {
+    lossesAllowance: number;
+    thicknesses: [3, 4, 5, 6, 7, 8, 9, 10, 12, 15]
+}

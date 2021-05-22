@@ -15,7 +15,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import { AuthenticatedUserData } from '../../../models/user-models';
-import { fullNameForUser, initialsForUser } from "../../utils/strings";
+import { fullNameForUser, initialsForUser } from "../../../util/strings";
 
 export default function UserListResults(props: { userRecords: any[], users: AuthenticatedUserData[], rest?: any[] }) {
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);

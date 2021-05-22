@@ -5,7 +5,8 @@ import {
   Avatar,
   Box,
   Card,
-  Checkbox, makeStyles,
+  Checkbox,
+  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -18,8 +19,10 @@ import { Company } from '../../../models/company-models';
 import { UserData } from '../../../models/user-models';
 import { FirebaseUser } from '../../../models/authentication-models';
 import { Theme } from '../../../theme/theme';
+import { useNavbarSearch } from '../../../use-navbar-search';
 
 export default function CompaniesList(props: { companies: Company[], rest?: any[] }) {
+  const navbarSearch = useNavbarSearch();
   const useStyles = makeStyles((theme: Theme) => ({
     Media: {
       // height: '10%',
@@ -138,8 +141,7 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                               sx={{
                                 alignItems: "center",
                                 display: "flex",
-                              }}
-                          >
+                              }}>
                             <Avatar sizes={"sm"} src={company.avatarUrl} sx={{mr: 2}}/>
                             <Typography color="textPrimary" variant="body1">
                               {company.name}
