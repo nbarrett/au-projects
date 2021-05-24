@@ -2,7 +2,7 @@ import { atom, DefaultValue } from "recoil";
 import { StoredValue } from "../util/ui-stored-values";
 import { FirebaseUser } from "../models/authentication-models";
 import firebase from "firebase/app";
-import { currentUser, currentUserData } from "./user-data-services";
+import { currentUser, currentUserData } from "../data-services/user-services";
 import { log } from "../util/logging-config";
 import { UserData } from '../models/user-models';
 

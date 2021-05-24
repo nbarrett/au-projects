@@ -3,8 +3,9 @@ import { experimentalStyled } from "@material-ui/core";
 import DashboardSidebar from "./DashboardSidebar";
 import DashboardNavBar from './DashboardNavBar';
 import { useSetRecoilState } from 'recoil';
-import { toolbarButtonState } from '../../atoms/dashboard-atoms';
 import { useEffect } from 'react';
+import { ToolbarButton } from '../../models/toolbar-models';
+import { toolbarButtonState } from '../../atoms/navbar-atoms';
 
 const DashboardLayoutRoot = experimentalStyled("div")(({theme}) => ({
   backgroundColor: theme.palette.background.default,
@@ -38,9 +39,9 @@ const DashboardLayoutContent = experimentalStyled("div")({
 
 export default function DashboardLayout() {
 
-  const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+  const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
   useEffect(() => {
-    setButtonCaptions([])
+    setToolbarButtons([])
   }, [])
 
   return (

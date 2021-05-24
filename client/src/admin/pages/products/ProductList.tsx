@@ -1,34 +1,45 @@
 import { Helmet } from "react-helmet";
-import { Box, Container, Grid, MenuItem, Pagination, TextField, Typography } from "@material-ui/core";
+import { Box, Button, Container, Grid, MenuItem, Pagination, TextField, Typography } from "@material-ui/core";
 import ProductCard from "./ProductCard";
 import { useSetRecoilState } from "recoil";
-import { toolbarButtonState } from "../../../atoms/dashboard-atoms";
+import * as React from "react";
 import { useEffect, useState } from "react";
 import { log } from "../../../util/logging-config";
-import { PRODUCTS } from "../../__mocks__/products";
 import { Product } from "../../../models/product-models";
 import { fullTextSearch } from "../../../util/strings";
 import { useNavbarSearch } from "../../../use-navbar-search";
-import { chunk } from "lodash";
+import { chunk, range } from "lodash";
+import { ToolbarButton } from '../../../models/toolbar-models';
+import { findAll, saveAll } from '../../../data-services/firebase-services';
+import { toolbarButtonState } from '../../../atoms/navbar-atoms';
+import { WithUid } from '../../../models/user-models';
 
 export default function ProductList() {
-    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+    const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
     const navbarSearch = useNavbarSearch();
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<WithUid<Product>[]>([]);
+    const [products, setProducts] = useState<WithUid<Product>[]>([]);
     const [page, setPage] = useState<number>(1);
-    const pageSizes: number[] = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 100];
-    const [itemsPerPage, setItemsPerPage] = useState<number>(15);
+    const pageSizes: number[] = [5].concat(range(10, products.length + 10, 10));
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+
     useEffect(() => {
         log.info("ProductList initial render");
-        setButtonCaptions(["add product", "export", "import"])
+        queryProducts();
     }, [])
 
     useEffect(() => {
-        const products = fullTextSearch(PRODUCTS, navbarSearch.search);
-        log.info("filtering:", navbarSearch.search, products.length, "of", PRODUCTS.length, "filtered");
+        const filteredProducts = fullTextSearch(products, navbarSearch.search);
+        log.info("filtering:", navbarSearch.search, filteredProducts.length, "of", products.length, "filtered");
         setFilteredProducts(products)
         setPage(1);
-    }, [navbarSearch.search])
+        setToolbarButtons([
+            <Button onClick={saveAllProducts} key={"Save products"} sx={{mx: 1}} color="primary"
+                    variant="contained">{"Save products"}</Button>,
+            "add product",
+            "export",
+            "import"])
+    }, [products, navbarSearch.search])
 
     useEffect(() => {
         if (filteredProducts) {
@@ -36,11 +47,21 @@ export default function ProductList() {
         }
     }, [filteredProducts])
 
-    function pages(): Product[][] {
+    function saveAllProducts() {
+        saveAll<Product>("products", products).then((response) => {
+            log.info("response was:", response)
+        });
+    }
+
+    function queryProducts() {
+        findAll<Product>("products").then(setProducts);
+    }
+
+    function pages(): WithUid<Product>[][] {
         return chunk(filteredProducts, itemsPerPage);
     }
 
-    function currentPage(): Product[] {
+    function currentPage(): WithUid<Product>[] {
         return pages()[page - 1] || [];
     }
 
@@ -57,7 +78,7 @@ export default function ProductList() {
             <Box sx={{backgroundColor: "background.default", minHeight: "100%", py: 3}}>
                 <Container maxWidth={false}>
                     <Box sx={{display: "flex", alignItems: "center", justifyContent: "center", pt: 3}}>
-                        <Typography>Showing {filteredProducts.length} of {PRODUCTS.length} products</Typography>
+                        <Typography>Showing {filteredProducts.length} of {products.length} products</Typography>
                         <Pagination color="primary" count={pages().length} size="small" onChange={handlePageChange}/>
                         <TextField sx={{width: 150, marginRight: 2}} id="items-per-page"
                                    select
@@ -70,7 +91,7 @@ export default function ProductList() {
                                        log.info("setItemsPerPage:", +event.target.value);
                                    }}
                                    variant="outlined">
-                            {pageSizes.map((option) => (
+                            {pageSizes.map((option, index) => (
                                 <MenuItem key={option} value={option}>
                                     {option}
                                 </MenuItem>
@@ -80,8 +101,8 @@ export default function ProductList() {
                     <Box sx={{pt: 3}}>
                         <Grid container spacing={3}>
                             {currentPage().map((product) => (
-                                <Grid item key={product.id || product.title} lg={4} md={6} xs={12}>
-                                    <ProductCard product={product}/>
+                                <Grid item key={product?.data?.id || product?.data?.title} lg={4} md={6} xs={12}>
+                                    <ProductCard product={product.data}/>
                                 </Grid>
                             ))}
                         </Grid>

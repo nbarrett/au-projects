@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
 import { useNavigate } from "react-router-dom";
-import { currentUser } from "../atoms/user-data-services";
+import { currentUser } from "../data-services/user-services";
 import { PublicRoute } from "../constants";
 import { useLocation } from 'react-router';
 import { log } from '../util/logging-config';

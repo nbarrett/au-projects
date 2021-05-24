@@ -1,3 +1,5 @@
+import { HasUid, UserData } from './user-models';
+
 export interface SignupWithEmailProps {
   email: string;
   password: string;
@@ -5,14 +7,15 @@ export interface SignupWithEmailProps {
   lastName: string;
 }
 
-export interface FirebaseUser {
+export interface FirebaseUser extends HasUid {
   email?: string;
-  uid?: string;
   emailVerified?: boolean;
 }
 
-export interface FirebaseAdminUser {
-  uid?: string;
+export interface AuthenticatedUserData extends UserData, FirebaseAdminUser {
+}
+
+export interface FirebaseAdminUser extends HasUid {
   email: string;
   emailVerified: boolean;
   displayName: string;

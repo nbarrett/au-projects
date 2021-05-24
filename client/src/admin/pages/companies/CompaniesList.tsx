@@ -19,13 +19,10 @@ import { Company } from '../../../models/company-models';
 import { UserData } from '../../../models/user-models';
 import { FirebaseUser } from '../../../models/authentication-models';
 import { Theme } from '../../../theme/theme';
-import { useNavbarSearch } from '../../../use-navbar-search';
 
 export default function CompaniesList(props: { companies: Company[], rest?: any[] }) {
-  const navbarSearch = useNavbarSearch();
   const useStyles = makeStyles((theme: Theme) => ({
     Media: {
-      // height: '10%',
       width: '10px'
     }
   }));

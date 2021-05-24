@@ -3,7 +3,7 @@ import AccessTimeIcon from "@material-ui/icons/AccessTime";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import { Product } from '../../../models/product-models';
 
-export default function ProductCard(props: { product: Product, rest?: any[] }) {
+export default function ProductCard(props: { product?: Product, rest?: any[] }) {
     return (
         <Card
             sx={{
@@ -21,13 +21,13 @@ export default function ProductCard(props: { product: Product, rest?: any[] }) {
                         pb: 3,
                     }}
                 >
-                    <Avatar alt="Product" src={props.product.media} variant="square"/>
+                    <Avatar alt="Product" src={props?.product?.media} variant="square"/>
                 </Box>
                 <Typography align="center" color="textPrimary" gutterBottom variant="h4">
-                    {props.product.title}
+                    {props?.product?.title}
                 </Typography>
                 <Typography align="center" color="textPrimary" variant="body1">
-                    SG: {props.product.specificGravity} R{props.product.price}
+                    SG: {props?.product?.specificGravity} R{props?.product?.price}
                 </Typography>
             </CardContent>
             <Box sx={{flexGrow: 1}}/>

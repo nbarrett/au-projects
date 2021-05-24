@@ -2,24 +2,26 @@ import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
 import UserListResults from "./UserListResults";
 import { useSetRecoilState } from 'recoil';
-import { toolbarButtonState } from '../../../atoms/dashboard-atoms';
 import { useEffect, useState } from 'react';
 import { log } from '../../../util/logging-config';
-import { queryCollection } from '../../../atoms/firebase-services';
-import { AuthenticatedUserData } from '../../../models/user-models';
+import { findAll } from '../../../data-services/firebase-services';
+import { AuthenticatedUserData } from '../../../models/authentication-models';
+import { ToolbarButton } from '../../../models/toolbar-models';
+import { toolbarButtonState } from '../../../atoms/navbar-atoms';
+import { WithUid } from '../../../models/user-models';
 
 export default function UserList() {
-    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
-    const [users, setUsers] = useState<AuthenticatedUserData[]>([]);
+    const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
+    const [users, setUsers] = useState<WithUid<AuthenticatedUserData>[]>([]);
     // const [userRecords, setUserRecords] = useState<auth.UserRecord[]>([]);
     // const [authenticatedUsers, setAuthenticatedUsers] = useState<AuthenticatedUserData[]>([]);
 
 
     useEffect(() => {
         log.info("CustomerListResults triggered");
-        setButtonCaptions(["add user"])
+        setToolbarButtons(["add user"])
         // allUsers().then(setUserRecords)
-        queryCollection<AuthenticatedUserData>("users").then(setUsers);
+        findAll<AuthenticatedUserData>("users").then(setUsers);
     }, [])
     return (
         <>

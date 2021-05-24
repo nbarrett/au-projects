@@ -6,7 +6,3 @@ export const mobileNavOpenState = atom<boolean>({
   default: false
 });
 
-export const toolbarButtonState = atom<string[]>({
-  key: StoredValue.TOOLBAR_BUTTONS,
-  default: []
-});

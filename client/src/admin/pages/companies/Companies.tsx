@@ -1,19 +1,22 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
 import { useSetRecoilState } from "recoil";
-import { toolbarButtonState } from "../../../atoms/dashboard-atoms";
 import { useEffect } from "react";
 import { log } from "../../../util/logging-config";
 import CompaniesList from "./CompaniesList";
 import { COMPANIES } from "../../__mocks__/companies";
+import { ToolbarButton } from '../../../models/toolbar-models';
+import { toolbarButtonState } from '../../../atoms/navbar-atoms';
+import { useLocation } from 'react-router-dom';
 
 export default function Companies() {
-    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+    const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
+    const location = useLocation();
 
     useEffect(() => {
-        log.info("Companies rendered");
-        setButtonCaptions(["add company", "export", "import"])
-    }, [])
+        log.info("Companies rendered:", location);
+        setToolbarButtons(["add company", "export", "import"])
+    })
 
     return (
         <>

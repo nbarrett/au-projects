@@ -3,13 +3,14 @@ import { Box, Container } from "@material-ui/core";
 import SettingsNotifications from "../../components/settings/SettingsNotifications";
 import { SettingsPassword } from '../../components/settings/SettingsPassword';
 import { useSetRecoilState } from 'recoil';
-import { toolbarButtonState } from '../../../atoms/dashboard-atoms';
 import { useEffect } from 'react';
+import { ToolbarButton } from '../../../models/toolbar-models';
+import { toolbarButtonState } from '../../../atoms/navbar-atoms';
 
 export function Settings() {
-    const setButtonCaptions = useSetRecoilState<string[]>(toolbarButtonState);
+    const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
     useEffect(() => {
-        setButtonCaptions([])
+        setToolbarButtons([])
     }, [])
     return (
         <>

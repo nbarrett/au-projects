@@ -14,10 +14,11 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { AuthenticatedUserData } from '../../../models/user-models';
 import { fullNameForUser, initialsForUser } from "../../../util/strings";
+import { AuthenticatedUserData } from '../../../models/authentication-models';
+import { WithUid } from '../../../models/user-models';
 
-export default function UserListResults(props: { userRecords: any[], users: AuthenticatedUserData[], rest?: any[] }) {
+export default function UserListResults(props: { userRecords: any[], users: WithUid<AuthenticatedUserData>[], rest?: any[] }) {
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
@@ -94,28 +95,28 @@ export default function UserListResults(props: { userRecords: any[], users: Auth
                     <TableRow
                         hover
                         key={user.uid}
-                        selected={selectedUserIds.indexOf(userId(user)) !== -1}
+                        selected={selectedUserIds.indexOf(userId(user.data)) !== -1}
                     >
                       <TableCell padding="checkbox">
                         <Checkbox
-                            checked={selectedUserIds.indexOf(userId(user)) !== -1}
-                            onChange={(event) => handleSelectOne(event, userId(user))}
+                            checked={selectedUserIds.indexOf(userId(user.data)) !== -1}
+                            onChange={(event) => handleSelectOne(event, userId(user.data))}
                             value="true"
                         />
                       </TableCell>
                       <TableCell>
                         <Box sx={{alignItems: "center", display: "flex",}}>
-                          <Avatar src={user.avatarUrl} sx={{mr: 2}}>
-                            {initialsForUser(user)}
+                          <Avatar src={user.data.avatarUrl} sx={{mr: 2}}>
+                            {initialsForUser(user.data)}
                           </Avatar>
                           <Typography color="textPrimary" variant="body1">
-                            {fullNameForUser(user)}
+                            {fullNameForUser(user.data)}
                           </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>{user.email||"need admin for this"}</TableCell>
-                      <TableCell>{user.phone}</TableCell>
-                      <TableCell>{moment(user?.metadata?.creationTime).format("DD/MM/YYYY")}</TableCell>
+                      <TableCell>{user.data.email||"need admin for this"}</TableCell>
+                      <TableCell>{user.data.phone}</TableCell>
+                      <TableCell>{moment(user.data?.metadata?.creationTime).format("DD/MM/YYYY")}</TableCell>
                     </TableRow>
                 ))}
               </TableBody>
