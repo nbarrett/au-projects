@@ -1,4 +1,3 @@
-import moment from "moment";
 import { v4 as uuid } from "uuid";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
@@ -17,6 +16,7 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import ArrowRightIcon from "@material-ui/icons/ArrowRight";
+import { asDateTime } from "../../../util/dates";
 
 const orders = [
   {
@@ -81,17 +81,18 @@ const orders = [
   },
 ];
 
-const LatestOrders = (props) => (
-  <Card {...props}>
-    <CardHeader title="Latest Orders" />
-    <Divider />
-    <PerfectScrollbar>
-      <Box sx={{ minWidth: 800 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>Order Ref</TableCell>
-              <TableCell>Customer</TableCell>
+export function LatestOrders(props) {
+  return (
+      <Card {...props}>
+        <CardHeader title="Latest Orders"/>
+        <Divider/>
+        <PerfectScrollbar>
+          <Box sx={{minWidth: 800}}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Order Ref</TableCell>
+                  <TableCell>Customer</TableCell>
               <TableCell sortDirection="desc">
                 <Tooltip enterDelay={300} title="Sort">
                   <TableSortLabel active direction="desc">
@@ -108,7 +109,7 @@ const LatestOrders = (props) => (
                 <TableCell>{order.ref}</TableCell>
                 <TableCell>{order.customer.name}</TableCell>
                 <TableCell>
-                  {moment(order.createdAt).format("DD/MM/YYYY")}
+                  {asDateTime(order.createdAt).toFormat("DD/MM/YYYY")}
                 </TableCell>
                 <TableCell>
                   <Chip color="primary" label={order.status} size="small" />
@@ -127,15 +128,15 @@ const LatestOrders = (props) => (
       }}
     >
       <Button
-        color="primary"
-        endIcon={<ArrowRightIcon />}
-        size="small"
-        variant="text"
+          color="primary"
+          endIcon={<ArrowRightIcon/>}
+          size="small"
+          variant="text"
       >
         View all
       </Button>
     </Box>
-  </Card>
-);
+      </Card>
+  )
+}
 
-export default LatestOrders;

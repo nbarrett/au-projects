@@ -1,5 +1,4 @@
 import { useState } from "react";
-import moment from "moment";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Avatar,
@@ -14,9 +13,10 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { fullNameForUser, initialsForUser } from "../../../util/strings";
-import { AuthenticatedUserData } from '../../../models/authentication-models';
-import { WithUid } from '../../../models/user-models';
+import { fullNameForUser, initialsForUser } from "../../util/strings";
+import { AuthenticatedUserData } from "../../models/authentication-models";
+import { asDateTime } from "../../util/dates";
+import { WithUid } from "../../models/common-models";
 
 export default function UserListResults(props: { userRecords: any[], users: WithUid<AuthenticatedUserData>[], rest?: any[] }) {
   const [selectedUserIds, setSelectedUserIds] = useState<string[]>([]);
@@ -116,7 +116,7 @@ export default function UserListResults(props: { userRecords: any[], users: With
                       </TableCell>
                       <TableCell>{user.data.email||"need admin for this"}</TableCell>
                       <TableCell>{user.data.phone}</TableCell>
-                      <TableCell>{moment(user.data?.metadata?.creationTime).format("DD/MM/YYYY")}</TableCell>
+                      <TableCell>{asDateTime(user.data?.metadata?.creationTime).toFormat("DD/MM/YYYY")}</TableCell>
                     </TableRow>
                 ))}
               </TableBody>

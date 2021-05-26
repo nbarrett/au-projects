@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
 import { experimentalStyled } from "@material-ui/core";
 import DashboardSidebar from "./DashboardSidebar";
-import DashboardNavBar from './DashboardNavBar';
-import { useSetRecoilState } from 'recoil';
-import { useEffect } from 'react';
-import { ToolbarButton } from '../../models/toolbar-models';
-import { toolbarButtonState } from '../../atoms/navbar-atoms';
+import DashboardNavBar from "./DashboardNavBar";
+import { useSetRecoilState } from "recoil";
+import { useEffect } from "react";
+import { ToolbarButton } from "../../models/toolbar-models";
+import { toolbarButtonState } from "../../atoms/navbar-atoms";
 
 const DashboardLayoutRoot = experimentalStyled("div")(({theme}) => ({
   backgroundColor: theme.palette.background.default,

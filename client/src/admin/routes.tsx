@@ -1,17 +1,17 @@
 import { Navigate } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import MainLayout from "./components/MainLayout";
-import Account from "./pages/account/Account";
-import UserList from "./pages/users/UserList";
-import Login from "./pages/Login";
-import NotFound from "./pages/NotFound";
-import ProductList from "./pages/products/ProductList";
-import Register from "./pages/Register";
-import EmailVerification from "./pages/email-verification/EmailVerification";
+import Account from "../pages/account/Account";
+import UserList from "../pages/users/UserList";
+import Login from "../pages/login/Login";
+import NotFound from "../pages/NotFound";
+import ProductList from "../pages/products/ProductList";
+import Register from "../pages/login/Register";
+import EmailVerification from "../pages/email-verification/EmailVerification";
 import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
-import Companies from "./pages/companies/Companies";
-import { Settings } from './pages/settings/Settings';
-import ExampleDashboard from './pages/example-dashboard/ExampleDashboard';
+import Companies from "../pages/companies/Companies";
+import { Settings } from "../pages/settings/Settings";
+import ExampleDashboard from "../pages/example-dashboard/ExampleDashboard";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [

@@ -1,12 +1,10 @@
 import { Box, Button, } from "@material-ui/core";
-import { useRecoilValue } from 'recoil';
-import * as React from 'react';
-import { ToolbarButton } from '../../../models/toolbar-models';
-import { toolbarButtonState } from '../../../atoms/navbar-atoms';
-import { log } from '../../../util/logging-config';
-import { useEffect } from 'react';
-import { findAll } from '../../../data-services/firebase-services';
-import { AuthenticatedUserData } from '../../../models/authentication-models';
+import { useRecoilValue } from "recoil";
+import * as React from "react";
+import { useEffect } from "react";
+import { ToolbarButton } from "../../../models/toolbar-models";
+import { toolbarButtonState } from "../../../atoms/navbar-atoms";
+import { log } from "../../../util/logging-config";
 
 export default function ToolbarButtons() {
     const toolbarButtons = useRecoilValue<ToolbarButton[]>(toolbarButtonState);

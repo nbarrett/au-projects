@@ -20,9 +20,9 @@ import { useSetRecoilState } from "recoil";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { useLogout } from "../../auth/logout";
 import InputIcon from "@material-ui/icons/Input";
-import { Tooltip } from '@material-ui/core';
-import ToolbarButtons from './toolbar/ToolbarButtons';
-import { useNavbarSearch } from '../../use-navbar-search';
+import { Tooltip } from "@material-ui/core";
+import ToolbarButtons from "./toolbar/ToolbarButtons";
+import { useNavbarSearch } from "../../use-navbar-search";
 
 const Search = styled("div")(({theme}) => ({
     position: "relative",

@@ -1,7 +1,7 @@
 import { atom, atomFamily, RecoilState, selectorFamily } from "recoil";
 import { StoredValue } from "../util/ui-stored-values";
 import { firestoreState } from "./firestore-atoms";
-import { Company } from '../models/company-models';
+import { Company } from "../models/company-models";
 
 export const companiesState = atom<Company[]>({
   key: StoredValue.COMPANIES,
@@ -58,7 +58,7 @@ export const companiesState = atom<Company[]>({
 // });
 //
 // const userInfoQueryRequestIDState = atomFamily({
-//   key: 'UserInfoQueryRequestID',
+//   key: "UserInfoQueryRequestID",
 //   default: 0,
 // });
 //

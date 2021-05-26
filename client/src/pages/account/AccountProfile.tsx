@@ -9,9 +9,9 @@ import {
   Typography,
 } from "@material-ui/core";
 import { useRecoilValue } from "recoil";
-import { currentUserDataState, currentUserState } from "../../../atoms/user-atoms";
-import { FirebaseUser} from "../../../models/authentication-models";
-import { UserData } from '../../../models/user-models';
+import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
+import { FirebaseUser} from "../../models/authentication-models";
+import { UserData } from "../../models/user-models";
 
 export default function AccountProfile() {
 

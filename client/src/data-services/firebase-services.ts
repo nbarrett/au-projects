@@ -1,9 +1,15 @@
+import { HasAuditTimestamps, hasUid, WithUid } from "../models/common-models";
+
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
-import { hasUid, WithUid } from '../models/user-models';
+import { nowAsValue } from "../util/dates";
 
 export function firebaseFirestore() {
     return firebase.app().firestore();
+}
+
+function hasAuditTimestamps(data: any): data is HasAuditTimestamps {
+    return typeof data.createdAt !== undefined;
 }
 
 export async function document<T>(document: string, uid: string): Promise<T> {
@@ -23,10 +29,13 @@ export async function save<T>(collection: string, document: WithUid<T>): Promise
 }
 
 export async function saveAll<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
-    return Promise.all(documents.map(document => save(collection, document)));
+    return Promise.all(documents.map(document => save<T>(collection, document)));
 }
 
 export async function update<T>(collection: string, document: WithUid<T>): Promise<boolean> {
+    if (hasAuditTimestamps(document.data)) {
+        document.data.updatedAt = nowAsValue();
+    }
     const documentPath = `${collection}/${document.uid}`;
     const userDoc = await firebaseFirestore().doc(documentPath).update(document.data as firebase.firestore.UpdateData)
     log.info("updated:", documentPath, userDoc);
@@ -34,6 +43,9 @@ export async function update<T>(collection: string, document: WithUid<T>): Promi
 }
 
 export async function create<T>(collection: string, document: WithUid<T>): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
+    if (hasAuditTimestamps(document.data)) {
+        document.data.createdAt = nowAsValue();
+    }
     const userDoc = await firebaseFirestore().collection(collection).add(document);
     log.info("created:", collection, "document:", document, "returned:", userDoc);
     return userDoc;

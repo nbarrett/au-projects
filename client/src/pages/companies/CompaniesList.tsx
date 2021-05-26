@@ -1,5 +1,4 @@
 import { useState } from "react";
-import moment from "moment";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Avatar,
@@ -15,15 +14,16 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import { Company } from '../../../models/company-models';
-import { UserData } from '../../../models/user-models';
-import { FirebaseUser } from '../../../models/authentication-models';
-import { Theme } from '../../../theme/theme';
+import { Company } from "../../models/company-models";
+import { UserData } from "../../models/user-models";
+import { FirebaseUser } from "../../models/authentication-models";
+import { Theme } from "../../theme/theme";
+import { asDateTime } from "../../util/dates";
 
 export default function CompaniesList(props: { companies: Company[], rest?: any[] }) {
   const useStyles = makeStyles((theme: Theme) => ({
     Media: {
-      width: '10px'
+      width: "10px"
     }
   }));
   const classes = useStyles({props});
@@ -151,7 +151,7 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                         </TableCell>
                         <TableCell>{contact.phone}</TableCell>
                         <TableCell>
-                          {moment(company.createdAt).format("DD/MM/YYYY")}
+                          {asDateTime(company.createdAt).toFormat("DD/MM/YYYY")}
                         </TableCell>
                       </TableRow>
                   );

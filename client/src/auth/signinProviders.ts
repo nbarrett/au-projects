@@ -2,7 +2,7 @@ import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
 import { SignupWithEmailProps, UseSigninWithEmailProps, } from "../models/authentication-models";
 import { log } from "../util/logging-config";
-import { UserData } from '../models/user-models';
+import { UserData } from "../models/user-models";
 
 export const useSigninWithEmail = () => {
   const notification = useSnackbarNotification();

@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { log } from './util/logging-config';
-import { replaceAll } from './util/strings';
-import { useRecoilState } from 'recoil';
-import { navbarSearchState } from './atoms/navbar-atoms';
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+import { log } from "./util/logging-config";
+import { replaceAll } from "./util/strings";
+import { useRecoilState } from "recoil";
+import { navbarSearchState } from "./atoms/navbar-atoms";
 
 export function useNavbarSearch(): { search: string; onChange(value: string): void; } {
     const location = useLocation();

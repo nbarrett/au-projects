@@ -1,4 +1,5 @@
-import { HasUid, UserData } from './user-models';
+import { UserData } from "./user-models";
+import { HasUid } from "./common-models";
 
 export interface SignupWithEmailProps {
   email: string;

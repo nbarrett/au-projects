@@ -51,6 +51,7 @@ module.exports = {
     "no-else-return": "off",
     "no-explicit-any": "off",
     "no-nested-ternary": "off",
+    "no-param-reassign": "off",
     "no-plusplus": "off",
     "object-curly-newline": "off",
     "object-property-newline": "off",

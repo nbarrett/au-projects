@@ -4,8 +4,9 @@ import isNumber from "lodash/isNumber";
 import isObject from "lodash/isObject";
 import map from "lodash/map";
 import startCase from "lodash/startCase";
-import { log } from './logging-config';
-import { UserData } from '../models/user-models';
+import { log } from "./logging-config";
+import { UserData } from "../models/user-models";
+import { v4 as uuidv4 } from "uuid";
 
 export function replaceAll(find: any, replace: any, str: any): string | number {
   let replacedValue;
@@ -94,4 +95,8 @@ export function initialsForUser(user: UserData): string {
 
 export function fullNameForUser(user: UserData): string {
   return `${user.firstName} ${user.lastName}`;
+}
+
+export function generateUid() {
+    return uuidv4();
 }

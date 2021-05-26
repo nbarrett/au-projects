@@ -1,6 +1,6 @@
-export interface Product {
-    id?: string;
-    createdAt?: number;
+import { HasAuditTimestamps } from "./common-models";
+
+export interface Product extends HasAuditTimestamps {
     title: string;
     description?: string;
     specificGravity: number;

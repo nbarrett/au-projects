@@ -1,11 +1,11 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
-import SettingsNotifications from "../../components/settings/SettingsNotifications";
-import { SettingsPassword } from '../../components/settings/SettingsPassword';
-import { useSetRecoilState } from 'recoil';
-import { useEffect } from 'react';
-import { ToolbarButton } from '../../../models/toolbar-models';
-import { toolbarButtonState } from '../../../atoms/navbar-atoms';
+import SettingsNotifications from "../../admin/components/settings/SettingsNotifications";
+import { SettingsPassword } from "../../admin/components/settings/SettingsPassword";
+import { useSetRecoilState } from "recoil";
+import { useEffect } from "react";
+import { ToolbarButton } from "../../models/toolbar-models";
+import { toolbarButtonState } from "../../atoms/navbar-atoms";
 
 export function Settings() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);

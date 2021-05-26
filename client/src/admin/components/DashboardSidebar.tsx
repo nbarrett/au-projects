@@ -13,7 +13,7 @@ import { FirebaseUser} from "../../models/authentication-models";
 import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
-import { UserData } from '../../models/user-models';
+import { UserData } from "../../models/user-models";
 
 const dummyUser = {
     avatar: "/static/images/avatars/nick.png",

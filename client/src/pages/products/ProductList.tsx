@@ -4,15 +4,15 @@ import ProductCard from "./ProductCard";
 import { useSetRecoilState } from "recoil";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { log } from "../../../util/logging-config";
-import { Product } from "../../../models/product-models";
-import { fullTextSearch } from "../../../util/strings";
-import { useNavbarSearch } from "../../../use-navbar-search";
+import { log } from "../../util/logging-config";
+import { Product } from "../../models/product-models";
+import { fullTextSearch } from "../../util/strings";
+import { useNavbarSearch } from "../../use-navbar-search";
 import { chunk, range } from "lodash";
-import { ToolbarButton } from '../../../models/toolbar-models';
-import { findAll, saveAll } from '../../../data-services/firebase-services';
-import { toolbarButtonState } from '../../../atoms/navbar-atoms';
-import { WithUid } from '../../../models/user-models';
+import { ToolbarButton } from "../../models/toolbar-models";
+import { findAll, saveAll } from "../../data-services/firebase-services";
+import { toolbarButtonState } from "../../atoms/navbar-atoms";
+import { WithUid } from "../../models/common-models";
 
 export default function ProductList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -31,7 +31,7 @@ export default function ProductList() {
     useEffect(() => {
         const filteredProducts = fullTextSearch(products, navbarSearch.search);
         log.info("filtering:", navbarSearch.search, filteredProducts.length, "of", products.length, "filtered");
-        setFilteredProducts(products)
+        setFilteredProducts(filteredProducts)
         setPage(1);
         setToolbarButtons([
             <Button onClick={saveAllProducts} key={"Save products"} sx={{mx: 1}} color="primary"
@@ -50,6 +50,7 @@ export default function ProductList() {
     function saveAllProducts() {
         saveAll<Product>("products", products).then((response) => {
             log.info("response was:", response)
+            queryProducts();
         });
     }
 
@@ -101,8 +102,8 @@ export default function ProductList() {
                     <Box sx={{pt: 3}}>
                         <Grid container spacing={3}>
                             {currentPage().map((product) => (
-                                <Grid item key={product?.data?.id || product?.data?.title} lg={4} md={6} xs={12}>
-                                    <ProductCard product={product.data}/>
+                                <Grid item key={product?.uid || product?.data?.title} lg={4} md={6} xs={12}>
+                                    <ProductCard product={product}/>
                                 </Grid>
                             ))}
                         </Grid>

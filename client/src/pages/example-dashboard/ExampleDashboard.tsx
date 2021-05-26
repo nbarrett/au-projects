@@ -1,13 +1,13 @@
-import { Helmet } from 'react-helmet';
-import { Box, Container, Grid } from '@material-ui/core';
-import Budget from '../../components/dashboard/Budget';
-import TotalCustomers from '../../components/dashboard/TotalCustomers';
-import TasksProgress from '../../components/dashboard/TasksProgress';
-import TotalProfit from '../../components/dashboard/TotalProfit';
-import Sales from '../../components/dashboard/Sales';
-import SalesByCustomer from '../../components/dashboard/SalesByCustomer';
-import LatestProducts from '../../components/dashboard/LatestProducts';
-import LatestOrders from '../../components/dashboard/LatestOrders';
+import { Helmet } from "react-helmet";
+import { Box, Container, Grid } from "@material-ui/core";
+import Budget from "../../admin/components/dashboard/Budget";
+import TotalCustomers from "../../admin/components/dashboard/TotalCustomers";
+import TasksProgress from "../../admin/components/dashboard/TasksProgress";
+import TotalProfit from "../../admin/components/dashboard/TotalProfit";
+import Sales from "../../admin/components/dashboard/Sales";
+import SalesByCustomer from "../../admin/components/dashboard/SalesByCustomer";
+import LatestProducts from "../../admin/components/dashboard/LatestProducts";
+import { LatestOrders } from "../../admin/components/dashboard/LatestOrders";
 
 export default function ExampleDashboard() {
     return (

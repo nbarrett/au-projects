@@ -8,7 +8,7 @@ import { log } from "../../util/logging-config";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import { useEffect, useState } from "react";
 import { useLogout } from "../../auth/logout";
-import { useSession } from '../../auth/useSession';
+import { useSession } from "../../auth/useSession";
 
 export default function Login() {
     const {user, loading} = useSession();
@@ -105,7 +105,7 @@ export default function Login() {
                                             Sign in to the portal
                                         </Typography>
                                     </Box>
-                                    <TextField
+                                    <TextField InputLabelProps={{ shrink: true }}
                                         error={Boolean(touched.email && errors.email)}
                                         fullWidth
                                         helperText={touched.email && errors.email}
@@ -119,7 +119,7 @@ export default function Login() {
                                         value={values.email}
                                         variant="outlined"
                                     />
-                                    <TextField
+                                    <TextField InputLabelProps={{ shrink: true }}
                                         error={Boolean(touched.password && errors.password)}
                                         fullWidth
                                         size={"small"}

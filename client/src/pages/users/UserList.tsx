@@ -1,14 +1,14 @@
 import { Helmet } from "react-helmet";
 import { Box, Container } from "@material-ui/core";
 import UserListResults from "./UserListResults";
-import { useSetRecoilState } from 'recoil';
-import { useEffect, useState } from 'react';
-import { log } from '../../../util/logging-config';
-import { findAll } from '../../../data-services/firebase-services';
-import { AuthenticatedUserData } from '../../../models/authentication-models';
-import { ToolbarButton } from '../../../models/toolbar-models';
-import { toolbarButtonState } from '../../../atoms/navbar-atoms';
-import { WithUid } from '../../../models/user-models';
+import { useSetRecoilState } from "recoil";
+import { useEffect, useState } from "react";
+import { log } from "../../util/logging-config";
+import { findAll } from "../../data-services/firebase-services";
+import { AuthenticatedUserData } from "../../models/authentication-models";
+import { ToolbarButton } from "../../models/toolbar-models";
+import { toolbarButtonState } from "../../atoms/navbar-atoms";
+import { WithUid } from "../../models/common-models";
 
 export default function UserList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
