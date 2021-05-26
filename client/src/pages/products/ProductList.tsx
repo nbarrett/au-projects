@@ -10,7 +10,7 @@ import { fullTextSearch } from "../../util/strings";
 import { useNavbarSearch } from "../../use-navbar-search";
 import { chunk, range } from "lodash";
 import { ToolbarButton } from "../../models/toolbar-models";
-import { findAll, saveAll } from "../../data-services/firebase-services";
+import { saveAll, subscribe } from "../../data-services/firebase-services";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
 
@@ -25,7 +25,10 @@ export default function ProductList() {
 
     useEffect(() => {
         log.info("ProductList initial render");
-        queryProducts();
+        const unsub = subscribe<Product>("products", setProducts)
+        return (() => {
+            unsub()
+        })
     }, [])
 
     useEffect(() => {
@@ -50,12 +53,7 @@ export default function ProductList() {
     function saveAllProducts() {
         saveAll<Product>("products", products).then((response) => {
             log.info("response was:", response)
-            queryProducts();
         });
-    }
-
-    function queryProducts() {
-        findAll<Product>("products").then(setProducts);
     }
 
     function pages(): WithUid<Product>[][] {

@@ -42,6 +42,13 @@ export async function update<T>(collection: string, document: WithUid<T>): Promi
     return true;
 }
 
+export async function remove<T>(collection: string, uid: string): Promise<string> {
+    const documentPath = `${collection}/${uid}`;
+    const userDoc = await firebaseFirestore().doc(documentPath).delete()
+    log.info("removed:", documentPath, userDoc);
+    return uid;
+}
+
 export async function create<T>(collection: string, document: WithUid<T>): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
     if (hasAuditTimestamps(document.data)) {
         document.data.createdAt = nowAsValue();
@@ -59,4 +66,16 @@ export async function findAll<T>(collection: string): Promise<WithUid<T>[]> {
         });
     log.info("found", collectionDocuments.length, `${collection}:`, collectionDocuments);
     return collectionDocuments;
+}
+
+export function subscribe<T>(collection: string, onSnapshot: (data: WithUid<T>[]) => any) {
+    const query = firebaseFirestore().collection(collection);
+    return query.onSnapshot(querySnapshot => {
+        const documents: { uid: string; data: T }[] = querySnapshot.docs.map((documentSnapshot) => ({
+            uid: documentSnapshot.id,
+            data: documentSnapshot.data() as T
+        }));
+        log.info(`Received ${collection} query snapshot of size ${querySnapshot.size}`, documents);
+        onSnapshot(documents);
+    });
 }

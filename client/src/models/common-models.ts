@@ -7,7 +7,7 @@ export interface HasUid {
 }
 
 export interface WithUid<T> {
-    uid?: string;
+    uid: string;
     data: T;
 }
 

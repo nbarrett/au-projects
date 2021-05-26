@@ -17,8 +17,9 @@ import * as React from "react";
 import { useState } from "react";
 import { log } from "../../util/logging-config";
 import useProductEditing from "../../hooks/use-product-editing";
-import { save } from "../../data-services/firebase-services";
+import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const [product, setProduct] = useState<Product>(props.product.data);
@@ -153,7 +154,14 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                                     data: product
                                 }).then(() => editing.toggleProductEdit(props.product.uid || ""));
                             }}>
-                                <SaveIcon color="action"/>
+                                <SaveIcon color="primary"/>
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title={`Delete ${product?.title}`}>
+                            <IconButton onClick={() => {
+                                remove<Product>("products", props.product.uid).then(() => editing.toggleProductEdit(props.product.uid || ""));
+                            }}>
+                                <DeleteIcon color="secondary"/>
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={`Undo changes to ${product?.title}`}>
