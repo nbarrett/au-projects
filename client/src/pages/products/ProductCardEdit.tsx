@@ -53,7 +53,6 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
     function DataBoundAutoComplete(props: { field: string, label: string, type: string }) {
         const value = product[props.field]?.toString() || "";
         return <Autocomplete
-            id={props.field}
             freeSolo
             disableClearable
             value={value}

@@ -3,6 +3,7 @@ import { HasAuditTimestamps, hasUid, WithUid } from "../models/common-models";
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
 import { nowAsValue } from "../util/dates";
+import { cloneDeep } from "lodash";
 
 export function firebaseFirestore() {
     return firebase.app().firestore();
@@ -33,11 +34,12 @@ export async function saveAll<T>(collection: string, documents: WithUid<T>[]): P
 }
 
 export async function update<T>(collection: string, document: WithUid<T>): Promise<boolean> {
-    if (hasAuditTimestamps(document.data)) {
-        document.data.updatedAt = nowAsValue();
+    const mutableData: WithUid<T> = cloneDeep(document);
+    if (hasAuditTimestamps(mutableData.data)) {
+        mutableData.data.updatedAt = nowAsValue();
     }
-    const documentPath = `${collection}/${document.uid}`;
-    const userDoc = await firebaseFirestore().doc(documentPath).update(document.data as firebase.firestore.UpdateData)
+    const documentPath = `${collection}/${mutableData.uid}`;
+    const userDoc = await firebaseFirestore().doc(documentPath).update(mutableData.data as firebase.firestore.UpdateData)
     log.info("updated:", documentPath, userDoc);
     return true;
 }
@@ -50,10 +52,11 @@ export async function remove<T>(collection: string, uid: string): Promise<string
 }
 
 export async function create<T>(collection: string, document: WithUid<T>): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
-    if (hasAuditTimestamps(document.data)) {
-        document.data.createdAt = nowAsValue();
+    const mutableData: WithUid<T> = cloneDeep(document);
+    if (hasAuditTimestamps(mutableData.data)) {
+        mutableData.data.createdAt = nowAsValue();
     }
-    const userDoc = await firebaseFirestore().collection(collection).add(document);
+    const userDoc = await firebaseFirestore().collection(collection).add(mutableData);
     log.info("created:", collection, "document:", document, "returned:", userDoc);
     return userDoc;
 }
