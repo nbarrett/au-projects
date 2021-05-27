@@ -1,10 +1,11 @@
 import {
+    Autocomplete,
     Box,
     Card,
     CardContent,
     Divider,
     Grid,
-    IconButton,
+    IconButton, InputAdornment,
     TextareaAutosize,
     TextField,
     Tooltip,
@@ -20,19 +21,55 @@ import useProductEditing from "../../hooks/use-product-editing";
 import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
 import DeleteIcon from "@material-ui/icons/Delete";
+import { useRecoilValue } from 'recoil';
+import { productsState } from '../../atoms/product-atoms';
+import { uniq } from "lodash";
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const [product, setProduct] = useState<Product>(props.product.data);
+    const products = useRecoilValue<WithUid<Product>[]>(productsState);
     const editing = useProductEditing();
 
-    function productChange(event?: any) {
-        const field = event.target.name;
-        const value = event.target.value;
-        log.info("productChange:" + product.title, "field:", field, "value:", value);
+    function changeField(field: string, value: any) {
+        log.info("productChange:" + product.title, "field:", field, "value:", value, "typeof:", typeof value);
         setProduct({
             ...product,
             [field]: value,
         });
+    }
+
+    function productChange(event?: any) {
+        const field = event.target.name || event.target.id;
+        const value = event.target.value;
+        changeField(field, value);
+    }
+
+    function uniqueValuesFor(field: string): string[] {
+        return uniq(products.map((option) => {
+            return option.data[field];
+        }).filter(item => item)).sort();
+    }
+
+    function DataBoundAutoComplete(props: { field: string, label: string, type: string }) {
+        const value = product[props.field]?.toString() || "";
+        return <Autocomplete
+            id={props.field}
+            freeSolo
+            disableClearable
+            value={value}
+            getOptionLabel={item => item?.toString()}
+            onChange={(event, value) => changeField(props.field, value)}
+            options={uniqueValuesFor(props.field)}
+            renderInput={(params) =>
+                <TextField  {...params}
+                            fullWidth
+                            type={props.type}
+                            onChange={productChange}
+                            value={value}
+                            name={props.field}
+                            label={props.label}
+                            variant="outlined"/>}
+        />;
     }
 
     return (
@@ -42,7 +79,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                 flexDirection: "column",
                 height: "100%",
             }}
-            {...props.rest}        >
+            {...props.rest}>
             <CardContent>
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
@@ -75,63 +112,41 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
+                        <DataBoundAutoComplete field={"specificGravity"} label={"Specific Gravity"} type={"number"}/>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
                         <TextField
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">R</InputAdornment>,
+                            }}
                             fullWidth
-                            label="Specific Gravity"
-                            name="specificGravity"
+                            label="Price"
+                            name="price"
+                            type="number"
                             onChange={productChange}
-                            type={"number"}
-                            value={product?.specificGravity || ""}
+                            value={product?.price || ""}
                             variant="outlined"
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Type"
-                            name="type"
-                            onChange={productChange}
-                            value={product?.type || ""}
-                            variant="outlined"
-                        />
+                        <DataBoundAutoComplete field={"type"} label={"Type"} type={"text"}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Colour"
-                            name="colour"
-                            onChange={productChange}
-                            value={product?.colour || ""}
-                            variant="outlined"
-                        />
+                        <DataBoundAutoComplete field={"colour"} label={"Colour"} type={"text"}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
+                        <DataBoundAutoComplete field={"grade"} label={"Grade"} type={"text"}/>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <DataBoundAutoComplete field={"hardness"} label={"Hardness"} type={"text"}/>
+                    </Grid>
+                    <Grid item md={12} xs={12}>
                         <TextField
                             fullWidth
                             label="Media"
                             name="media"
                             onChange={productChange}
                             value={product?.media || ""}
-                            variant="outlined"
-                        />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Grade"
-                            name="grade"
-                            onChange={productChange}
-                            value={product?.grade || ""}
-                            variant="outlined"
-                        />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            label="Hardness"
-                            name="hardness"
-                            onChange={productChange}
-                            value={product?.hardness || ""}
                             variant="outlined"
                         />
                     </Grid>

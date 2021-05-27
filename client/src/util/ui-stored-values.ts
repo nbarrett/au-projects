@@ -6,6 +6,7 @@ export enum StoredValue {
   FIREBASE_AUTH = "firebase-auth",
   FIREBASE_STORAGE = "firestore-storage",
   FIRESTORE = "firestore",
+  PRODUCTS = "products",
   PRODUCTS_IN_EDIT_MODE = "products-in-edit-mode",
   MOBILE_OPEN = "mobile-open",
   NAVBAR_SEARCH = "navbar-search",

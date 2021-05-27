@@ -1,7 +1,7 @@
 import { Helmet } from "react-helmet";
 import { Box, Button, Container, Grid, MenuItem, Pagination, TextField, Typography } from "@material-ui/core";
 import ProductCard from "./ProductCard";
-import { useSetRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { log } from "../../util/logging-config";
@@ -13,12 +13,13 @@ import { ToolbarButton } from "../../models/toolbar-models";
 import { saveAll, subscribe } from "../../data-services/firebase-services";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
+import { productsState } from '../../atoms/product-atoms';
 
 export default function ProductList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
     const navbarSearch = useNavbarSearch();
     const [filteredProducts, setFilteredProducts] = useState<WithUid<Product>[]>([]);
-    const [products, setProducts] = useState<WithUid<Product>[]>([]);
+    const [products, setProducts] = useRecoilState<WithUid<Product>[]>(productsState);
     const [page, setPage] = useState<number>(1);
     const pageSizes: number[] = [5].concat(range(10, products.length + 10, 10));
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
