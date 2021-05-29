@@ -1,10 +1,13 @@
-import { useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Avatar,
   Box,
   Card,
   Checkbox,
+  Grid,
+  IconButton,
   makeStyles,
   Table,
   TableBody,
@@ -12,55 +15,65 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Tooltip,
   Typography,
 } from "@material-ui/core";
 import { Company } from "../../models/company-models";
 import { UserData } from "../../models/user-models";
 import { FirebaseUser } from "../../models/authentication-models";
 import { Theme } from "../../theme/theme";
-import { asDateTime } from "../../util/dates";
+import { asDateTime, DateFormats } from "../../util/dates";
+import { useRecoilValue } from "recoil";
+import { WithUid } from "../../models/common-models";
+import { companiesState } from "../../atoms/company-atoms";
+import { companyAddress, companyId } from "../../mappings/company-mappings";
+import { log } from "../../util/logging-config";
+import EditIcon from "@material-ui/icons/Edit";
+import { useNavigate } from "react-router-dom";
+import GroupAddIcon from "@material-ui/icons/GroupAdd";
 
-export default function CompaniesList(props: { companies: Company[], rest?: any[] }) {
+export default function CompaniesList(props: { rest?: any[] }) {
   const useStyles = makeStyles((theme: Theme) => ({
     Media: {
       width: "10px"
     }
   }));
   const classes = useStyles({props});
-
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState<string[]>([]);
+  const navigate = useNavigate();
+  const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
+  const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
   const handleSelectAll = (event: any) => {
-    const newSelectedCustomerIds = event.target.checked ? props.companies.map((customer) => customer.id) : [];
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    const newSelectedCompanyIds = event.target.checked ? companies.map((company) => companyId(company)) : [];
+    setSelectedCompanyIds(newSelectedCompanyIds);
   };
 
   const handleSelectOne = (event: any, id: string) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds: any[] | ((prevState: string[]) => string[]) = [];
+    const selectedIndex = selectedCompanyIds.indexOf(id);
+    let companyIds: any[] | ((prevState: string[]) => string[]) = [];
 
     if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-          selectedCustomerIds,
+      companyIds = companyIds.concat(
+          selectedCompanyIds,
           id
       );
     } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-          selectedCustomerIds.slice(1)
+      companyIds = companyIds.concat(
+          selectedCompanyIds.slice(1)
       );
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-          selectedCustomerIds.slice(0, -1)
+    } else if (selectedIndex === selectedCompanyIds.length - 1) {
+      companyIds = companyIds.concat(
+          selectedCompanyIds.slice(0, -1)
       );
     } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-          selectedCustomerIds.slice(0, selectedIndex),
-          selectedCustomerIds.slice(selectedIndex + 1)
+      companyIds = companyIds.concat(
+          selectedCompanyIds.slice(0, selectedIndex),
+          selectedCompanyIds.slice(selectedIndex + 1)
       );
     }
 
-    setSelectedCustomerIds(newSelectedCustomerIds);
+    setSelectedCompanyIds(companyIds);
   };
 
   const handleLimitChange = (event: any) => {
@@ -79,6 +92,12 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
     return {} as FirebaseUser;
   }
 
+  useEffect(() => {
+    if (companies) {
+      log.info("companies:", companies);
+    }
+  }, [companies])
+
   return (
       <Card {...props.rest}>
         <PerfectScrollbar>
@@ -88,15 +107,16 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                        checked={selectedCustomerIds.length === props.companies.length}
+                        checked={selectedCompanyIds.length === companies.length}
                         color="primary"
                         indeterminate={
-                          selectedCustomerIds.length > 0 &&
-                          selectedCustomerIds.length < props.companies.length
+                          selectedCompanyIds.length > 0 &&
+                          selectedCompanyIds.length < companies.length
                         }
                         onChange={handleSelectAll}
                     />
                   </TableCell>
+                  <TableCell>Action</TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Phone</TableCell>
                   <TableCell>Contact</TableCell>
@@ -105,33 +125,33 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                 </TableRow>
               </TableHead>
               <TableBody>
-                {props.companies.slice(0, limit).map((company) => {
-                  const contact: UserData = primaryContact(company.primaryContact);
-                  const user: FirebaseUser = primaryContactUser(company.primaryContact);
-
-                  function companyAddress(company: Company): string {
-                    return [
-                      company?.address?.building,
-                      company?.address?.street,
-                      company?.address?.suburb,
-                      company?.address?.province,
-                      company?.address?.postcode,
-                      company?.address?.city,
-                      company?.address?.country].filter(item => item).join(", ");
-                  }
+                {companies.slice(0, limit).map((company) => {
+                  log.info("company:", company)
+                  const contact: UserData = primaryContact(company.data.primaryContact);
+                  const user: FirebaseUser = primaryContactUser(company.data.primaryContact);
 
                   return (
                       <TableRow
                           hover
-                          key={company.id}
-                          selected={selectedCustomerIds.indexOf(company.id) !== -1}
+                          key={companyId(company)}
+                          selected={selectedCompanyIds.indexOf(companyId(company)) !== -1}
                       >
                         <TableCell padding="checkbox">
                           <Checkbox
-                              checked={selectedCustomerIds.indexOf(company.id) !== -1}
-                              onChange={(event) => handleSelectOne(event, company.id)}
+                              checked={selectedCompanyIds.indexOf(companyId(company)) !== -1}
+                              onChange={(event) => handleSelectOne(event, companyId(company))}
                               value="true"
                           />
+                        </TableCell>
+                        <TableCell>
+                          <Tooltip title={`Edit ${company.data.name}`}>
+                            <IconButton onClick={() => {
+                              navigate(`/app/companies/${company.uid}`);
+                            }}>
+                              <EditIcon
+                                  color="action"/>
+                            </IconButton>
+                          </Tooltip>
                         </TableCell>
                         <TableCell>
                           <Box
@@ -139,36 +159,50 @@ export default function CompaniesList(props: { companies: Company[], rest?: any[
                                 alignItems: "center",
                                 display: "flex",
                               }}>
-                            <Avatar sizes={"sm"} src={company.avatarUrl} sx={{mr: 2}}/>
+                            <Avatar sizes={"sm"} src={company.data.avatarUrl} sx={{mr: 2}}/>
                             <Typography color="textPrimary" variant="body1">
-                              {company.name}
+                              {company.data.name}
                             </Typography>
                           </Box>
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
                         <TableCell>
-                          {`${companyAddress(company)}`}
+                          {`${companyAddress(company.data)}`}
                         </TableCell>
                         <TableCell>{contact.phone}</TableCell>
                         <TableCell>
-                          {asDateTime(company.createdAt).toFormat("DD/MM/YYYY")}
+                          {asDateTime(company.data.createdAt).toFormat(DateFormats.displayDateAndTime)}
                         </TableCell>
                       </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
+            <Grid container spacing={2}>
+              <Grid item xs>
+                <Tooltip title={"New Company"}>
+                  <IconButton onClick={() => {
+                    navigate(`/app/companies/new`);
+                  }}>
+                    <GroupAddIcon fontSize="large"
+                                  color="action"/>
+                  </IconButton>
+                </Tooltip>
+              </Grid>
+              <Grid item xs>
+                <TablePagination
+                    component="div"
+                    count={companies.length}
+                    onPageChange={handlePageChange}
+                    onRowsPerPageChange={handleLimitChange}
+                    page={page}
+                    rowsPerPage={limit}
+                    rowsPerPageOptions={[5, 10, 25]}
+                />
+              </Grid>
+            </Grid>
           </Box>
         </PerfectScrollbar>
-        <TablePagination
-            component="div"
-            count={props.companies.length}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleLimitChange}
-            page={page}
-            rowsPerPage={limit}
-            rowsPerPageOptions={[5, 10, 25]}
-        />
       </Card>
   );
 }

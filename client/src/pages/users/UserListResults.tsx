@@ -15,7 +15,7 @@ import {
 } from "@material-ui/core";
 import { fullNameForUser, initialsForUser } from "../../util/strings";
 import { AuthenticatedUserData } from "../../models/authentication-models";
-import { asDateTime } from "../../util/dates";
+import { asDateTime, DateFormats } from "../../util/dates";
 import { WithUid } from "../../models/common-models";
 
 export default function UserListResults(props: { userRecords: any[], users: WithUid<AuthenticatedUserData>[], rest?: any[] }) {
@@ -87,7 +87,7 @@ export default function UserListResults(props: { userRecords: any[], users: With
                   <TableCell>Name</TableCell>
                   <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
+                  <TableCell>Registered</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -116,7 +116,7 @@ export default function UserListResults(props: { userRecords: any[], users: With
                       </TableCell>
                       <TableCell>{user.data.email||"need admin for this"}</TableCell>
                       <TableCell>{user.data.phone}</TableCell>
-                      <TableCell>{asDateTime(user.data?.metadata?.creationTime).toFormat("DD/MM/YYYY")}</TableCell>
+                      <TableCell>{asDateTime(user.data?.metadata?.creationTime).toFormat(DateFormats.displayDateAndTime)}</TableCell>
                     </TableRow>
                 ))}
               </TableBody>

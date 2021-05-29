@@ -8,10 +8,9 @@ import { log } from "../../../util/logging-config";
 
 export default function ToolbarButtons() {
     const toolbarButtons = useRecoilValue<ToolbarButton[]>(toolbarButtonState);
-    log.info("buttons to render:", toolbarButtons);
 
     useEffect(() => {
-        log.info("initial render:", toolbarButtons);
+        log.debug("initial render:", toolbarButtons);
     }, [])
 
     return (

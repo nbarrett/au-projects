@@ -51,7 +51,7 @@ export default function AccountProfileDetails(props: any) {
     return (
         <form autoComplete="off" noValidate {...props}>
             <Card>
-                <CardHeader subheader="The information can be edited" title="Profile"/>
+                <CardHeader subheader="You can change your details here" title="Profile"/>
                 <Divider/>
                 <CardContent>
                     <Grid container spacing={3}>

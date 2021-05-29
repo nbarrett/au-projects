@@ -42,7 +42,9 @@ export default function ProductCard(props: { product: WithUid<Product>, rest?: a
                 <Box sx={{flexGrow: 1}}/>
                 <Divider/>
                 <Box sx={{p: 2}}>
-                    <Grid container spacing={2} sx={{justifyContent: "space-between"}}>
+                    <Grid container
+                          justifyContent="space-between"
+                          alignItems="center">
                         <Grid item sx={{alignItems: "center", display: "flex"}}>
                             <AccessTimeIcon color="action"/>
                             {props.product.data.updatedAt && <Typography color="textSecondary"
@@ -51,10 +53,7 @@ export default function ProductCard(props: { product: WithUid<Product>, rest?: a
                                                                          variant="body2">Updated {timeAgo(props.product.data.updatedAt)}
                             </Typography>}
                         </Grid>
-                        <Grid item sx={{
-                            alignItems: "center",
-                            display: "flex",
-                        }}>
+                        <Grid item sx={{alignItems: "center", display: "flex"}}>
                             <Tooltip title={`Edit ${props.product.data.title}`}>
                                 <IconButton onClick={() => editing.toggleProductEdit(props.product.uid || "")}>
                                     <EditIcon

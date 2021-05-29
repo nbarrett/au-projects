@@ -6,6 +6,7 @@ export interface Company {
     createdAt: number,
     primaryContact: string;
     website?: string;
+    notes: string;
 }
 
 export interface Address {

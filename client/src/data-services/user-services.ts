@@ -7,7 +7,7 @@ import { UserData } from "../models/user-models";
 
 export function currentUser(): FirebaseUser | undefined {
     const currentUser = firebase.auth().currentUser as firebase.User;
-    log.info("currentUser:get", currentUser?.email);
+    log.debug("currentUser:", currentUser?.email);
     if (currentUser) {
         return {
             email: currentUser?.email,
@@ -31,7 +31,7 @@ export async function currentUserData(): Promise<UserData | undefined> {
     if (user) {
         const userDoc = await firestore.doc(`users/${user.uid}`).get()
         const userData = userDoc.data() as UserData;
-        log.info("currentUserData:get:", userData);
+        log.debug("currentUserData:", userData);
         return userData;
     } else {
         return undefined

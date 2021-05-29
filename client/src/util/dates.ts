@@ -12,12 +12,11 @@ export interface Time {
     minutes: number;
 }
 
-const formats = {
-    displayDateAndTime: "ddd DD-MMM-YYYY, h:mm:ss a",
+export const DateFormats = {
+    displayDateAndTime: "DDD h:mm:ss a",
     displayDateTh: "MMMM Do YYYY",
-    displayDate: "ddd DD-MMM-YYYY",
+    displayDate: "DDD",
     displayDay: "dddd MMMM D, YYYY",
-    ddmmyyyyWithSlashes: "DD/MM/YYYY",
     yyyymmdd: "YYYYMMDD"
 };
 
@@ -56,15 +55,15 @@ export function nowAsValue(): number {
 }
 
 export function displayDateAndTime(dateValue): string | undefined {
-    return asString(dateValue, undefined, formats.displayDateAndTime);
+    return asString(dateValue, undefined, DateFormats.displayDateAndTime);
 }
 
 export function displayDate(dateValue): string | undefined {
-    return asString(dateValue, undefined, formats.displayDate);
+    return asString(dateValue, undefined, DateFormats.displayDate);
 }
 
 export function displayDay(dateValue): string | undefined {
-    return asString(dateValue, undefined, formats.displayDay);
+    return asString(dateValue, undefined, DateFormats.displayDay);
 }
 
 export function asDateValue(dateValue?: any, inputFormat?: string): DateValue {

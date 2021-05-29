@@ -1,4 +1,4 @@
-import { HasAuditTimestamps, hasUid, WithUid } from "../models/common-models";
+import { HasAuditTimestamps, hasUidWithValue, WithUid } from "../models/common-models";
 
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
@@ -22,7 +22,7 @@ export async function document<T>(document: string, uid: string): Promise<T> {
 }
 
 export async function save<T>(collection: string, document: WithUid<T>): Promise<any> {
-    if (hasUid<T>(document)) {
+    if (hasUidWithValue<T>(document)) {
         return update<T>(collection, document);
     } else {
         return create<T>(collection, document);
@@ -56,7 +56,7 @@ export async function create<T>(collection: string, document: WithUid<T>): Promi
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.createdAt = nowAsValue();
     }
-    const userDoc = await firebaseFirestore().collection(collection).add(mutableData);
+    const userDoc = await firebaseFirestore().collection(collection).add(mutableData.data);
     log.info("created:", collection, "document:", document, "returned:", userDoc);
     return userDoc;
 }
@@ -69,6 +69,14 @@ export async function findAll<T>(collection: string): Promise<WithUid<T>[]> {
         });
     log.info("found", collectionDocuments.length, `${collection}:`, collectionDocuments);
     return collectionDocuments;
+}
+
+export async function find<T>(collection: string, uid: string): Promise<WithUid<T>> {
+    const documentPath = `${collection}/${uid}`;
+    const documentSnapshot = await firebaseFirestore().doc(documentPath).get();
+    const document = {uid: documentSnapshot.id, data: documentSnapshot.data() as T};
+    log.info("found", document, "from", documentPath);
+    return document;
 }
 
 export function subscribe<T>(collection: string, onSnapshot: (data: WithUid<T>[]) => any) {
