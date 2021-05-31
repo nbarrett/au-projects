@@ -1,12 +1,11 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography, } from "@material-ui/core";
-import { Company } from '../../models/company-models';
-import { WithUid } from '../../models/common-models';
 import { useSnackbarNotification } from '../../snackbarNotification';
+import useSingleCompany from '../../hooks/use-single-company';
 
-export default function CompanyImage(props: { company: WithUid<Company> }) {
+export default function CompanyImage() {
 
     const notification = useSnackbarNotification();
-
+    const company = useSingleCompany();
     return (
         <Card>
             <CardContent>
@@ -17,16 +16,16 @@ export default function CompanyImage(props: { company: WithUid<Company> }) {
                         flexDirection: "column",
                     }}
                 >
+                    <Typography color="textPrimary" gutterBottom variant="h3">
+                        {`${company.company.data.name || "New Company"}`}
+                    </Typography>
                     <Avatar
-                        src={props.company.data.avatarUrl}
+                        src={company.company.data.avatarUrl}
                         sx={{
                             height: 100,
                             width: 100,
                         }}
                     />
-                    <Typography color="textPrimary" gutterBottom variant="h3">
-                        {`${props.company.data.name || "New Company"}`}
-                    </Typography>
                 </Box>
             </CardContent>
             <Divider/>

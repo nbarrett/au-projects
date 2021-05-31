@@ -12,6 +12,6 @@ export function companyAddress(company: Company): string {
         company?.address?.country].filter(item => item).join(", ");
 }
 
-export function companyId(company: WithUid<Company>) {
-    return company.uid || company.data.id;
+export function companyId(company: WithUid<Company>): string {
+    return company.uid || company.data.id || "new";
 }

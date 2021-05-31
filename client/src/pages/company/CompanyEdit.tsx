@@ -5,21 +5,22 @@ import { Company } from '../../models/company-models';
 import CompanyDetails from './CompanyDetails';
 import { useParams } from 'react-router';
 import { log } from '../../util/logging-config';
-import { find } from '../../data-services/firebase-services';
 import { WithUid } from '../../models/common-models';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
+import CompanyUsers from './CompanyUsers';
+import useSingleCompany from '../../hooks/use-single-company';
 
 export default function CompanyEdit() {
     const {uid} = useParams();
-    const [company, setCompany] = useState<WithUid<Company>>();
+    const company = useSingleCompany();
 
     useEffect(() => {
-        if (uid == "new") {
+        if (uid === "new") {
             log.info("Creating new company:");
-            setCompany({uid: "", data: {}} as WithUid<Company>);
+            company.setCompany({uid: "", data: {}} as WithUid<Company>);
         } else if (uid) {
             log.info("finding company:", uid);
-            find<Company>("companies", uid).then(setCompany)
+            company.findCompany(uid)
         } else {
             log.error("Need to specify company /uid or /new");
         }
@@ -36,12 +37,15 @@ export default function CompanyEdit() {
                 py: 3,
             }}>
                 {company && <Container maxWidth="lg">
-                    <Grid container spacing={3}>
+                    <Grid container alignItems={'stretch'} spacing={3}>
                         <Grid item lg={4} md={6} xs={12}>
-                            <CompanyImage company={company}/>
+                            <CompanyImage/>
+                        </Grid>
+                        <Grid item lg={4} md={6} xs={12}>
+                            <CompanyUsers/>
                         </Grid>
                         <Grid item lg={8} md={6} xs={12}>
-                            <CompanyDetails company={company}/>
+                            <CompanyDetails/>
                         </Grid>
                     </Grid>
                 </Container>}

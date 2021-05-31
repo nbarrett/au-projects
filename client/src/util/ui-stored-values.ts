@@ -1,6 +1,7 @@
 export enum StoredValue {
   COMPANIES = "companies",
-  COMPANIES_IN_EDIT_MODE = "products-in-edit-mode",
+  COMPANY = "companiy",
+  COMPANIES_IN_EDIT_MODE = "companies-in-edit-mode",
   CURRENT_USER = "current-user",
   CURRENT_USER_DATA = "current-user-data",
   FIREBASE_AUTH = "firebase-auth",
@@ -11,4 +12,6 @@ export enum StoredValue {
   PRODUCTS = "products",
   PRODUCTS_IN_EDIT_MODE = "products-in-edit-mode",
   TOOLBAR_BUTTONS = "toolbar-buttons",
+  USER = "user",
+  USERS = "users",
 }

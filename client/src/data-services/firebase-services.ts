@@ -39,8 +39,8 @@ export async function update<T>(collection: string, document: WithUid<T>): Promi
         mutableData.data.updatedAt = nowAsValue();
     }
     const documentPath = `${collection}/${mutableData.uid}`;
-    const userDoc = await firebaseFirestore().doc(documentPath).update(mutableData.data as firebase.firestore.UpdateData)
-    log.info("updated:", documentPath, userDoc);
+    await firebaseFirestore().doc(documentPath).update(mutableData.data as firebase.firestore.UpdateData)
+    log.info("updated:", documentPath);
     return true;
 }
 

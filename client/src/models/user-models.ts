@@ -1,9 +1,8 @@
-import { HasUid } from "./common-models";
-
-export interface UserData extends HasUid {
+export interface UserData {
     avatarUrl?: string;
     firstName?: string;
     lastName?: string;
     mobile?: string;
     phone?: string;
+    companyId?: string;
 }

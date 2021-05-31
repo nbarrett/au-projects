@@ -45,7 +45,7 @@ export default function CompaniesList(props: { rest?: any[] }) {
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
   const handleSelectAll = (event: any) => {
-    const newSelectedCompanyIds = event.target.checked ? companies.map((company) => companyId(company)) : [];
+    const newSelectedCompanyIds: string[] = event.target.checked ? companies.map((company) => companyId(company)) : [];
     setSelectedCompanyIds(newSelectedCompanyIds);
   };
 
@@ -127,8 +127,8 @@ export default function CompaniesList(props: { rest?: any[] }) {
               <TableBody>
                 {companies.slice(0, limit).map((company) => {
                   log.info("company:", company)
-                  const contact: UserData = primaryContact(company.data.primaryContact);
-                  const user: FirebaseUser = primaryContactUser(company.data.primaryContact);
+                  const contact: UserData = primaryContact(company.data.primaryContact || "");
+                  const user: FirebaseUser = primaryContactUser(company.data.primaryContact || "");
 
                   return (
                       <TableRow

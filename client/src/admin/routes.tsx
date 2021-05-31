@@ -12,7 +12,7 @@ import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../
 import Companies from "../pages/companies/Companies";
 import { Settings } from "../pages/settings/Settings";
 import ExampleDashboard from "../pages/example-dashboard/ExampleDashboard";
-import CompanyEdit from '../pages/companies/CompanyEdit';
+import CompanyEdit from '../pages/company/CompanyEdit';
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [

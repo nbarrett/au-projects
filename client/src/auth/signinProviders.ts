@@ -55,7 +55,7 @@ export function useSignupWithEmail() {
         .auth()
         .createUserWithEmailAndPassword(emailNoSpaces, password);
       const uid = userCredential.user?.uid;
-      const user: UserData = { uid, firstName, lastName };
+      const user: UserData = { firstName, lastName };
       const newUser = await firebase
         .firestore()
         .collection("users")

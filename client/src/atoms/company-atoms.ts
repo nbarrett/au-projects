@@ -13,3 +13,8 @@ export const companiesState = atom<WithUid<Company>[]>({
   default: []
 });
 
+export const companyState = atom<WithUid<Company>>({
+  key: StoredValue.COMPANY,
+  default: {uid: "", data: {}}
+});
+

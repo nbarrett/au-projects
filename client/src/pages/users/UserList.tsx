@@ -9,20 +9,10 @@ import { AuthenticatedUserData } from "../../models/authentication-models";
 import { ToolbarButton } from "../../models/toolbar-models";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
+import useAllUsers from '../../hooks/use-all-users';
 
 export default function UserList() {
-    const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
-    const [users, setUsers] = useState<WithUid<AuthenticatedUserData>[]>([]);
-    // const [userRecords, setUserRecords] = useState<auth.UserRecord[]>([]);
-    // const [authenticatedUsers, setAuthenticatedUsers] = useState<AuthenticatedUserData[]>([]);
 
-
-    useEffect(() => {
-        log.info("CustomerListResults triggered");
-        setToolbarButtons(["add user"])
-        // allUsers().then(setUserRecords)
-        findAll<AuthenticatedUserData>("users").then(setUsers);
-    }, [])
     return (
         <>
             <Helmet>
@@ -37,7 +27,7 @@ export default function UserList() {
             >
                 <Container maxWidth={false}>
                     <Box sx={{pt: 3}}>
-                        <UserListResults users={users} userRecords={[]}/>
+                        <UserListResults userRecords={[]}/>
                     </Box>
                 </Container>
             </Box>

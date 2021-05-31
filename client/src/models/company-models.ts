@@ -1,12 +1,13 @@
-export interface Company {
-    id: string;
-    name: string;
-    address: Address,
-    avatarUrl: string;
-    createdAt: number,
-    primaryContact: string;
+import { HasAuditTimestamps } from './common-models';
+
+export interface Company extends HasAuditTimestamps {
+    id?: string;
+    name?: string;
+    address?: Address,
+    avatarUrl?: string;
+    primaryContact?: string;
     website?: string;
-    notes: string;
+    notes?: string;
 }
 
 export interface Address {
