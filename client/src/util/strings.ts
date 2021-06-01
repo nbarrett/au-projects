@@ -94,7 +94,7 @@ export function initialsForUser(user: UserData): string {
 }
 
 export function fullNameForUser(user: UserData): string {
-  return `${user.firstName} ${user.lastName}`;
+  return `${user?.firstName} ${user?.lastName}`;
 }
 
 export function generateUid() {

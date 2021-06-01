@@ -31,6 +31,8 @@ import { log } from "../../util/logging-config";
 import EditIcon from "@material-ui/icons/Edit";
 import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import useAllUsers from '../../hooks/use-all-users';
+import NamedAvatar from '../users/NamedAvatar';
 
 export default function CompaniesList(props: { rest?: any[] }) {
   const useStyles = makeStyles((theme: Theme) => ({
@@ -40,6 +42,7 @@ export default function CompaniesList(props: { rest?: any[] }) {
   }));
   const classes = useStyles({props});
   const navigate = useNavigate();
+  const allUsers = useAllUsers()
   const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
   const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
@@ -84,8 +87,8 @@ export default function CompaniesList(props: { rest?: any[] }) {
     setPage(newPage);
   };
 
-  function primaryContact(uid: string): UserData {
-    return {} as UserData;
+  function primaryContact(uid: string): WithUid<UserData> {
+    return allUsers.users.find(user => user.uid === uid) as WithUid<UserData>;
   }
 
   function primaryContactUser(uid: string): FirebaseUser {
@@ -118,17 +121,16 @@ export default function CompaniesList(props: { rest?: any[] }) {
                   </TableCell>
                   <TableCell>Action</TableCell>
                   <TableCell>Name</TableCell>
+                  <TableCell>Address</TableCell>
+                  <TableCell>Primary Contact</TableCell>
                   <TableCell>Phone</TableCell>
-                  <TableCell>Contact</TableCell>
-                  <TableCell>Location</TableCell>
                   <TableCell>Registration date</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {companies.slice(0, limit).map((company) => {
                   log.info("company:", company)
-                  const contact: UserData = primaryContact(company.data.primaryContact || "");
-                  const user: FirebaseUser = primaryContactUser(company.data.primaryContact || "");
+                  const contact: WithUid<UserData> = primaryContact(company.data.primaryContact || "");
 
                   return (
                       <TableRow
@@ -165,11 +167,14 @@ export default function CompaniesList(props: { rest?: any[] }) {
                             </Typography>
                           </Box>
                         </TableCell>
-                        <TableCell>{user.email}</TableCell>
                         <TableCell>
                           {`${companyAddress(company.data)}`}
                         </TableCell>
-                        <TableCell>{contact.phone}</TableCell>
+
+                        <TableCell>
+                          <NamedAvatar user={contact?.data}/>
+                        </TableCell>
+                        <TableCell>{contact?.data?.phone}</TableCell>
                         <TableCell>
                           {asDateTime(company.data.createdAt).toFormat(DateFormats.displayDateAndTime)}
                         </TableCell>

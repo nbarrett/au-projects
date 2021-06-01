@@ -15,10 +15,6 @@ import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
 import { UserData } from "../../models/user-models";
 
-const dummyUser = {
-    avatar: "/static/images/avatars/nick.png",
-};
-
 const navItems = [
     {
         href: AppRoute.USERS,
@@ -74,7 +70,7 @@ export default function DashboardSidebar() {
             >
                 <Avatar
                     component={RouterLink}
-                    src={dummyUser.avatar}
+                    src={userData.avatarUrl}
                     sx={{
                         cursor: "pointer",
                         width: 64,

@@ -4,6 +4,8 @@ export interface Company extends HasAuditTimestamps {
     id?: string;
     name?: string;
     address?: Address,
+    vatNumber?: string;
+    registrationNumber?: string;
     avatarUrl?: string;
     primaryContact?: string;
     website?: string;

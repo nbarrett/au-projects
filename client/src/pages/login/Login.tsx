@@ -54,7 +54,7 @@ export default function Login() {
                         initialValues={{
                             email: "",
                             password: "",
-                            rememberMe: false,
+                            rememberMe: true,
                         }}
                         validationSchema={Yup.object().shape({
                             email: Yup.string()

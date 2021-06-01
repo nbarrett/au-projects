@@ -100,7 +100,31 @@ export default function CompanyDetails(props: { rest?: any[] }) {
                                                         onChange={company.changeField} document={company.company}
                                                         allDocuments={companyData.companies}/>
                     </Grid>
-                    <Grid item md={12} xs={12}>
+                    <Grid item md={6} xs={12}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
+                            label="VAT Number"
+                            name="data.address.vatNumber"
+                            type="text"
+                            onChange={company.companyChange}
+                            value={company.company?.data?.vatNumber || ""}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
+                            label="Registration Number"
+                            name="data.address.registrationNumber"
+                            type="text"
+                            onChange={company.companyChange}
+                            value={company.company?.data?.registrationNumber || ""}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
                             label="Media"

@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
-  Avatar,
   Box,
   Card,
   Checkbox,
@@ -17,10 +16,7 @@ import {
   TableRow,
   TextField,
   Tooltip,
-  Typography,
 } from "@material-ui/core";
-import { fullNameForUser, initialsForUser } from "../../util/strings";
-import { AuthenticatedUserData } from "../../models/authentication-models";
 import { asDateTime, DateFormats } from "../../util/dates";
 import { WithUid } from "../../models/common-models";
 import SaveIcon from '@material-ui/icons/Save';
@@ -29,6 +25,7 @@ import { log } from '../../util/logging-config';
 import { UserData } from '../../models/user-models';
 import { cloneDeep } from "lodash";
 import useAllUsers from '../../hooks/use-all-users';
+import NamedAvatar from './NamedAvatar';
 
 export default function UserListResults(props: { userRecords: any[], rest?: any[] }) {
   const companyData = useCompanyData();
@@ -113,8 +110,8 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
                   </TableCell>
                   <TableCell>Name</TableCell>
                   <TableCell>Company</TableCell>
-                  <TableCell>Email</TableCell>
                   <TableCell>Phone</TableCell>
+                  <TableCell>Email</TableCell>
                   <TableCell>Registered</TableCell>
                 </TableRow>
               </TableHead>
@@ -132,14 +129,7 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
                         />
                       </TableCell>
                       <TableCell>
-                        <Box sx={{alignItems: "center", display: "flex",}}>
-                          <Avatar src={user.data.avatarUrl} sx={{mr: 2}}>
-                            {initialsForUser(user.data)}
-                          </Avatar>
-                          <Typography color="textPrimary" variant="body1">
-                            {fullNameForUser(user.data)}
-                          </Typography>
-                        </Box>
+                        <NamedAvatar user={user.data}/>
                       </TableCell>
                       <TableCell>
                         <div>
@@ -188,7 +178,8 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
                 page={page}
                 rowsPerPage={limit}
                 rowsPerPageOptions={[5, 10, 25]}
-            /></Grid>
+            />
+          </Grid>
         </Grid>
       </Card>
   );
