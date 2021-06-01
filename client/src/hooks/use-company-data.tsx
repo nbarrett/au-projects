@@ -18,7 +18,7 @@ export default function useCompanyData() {
     }, [])
 
     useEffect(() => {
-        log.info("Companies change:", companies);
+        log.debug("Companies change:", companies);
     }, [companies])
 
 

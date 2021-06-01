@@ -55,6 +55,30 @@ export default function CompanyDetails(props: { rest?: any[] }) {
                         <TextField
                             fullWidth
                             autoComplete="off"
+                            label="Company Registration Number"
+                            name="data.registrationNumber"
+                            type="text"
+                            onChange={company.companyChange}
+                            value={company.company?.data?.registrationNumber || ""}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
+                            label="VAT Number"
+                            name="data.vatNumber"
+                            type="text"
+                            onChange={company.companyChange}
+                            value={company.company?.data?.vatNumber || ""}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <TextField
+                            fullWidth
+                            autoComplete="off"
                             label="Building"
                             name="data.address.building"
                             type="text"
@@ -99,30 +123,6 @@ export default function CompanyDetails(props: { rest?: any[] }) {
                         <DataBoundAutoComplete<Company> field={"data.address.country"} label={"Country"} type={"text"}
                                                         onChange={company.changeField} document={company.company}
                                                         allDocuments={companyData.companies}/>
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            autoComplete="off"
-                            label="VAT Number"
-                            name="data.address.vatNumber"
-                            type="text"
-                            onChange={company.companyChange}
-                            value={company.company?.data?.vatNumber || ""}
-                            variant="outlined"
-                        />
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                        <TextField
-                            fullWidth
-                            autoComplete="off"
-                            label="Registration Number"
-                            name="data.address.registrationNumber"
-                            type="text"
-                            onChange={company.companyChange}
-                            value={company.company?.data?.registrationNumber || ""}
-                            variant="outlined"
-                        />
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <TextField

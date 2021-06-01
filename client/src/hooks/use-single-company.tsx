@@ -11,7 +11,7 @@ export default function useSingleCompany() {
     const [company, setCompany] = useRecoilState<WithUid<Company>>(companyState);
 
     useEffect(() => {
-        log.info("Company change:", company);
+        log.debug("Company change:", company);
     }, [company])
 
 
