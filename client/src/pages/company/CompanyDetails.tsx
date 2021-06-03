@@ -14,12 +14,12 @@ import UndoIcon from "@material-ui/icons/Undo";
 import * as React from "react";
 import { remove, save } from "../../data-services/firebase-services";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { Company } from '../../models/company-models';
-import { useNavigate } from 'react-router-dom';
-import { APP_PATH, AppRoute } from '../../constants';
-import useCompanyData from '../../hooks/use-company-data';
-import { DataBoundAutoComplete } from '../../components/DataBoundAutoComplete';
-import useSingleCompany from '../../hooks/use-single-company';
+import { Company } from "../../models/company-models";
+import { useNavigate } from "react-router-dom";
+import { APP_PATH, AppRoute } from "../../constants";
+import useCompanyData from "../../hooks/use-company-data";
+import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
+import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyDetails(props: { rest?: any[] }) {
     const navigate = useNavigate();

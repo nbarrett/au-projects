@@ -14,7 +14,7 @@ import {
 import { fullNameForUser, initialsForUser } from "../../util/strings";
 import useAllUsers from "../../hooks/use-all-users";
 import ContactMailIcon from "@material-ui/icons/ContactMail";
-import useSingleCompany from '../../hooks/use-single-company';
+import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyUserList() {
     const allUsers = useAllUsers()

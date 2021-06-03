@@ -1,4 +1,4 @@
-import { HasAuditTimestamps } from './common-models';
+import { HasAuditTimestamps } from "./common-models";
 
 export interface Company extends HasAuditTimestamps {
     id?: string;

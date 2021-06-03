@@ -1,12 +1,7 @@
-export enum SnackbarNotificationVariant {
-  INFO = "INFO",
-  SUCCESS = "SUCCESS",
-  ERROR = "ERROR",
-  WARNING = "WARNING",
-}
+import { Color } from '@material-ui/core/Alert/Alert';
 
 export type SnackbarNotificationContextState = {
-  variant: SnackbarNotificationVariant;
+  variant: Color;
   isOpen: boolean;
   message: string;
 };

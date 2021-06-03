@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, Divider, } from "@material-ui/core";
-import CompanyUserList from './CompanyUserList';
+import CompanyUserList from "./CompanyUserList";
 
 export default function CompanyUsers() {
 

@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 import { currentUser, currentUserData } from "../data-services/user-services";
 import { log } from "../util/logging-config";
 import { UserData } from "../models/user-models";
-import { WithUid } from '../models/common-models';
+import { WithUid } from "../models/common-models";
 
 export const currentUserState = atom<FirebaseUser>({
   key: StoredValue.CURRENT_USER,

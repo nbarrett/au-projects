@@ -8,7 +8,6 @@ import {
   Checkbox,
   Grid,
   IconButton,
-  makeStyles,
   Table,
   TableBody,
   TableCell,
@@ -21,7 +20,6 @@ import {
 import { Company } from "../../models/company-models";
 import { UserData } from "../../models/user-models";
 import { FirebaseUser } from "../../models/authentication-models";
-import { Theme } from "../../theme/theme";
 import { asDateTime, DateFormats } from "../../util/dates";
 import { useRecoilValue } from "recoil";
 import { WithUid } from "../../models/common-models";
@@ -31,8 +29,10 @@ import { log } from "../../util/logging-config";
 import EditIcon from "@material-ui/icons/Edit";
 import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import useAllUsers from '../../hooks/use-all-users';
-import NamedAvatar from '../users/NamedAvatar';
+import useAllUsers from "../../hooks/use-all-users";
+import NamedAvatar from "../users/NamedAvatar";
+import { makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
 
 export default function CompaniesList(props: { rest?: any[] }) {
   const useStyles = makeStyles((theme: Theme) => ({

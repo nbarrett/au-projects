@@ -1,13 +1,13 @@
 import {
   Container,
   ContainerProps,
-  createStyles,
-  makeStyles,
   Paper,
   useMediaQuery,
 } from "@material-ui/core";
+import { makeStyles, createStyles } from "@material-ui/styles";
 import { ReactNode } from "react";
-import { PRIMARY_GRADIENT, Theme } from "../theme/theme";
+import { PRIMARY_GRADIENT  } from "../theme/theme";
+import { Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

@@ -1,13 +1,12 @@
 import {
-  createStyles,
   FormControl,
   FormHelperText,
-  makeStyles,
 } from "@material-ui/core";
 import { useEffect, useRef } from "react";
 import { useBooleanState } from "react-use-object-state";
-import { Theme } from "../theme/theme";
 import firebase from "firebase";
+import { createStyles, makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

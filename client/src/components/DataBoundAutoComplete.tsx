@@ -2,7 +2,7 @@ import { Autocomplete, TextField, } from "@material-ui/core";
 import * as React from "react";
 import { get, uniq } from "lodash";
 import { WithUid } from "../models/common-models";
-import { log } from '../util/logging-config';
+import { log } from "../util/logging-config";
 
 export function DataBoundAutoComplete<T>(props: { field: string, label: string, type: string, document: WithUid<T>, allDocuments: WithUid<T>[], onChange: (field: string, value: any) => void }) {
 

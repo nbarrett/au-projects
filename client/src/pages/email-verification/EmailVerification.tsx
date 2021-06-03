@@ -1,10 +1,11 @@
-import { Box, Container, makeStyles } from "@material-ui/core";
+import { Box, Container } from "@material-ui/core";
+import { makeStyles } from "@material-ui/styles";
 import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { useBooleanState } from "react-use-object-state";
 import { useSnackbarNotification } from "../../snackbarNotification";
-import { Theme } from "../../theme/theme";
+import { Theme } from "@material-ui/core/styles";
 import { useSession } from "../../auth/useSession";
 import { Helmet } from "react-helmet";
 

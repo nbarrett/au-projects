@@ -13,7 +13,7 @@ import { ToolbarButton } from "../../models/toolbar-models";
 import { saveAll, subscribe } from "../../data-services/firebase-services";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
-import { productsState } from '../../atoms/product-atoms';
+import { productsState } from "../../atoms/product-atoms";
 
 export default function ProductList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);

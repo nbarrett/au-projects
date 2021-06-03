@@ -1,7 +1,5 @@
-import createMuiTheme, {
-  Theme as T_Theme,
-} from "@material-ui/core/styles/createMuiTheme";
-import { colors, PaletteMode } from "@material-ui/core";
+import { colors, createMuiTheme, PaletteMode } from "@material-ui/core";
+import { createTheme, Theme } from "@material-ui/core/styles";
 import shadows from "./shadows";
 import typography from "./typography";
 
@@ -18,8 +16,8 @@ export const MATERIAL_UI_DEFAULT = "#1976d2";
 export const PRIMARY_GRADIENT = `linear-gradient( 135deg, ${PRIMARY_MAIN} 0%, ${PRIMARY_DARK} 50%, ${SECONDARY_LIGHT} 100%)`;
 export const SECONDARY_GRADIENT = `linear-gradient( 135deg, ${SECONDARY_LIGHT} 0%, ${SECONDARY_MAIN} 50%, ${SECONDARY_DARK} 100%)`;
 
-export const createTheme = (type: PaletteMode): Theme =>
-  createMuiTheme({
+export const createCustomTheme = (type: PaletteMode): Theme =>
+  createTheme({
     palette: {
       primary: {
         light: PRIMARY_LIGHT,
@@ -76,4 +74,3 @@ export const createTheme = (type: PaletteMode): Theme =>
     },
   });
 
-export type Theme = T_Theme;

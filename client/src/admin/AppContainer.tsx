@@ -5,10 +5,10 @@ import appRoutes from "./routes";
 import GlobalStyles from "./components/GlobalStyles";
 import { SessionProvider, useSession } from "../auth/useSession";
 import React from "react";
-import theme from "../theme";
 import { CssBaseline, ThemeProvider } from "@material-ui/core";
 import { SnackbarNotificationProvider } from "../snackbarNotification";
 import { RecoilRoot } from "recoil";
+import { theme } from "../theme";
 
 export default function AppContainer(): JSX.Element {
 

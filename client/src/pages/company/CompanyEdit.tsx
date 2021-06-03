@@ -1,14 +1,14 @@
 import { Helmet } from "react-helmet";
 import { Box, Container, Grid } from "@material-ui/core";
-import CompanyImage from './CompanyImage';
-import { Company } from '../../models/company-models';
-import CompanyDetails from './CompanyDetails';
-import { useParams } from 'react-router';
-import { log } from '../../util/logging-config';
-import { WithUid } from '../../models/common-models';
-import { useEffect } from 'react';
-import CompanyUsers from './CompanyUsers';
-import useSingleCompany from '../../hooks/use-single-company';
+import CompanyImage from "./CompanyImage";
+import { Company } from "../../models/company-models";
+import CompanyDetails from "./CompanyDetails";
+import { useParams } from "react-router";
+import { log } from "../../util/logging-config";
+import { WithUid } from "../../models/common-models";
+import { useEffect } from "react";
+import CompanyUsers from "./CompanyUsers";
+import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyEdit() {
     const {uid} = useParams();
@@ -37,7 +37,7 @@ export default function CompanyEdit() {
                 py: 3,
             }}>
                 {company && <Container maxWidth="lg">
-                    <Grid container alignItems={'stretch'} spacing={3}>
+                    <Grid container alignItems={"stretch"} spacing={3}>
                         <Grid item lg={4} md={6} xs={12}>
                             <CompanyImage/>
                         </Grid>

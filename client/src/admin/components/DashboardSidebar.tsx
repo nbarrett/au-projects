@@ -1,5 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
-import { Avatar, Box, Divider, Drawer, Hidden, List, Typography, } from "@material-ui/core";
+import { Avatar, Box, Divider, Drawer, List, Typography, } from "@material-ui/core";
 import {
     BarChart as BarChartIcon,
     Settings as SettingsIcon,
@@ -9,11 +9,12 @@ import {
 } from "react-feather";
 import NavItem from "./NavItem";
 import { useRecoilState, useRecoilValue } from "recoil";
-import { FirebaseUser} from "../../models/authentication-models";
+import { FirebaseUser } from "../../models/authentication-models";
 import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
 import { UserData } from "../../models/user-models";
+import { lgDownHidden, lgUpHidden } from "../../display/display";
 
 const navItems = [
     {
@@ -104,7 +105,7 @@ export default function DashboardSidebar() {
 
     return (
         <>
-            <Hidden lgUp>
+            <Box sx={lgUpHidden}>
                 <Drawer
                     anchor="left"
                     onClose={() => setMobileNavOpen(false)}
@@ -113,8 +114,8 @@ export default function DashboardSidebar() {
                     PaperProps={{sx: {width: 256,},}}>
                     {content}
                 </Drawer>
-            </Hidden>
-            <Hidden lgDown>
+            </Box>
+            <Box sx={lgDownHidden}>
                 <Drawer
                     anchor="left"
                     open
@@ -126,7 +127,7 @@ export default function DashboardSidebar() {
                     }}>
                     {content}
                 </Drawer>
-            </Hidden>
+            </Box>
         </>
     );
 }

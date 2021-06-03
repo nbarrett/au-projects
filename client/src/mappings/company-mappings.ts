@@ -1,5 +1,5 @@
-import { Company } from '../models/company-models';
-import { WithUid } from '../models/common-models';
+import { Company } from "../models/company-models";
+import { WithUid } from "../models/common-models";
 
 export function companyAddress(company: Company): string {
     return [

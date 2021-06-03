@@ -6,8 +6,8 @@ import { useEffect } from "react";
 import CompaniesList from "./CompaniesList";
 import { ToolbarButton } from "../../models/toolbar-models";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
-import { log } from '../../util/logging-config';
-import useCompanyData from '../../hooks/use-company-data';
+import { log } from "../../util/logging-config";
+import useCompanyData from "../../hooks/use-company-data";
 
 export default function Companies() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);

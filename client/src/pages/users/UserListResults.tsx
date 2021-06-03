@@ -19,13 +19,13 @@ import {
 } from "@material-ui/core";
 import { asDateTime, DateFormats } from "../../util/dates";
 import { WithUid } from "../../models/common-models";
-import SaveIcon from '@material-ui/icons/Save';
-import useCompanyData from '../../hooks/use-company-data';
-import { log } from '../../util/logging-config';
-import { UserData } from '../../models/user-models';
+import SaveIcon from "@material-ui/icons/Save";
+import useCompanyData from "../../hooks/use-company-data";
+import { log } from "../../util/logging-config";
+import { UserData } from "../../models/user-models";
 import { cloneDeep } from "lodash";
-import useAllUsers from '../../hooks/use-all-users';
-import NamedAvatar from './NamedAvatar';
+import useAllUsers from "../../hooks/use-all-users";
+import NamedAvatar from "./NamedAvatar";
 
 export default function UserListResults(props: { userRecords: any[], rest?: any[] }) {
   const companyData = useCompanyData();

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Avatar, Box, Typography, } from "@material-ui/core";
 import { fullNameForUser, initialsForUser } from "../../util/strings";
-import { UserData } from '../../models/user-models';
+import { UserData } from "../../models/user-models";
 
 export default function NamedAvatar(props: { user: UserData }) {
 

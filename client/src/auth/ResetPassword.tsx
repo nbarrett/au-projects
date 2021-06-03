@@ -1,4 +1,4 @@
-import { createStyles, IconButton, makeStyles } from "@material-ui/core";
+import { IconButton } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import firebase from "firebase";
@@ -6,8 +6,10 @@ import { useState } from "react";
 import { ArrowLeft } from "react-feather";
 import { createBrowserHistory } from "history";
 import { useBooleanState } from "react-use-object-state";
-import { Theme } from "../theme/theme";
+import { Theme } from "@material-ui/core/styles";
 import EmailTextField from "./EmailTextField";
+import makeStyles from "@material-ui/styles/makeStyles";
+import { createStyles } from "@material-ui/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

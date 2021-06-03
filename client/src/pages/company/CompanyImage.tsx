@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography, } from "@material-ui/core";
-import { useSnackbarNotification } from '../../snackbarNotification';
-import useSingleCompany from '../../hooks/use-single-company';
+import { useSnackbarNotification } from "../../snackbarNotification";
+import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyImage() {
 
@@ -30,7 +30,7 @@ export default function CompanyImage() {
             </CardContent>
             <Divider/>
             <CardActions>
-                <Button onClick={() => notification.error("This doesn't work yet, so for the time being, paste in the url to the image in the media field and it should display")} color="primary" fullWidth variant="text">
+                <Button onClick={() => notification.info("This doesn't work yet, so for the time being, paste in the url to the image in the media field and it should display")} color="primary" fullWidth variant="text">
                     Upload image
                 </Button>
             </CardActions>

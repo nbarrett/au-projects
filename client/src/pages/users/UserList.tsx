@@ -9,7 +9,7 @@ import { AuthenticatedUserData } from "../../models/authentication-models";
 import { ToolbarButton } from "../../models/toolbar-models";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
-import useAllUsers from '../../hooks/use-all-users';
+import useAllUsers from "../../hooks/use-all-users";
 
 export default function UserList() {
 

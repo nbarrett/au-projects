@@ -1,11 +1,11 @@
-import { WithUid } from '../models/common-models';
-import { find, save } from '../data-services/firebase-services';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { log } from '../util/logging-config';
-import { Company } from '../models/company-models';
-import { companyState } from '../atoms/company-atoms';
-import { cloneDeep, set } from 'lodash';
+import { WithUid } from "../models/common-models";
+import { find, save } from "../data-services/firebase-services";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { log } from "../util/logging-config";
+import { Company } from "../models/company-models";
+import { companyState } from "../atoms/company-atoms";
+import { cloneDeep, set } from "lodash";
 
 export default function useSingleCompany() {
     const [company, setCompany] = useRecoilState<WithUid<Company>>(companyState);

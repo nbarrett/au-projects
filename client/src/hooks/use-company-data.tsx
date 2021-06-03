@@ -1,10 +1,10 @@
-import { companiesState } from '../atoms/company-atoms';
-import { Company } from '../models/company-models';
-import { WithUid } from '../models/common-models';
-import { saveAll, subscribe } from '../data-services/firebase-services';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { log } from '../util/logging-config';
+import { companiesState } from "../atoms/company-atoms";
+import { Company } from "../models/company-models";
+import { WithUid } from "../models/common-models";
+import { saveAll, subscribe } from "../data-services/firebase-services";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { log } from "../util/logging-config";
 
 export default function useCompanyData() {
     const [companies, setCompanies] = useRecoilState<WithUid<Company>[]>(companiesState);

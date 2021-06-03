@@ -1,10 +1,10 @@
-import { WithUid } from '../models/common-models';
-import { saveAll, subscribe } from '../data-services/firebase-services';
-import { useEffect } from 'react';
-import { useRecoilState } from 'recoil';
-import { log } from '../util/logging-config';
-import { usersState } from '../atoms/user-atoms';
-import { UserData } from '../models/user-models';
+import { WithUid } from "../models/common-models";
+import { saveAll, subscribe } from "../data-services/firebase-services";
+import { useEffect } from "react";
+import { useRecoilState } from "recoil";
+import { log } from "../util/logging-config";
+import { usersState } from "../atoms/user-atoms";
+import { UserData } from "../models/user-models";
 
 export default function useAllUsers() {
     const [users, setUsers] = useRecoilState<WithUid<UserData>[]>(usersState);

@@ -21,10 +21,10 @@ import useProductEditing from "../../hooks/use-product-editing";
 import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useRecoilValue } from 'recoil';
-import { productsState } from '../../atoms/product-atoms';
+import { useRecoilValue } from "recoil";
+import { productsState } from "../../atoms/product-atoms";
 import { cloneDeep, set } from "lodash";
-import { DataBoundAutoComplete } from '../../components/DataBoundAutoComplete';
+import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const [product, setProduct] = useState<WithUid<Product>>(props.product);
