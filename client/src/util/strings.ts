@@ -41,15 +41,17 @@ export function stringify(message): string {
 }
 
 
-export function stringifyObject(inputValue, defaultValue?: string): string {
+export function stringifyObject(inputValue, defaultValue?: any, omitEmptyFields?: boolean): string {
   if (typeof inputValue === "object") {
     return map(inputValue, (value, key) => {
       if (isObject(value)) {
         return `${startCase(key)} -> ${stringifyObject(value, defaultValue)}`;
+      } else if (omitEmptyFields && !value) {
+        return null;
       } else {
         return `${startCase(key)}: ${value || defaultValue || "(none)"}`;
       }
-    }).join(", ");
+    }).filter(item => item).join(", ");
   } else {
     return inputValue || defaultValue || "(none)";
   }

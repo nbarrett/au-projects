@@ -97,7 +97,7 @@ export default function CompaniesList(props: { rest?: any[] }) {
 
   useEffect(() => {
     if (companies) {
-      log.info("companies:", companies);
+      log.debug("companies:", companies);
     }
   }, [companies])
 
@@ -129,7 +129,7 @@ export default function CompaniesList(props: { rest?: any[] }) {
               </TableHead>
               <TableBody>
                 {companies.slice(0, limit).map((company) => {
-                  log.info("company:", company)
+                  log.debug("company:", company)
                   const contact: WithUid<UserData> = primaryContact(company.data.primaryContact || "");
 
                   return (

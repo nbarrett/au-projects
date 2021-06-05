@@ -2,13 +2,13 @@ import { Helmet } from "react-helmet";
 import { Box, Container, Grid } from "@material-ui/core";
 import CompanyImage from "./CompanyImage";
 import { Company } from "../../models/company-models";
-import CompanyDetails from "./CompanyDetails";
 import { useParams } from "react-router";
 import { log } from "../../util/logging-config";
 import { WithUid } from "../../models/common-models";
 import { useEffect } from "react";
 import CompanyUsers from "./CompanyUsers";
 import useSingleCompany from "../../hooks/use-single-company";
+import CompanyTabs from './CompanyTabs';
 
 export default function CompanyEdit() {
     const {uid} = useParams();
@@ -45,7 +45,7 @@ export default function CompanyEdit() {
                             <CompanyUsers/>
                         </Grid>
                         <Grid item lg={8} md={6} xs={12}>
-                            <CompanyDetails/>
+                            <CompanyTabs/>
                         </Grid>
                     </Grid>
                 </Container>}

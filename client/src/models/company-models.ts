@@ -10,6 +10,7 @@ export interface Company extends HasAuditTimestamps {
     primaryContact?: string;
     website?: string;
     notes?: string;
+    availableProducts?: string[];
 }
 
 export interface Address {

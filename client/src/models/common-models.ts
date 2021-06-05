@@ -1,3 +1,5 @@
+import * as React from "react";
+
 export function hasUid<T>(document: any): document is WithUid<T> {
     return (document as WithUid<T>).uid !== undefined;
 }
@@ -18,4 +20,10 @@ export interface WithUid<T> {
 export interface HasAuditTimestamps {
     updatedAt?: number;
     createdAt?: number;
+}
+
+export interface TabPanelProps {
+    children?: React.ReactNode;
+    index: number;
+    value: number;
 }
