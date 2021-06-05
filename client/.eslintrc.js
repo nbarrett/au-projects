@@ -70,10 +70,6 @@ module.exports = {
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
     "react/react-in-jsx-scope": "off",
-    "quotemark": [
-      true,
-      "double"
-    ],
     "react/require-default-props": "off",
     "react/self-closing-comp": "off",
     "spaced-comment": "off",
