@@ -11,8 +11,9 @@ import EmailVerification from "../pages/email-verification/EmailVerification";
 import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
 import Companies from "../pages/companies/Companies";
 import { Settings } from "../pages/settings/Settings";
-import ExampleDashboard from "../pages/example-dashboard/ExampleDashboard";
 import CompanyEdit from "../pages/company/CompanyEdit";
+import ExampleDashboard from '../pages/example-dashboard/ExampleDashboard';
+import Prices from '../pages/prices/Prices';
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -25,6 +26,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.COMPANIES, element: <Companies/>},
         {path: AppRoute.COMPANIES_EDIT, element: <CompanyEdit/>, exact: true},
         {path: AppRoute.EXAMPLE_DASHBOARD, element: <ExampleDashboard/>},
+        {path: AppRoute.PRICES, element: <Prices/>},
         {path: AppRoute.PRODUCTS, element: <ProductList/>},
         {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},

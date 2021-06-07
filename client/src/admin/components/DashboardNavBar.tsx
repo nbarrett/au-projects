@@ -24,7 +24,7 @@ import { Tooltip } from "@material-ui/core";
 import ToolbarButtons from "./toolbar/ToolbarButtons";
 import { useNavbarSearch } from "../../use-navbar-search";
 
-const Search = styled("div")(({theme}) => ({
+export const Search = styled("div")(({theme}) => ({
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.common.white, 0.15),
@@ -43,7 +43,7 @@ const Search = styled("div")(({theme}) => ({
     },
 }));
 
-const SearchIconWrapper = styled("div")(({theme}) => ({
+export const SearchIconWrapper = styled("div")(({theme}) => ({
     padding: theme.spacing(0, 2),
     height: "100%",
     position: "absolute",
@@ -137,10 +137,7 @@ export default function DashboardNavBar() {
                     <Typography variant="h3"
                                 noWrap
                                 component="div"
-                                sx={{display: {marginLeft: 15, xs: "none", sm: "block"}}}
-                    >
-                        AU Projects
-                    </Typography>
+                                sx={{display: {marginLeft: 15, xs: "none", sm: "block"}}}>AU Projects</Typography>
                     <Search>
                         <SearchIconWrapper>
                             <SearchIcon/>
@@ -151,6 +148,7 @@ export default function DashboardNavBar() {
                                          inputProps={{"aria-label": "search"}}
                         />
                     </Search>
+
                     <Box sx={{flexGrow: 1}}/>
                     <ToolbarButtons/>
                     <Box sx={{display: {xs: "none", md: "flex"}}}>

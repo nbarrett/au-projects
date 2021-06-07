@@ -31,61 +31,28 @@ import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import useAllUsers from "../../hooks/use-all-users";
 import NamedAvatar from "../users/NamedAvatar";
-import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
+import useSelectedItems from '../../hooks/use-selected-items';
 
 export default function CompaniesList(props: { rest?: any[] }) {
-  const useStyles = makeStyles((theme: Theme) => ({
-    Media: {
-      width: "10px"
-    }
-  }));
-  const classes = useStyles({props});
   const navigate = useNavigate();
   const allUsers = useAllUsers()
   const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
-  const [selectedCompanyIds, setSelectedCompanyIds] = useState<string[]>([]);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
-  const handleSelectAll = (event: any) => {
+  const selectedItems = useSelectedItems();
+
+  function handleSelectAll(event: any) {
     const newSelectedCompanyIds: string[] = event.target.checked ? companies.map((company) => companyId(company)) : [];
-    setSelectedCompanyIds(newSelectedCompanyIds);
-  };
+    selectedItems.setItemsSelected(newSelectedCompanyIds);
+  }
 
-  const handleSelectOne = (event: any, id: string) => {
-    const selectedIndex = selectedCompanyIds.indexOf(id);
-    let companyIds: any[] | ((prevState: string[]) => string[]) = [];
-
-    if (selectedIndex === -1) {
-      companyIds = companyIds.concat(
-          selectedCompanyIds,
-          id
-      );
-    } else if (selectedIndex === 0) {
-      companyIds = companyIds.concat(
-          selectedCompanyIds.slice(1)
-      );
-    } else if (selectedIndex === selectedCompanyIds.length - 1) {
-      companyIds = companyIds.concat(
-          selectedCompanyIds.slice(0, -1)
-      );
-    } else if (selectedIndex > 0) {
-      companyIds = companyIds.concat(
-          selectedCompanyIds.slice(0, selectedIndex),
-          selectedCompanyIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCompanyIds(companyIds);
-  };
-
-  const handleLimitChange = (event: any) => {
+  function handleLimitChange(event: any) {
     setLimit(event.target.value);
-  };
+  }
 
-  const handlePageChange = (event: any, newPage: number) => {
+  function handlePageChange(event: any, newPage: number) {
     setPage(newPage);
-  };
+  }
 
   function primaryContact(uid: string): WithUid<UserData> {
     return allUsers.users.find(user => user.uid === uid) as WithUid<UserData>;
@@ -110,11 +77,11 @@ export default function CompaniesList(props: { rest?: any[] }) {
                 <TableRow>
                   <TableCell padding="checkbox">
                     <Checkbox
-                        checked={selectedCompanyIds.length === companies.length}
+                        checked={selectedItems.itemsSelected.length === companies.length}
                         color="primary"
                         indeterminate={
-                          selectedCompanyIds.length > 0 &&
-                          selectedCompanyIds.length < companies.length
+                          selectedItems.itemsSelected.length > 0 &&
+                          selectedItems.itemsSelected.length < companies.length
                         }
                         onChange={handleSelectAll}
                     />
@@ -136,12 +103,11 @@ export default function CompaniesList(props: { rest?: any[] }) {
                       <TableRow
                           hover
                           key={companyId(company)}
-                          selected={selectedCompanyIds.indexOf(companyId(company)) !== -1}
-                      >
+                          selected={selectedItems.itemsSelected.includes(companyId(company))}>
                         <TableCell padding="checkbox">
                           <Checkbox
-                              checked={selectedCompanyIds.indexOf(companyId(company)) !== -1}
-                              onChange={(event) => handleSelectOne(event, companyId(company))}
+                              checked={selectedItems.itemsSelected.includes(companyId(company))}
+                              onChange={(event) => selectedItems.toggleItem(companyId(company))}
                               value="true"
                           />
                         </TableCell>

@@ -1,9 +1,9 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Avatar, Box, Divider, Drawer, List, Typography, } from "@material-ui/core";
 import {
-    BarChart as BarChartIcon,
+    BarChart as BarChartIcon, DollarSign,
     Settings as SettingsIcon,
-    ShoppingBag as ShoppingBagIcon,
+    ShoppingBag as ShoppingBagIcon, ShoppingCart,
     User as UserIcon,
     Users as UsersIcon,
 } from "react-feather";
@@ -31,6 +31,11 @@ const navItems = [
         href: AppRoute.PRODUCTS,
         icon: ShoppingBagIcon,
         title: "Products",
+    },
+    {
+        href: AppRoute.PRICES,
+        icon: ShoppingCart,
+        title: "Prices",
     },
     {
         href: AppRoute.ACCOUNT,

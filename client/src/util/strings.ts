@@ -7,6 +7,7 @@ import startCase from "lodash/startCase";
 import { log } from "./logging-config";
 import { UserData } from "../models/user-models";
 import { v4 as uuidv4 } from "uuid";
+import { asNumber } from './numbers';
 
 export function replaceAll(find: any, replace: any, str: any): string | number {
   let replacedValue;
@@ -55,6 +56,10 @@ export function stringifyObject(inputValue, defaultValue?: any, omitEmptyFields?
   } else {
     return inputValue || defaultValue || "(none)";
   }
+}
+
+export function asMoney(numberString: number | undefined, decimalPlaces: number, currencySymbol: string): string {
+  return numberString ? (currencySymbol + " " + numberString.toFixed(2)) : "-"
 }
 
 export function stripLineBreaks(str, andTrim: boolean) {

@@ -14,5 +14,5 @@ export interface Product extends HasAuditTimestamps {
 
 export interface ProductConfiguration {
     lossesAllowance: number;
-    thicknesses: [3, 4, 5, 6, 7, 8, 9, 10, 12, 15]
+    thicknesses: number[]
 }

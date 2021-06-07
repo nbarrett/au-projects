@@ -10,13 +10,14 @@ export default function ToolbarButtons() {
     const toolbarButtons = useRecoilValue<ToolbarButton[]>(toolbarButtonState);
 
     useEffect(() => {
-        log.debug("initial render:", toolbarButtons);
+        log.debug("ToolbarButtons rendering:", toolbarButtons);
     }, [])
 
     return (
         <Box sx={{display: {xs: "none", md: "none", lg: "flex"}}}>
-            {toolbarButtons.map(caption => typeof caption === "string" ?
-                <Button key={caption} sx={{mx: 1}} color="primary" variant="contained">{caption}</Button> : caption)}
+            {toolbarButtons.map((caption, index) => typeof caption === "string" ?
+                <Button key={caption || index} sx={{mx: 1}} color="primary"
+                        variant="contained">{caption}</Button> : caption)}
         </Box>
     );
 }

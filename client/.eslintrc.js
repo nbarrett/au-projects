@@ -53,6 +53,7 @@ module.exports = {
     "no-nested-ternary": "off",
     "no-param-reassign": "off",
     "no-plusplus": "off",
+    "no-unneeded-ternary": "off",
     "object-curly-newline": "off",
     "object-property-newline": "off",
     "prefer-destructuring": "off",
