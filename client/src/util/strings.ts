@@ -59,7 +59,8 @@ export function stringifyObject(inputValue, defaultValue?: any, omitEmptyFields?
 }
 
 export function asMoney(numberString: number | undefined, decimalPlaces: number, currencySymbol: string): string {
-  return numberString ? (currencySymbol + " " + numberString.toFixed(2)) : "-"
+  log.info("asMoney:numberString:", numberString, typeof  numberString);
+  return numberString ? (currencySymbol + " " + asNumber(numberString).toFixed(2)) : "-"
 }
 
 export function stripLineBreaks(str, andTrim: boolean) {

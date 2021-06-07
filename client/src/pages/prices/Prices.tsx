@@ -116,7 +116,7 @@ export default function Prices() {
       label: "Unit Price",
     },
     {
-      id: "data.price",
+      id: "data.pricePlusLosses",
       numeric: true,
       disablePadding: false,
       noWrap: true,
@@ -349,7 +349,7 @@ export default function Prices() {
                             {product.data.hardness}
                           </TableCell>
                           <TableCell align={"right"}>
-                            {asMoney(product.data.price, 2, "R")}
+                            {asMoney(product.data?.price, 2, "R")}
                           </TableCell>
                           <TableCell align={"right"}>
                             {asMoney(priceWithLosses(product), 2, "R")}
