@@ -1,13 +1,13 @@
 import { Link as RouterLink } from "react-router-dom";
 import { Avatar, Box, Divider, Drawer, List, Typography, } from "@material-ui/core";
 import {
-    BarChart as BarChartIcon, DollarSign,
-    Settings as SettingsIcon,
-    ShoppingBag as ShoppingBagIcon, ShoppingCart,
+    BarChart,
+    Settings,
+    ShoppingBag as ShoppingBagIcon,
+    ShoppingCart,
     User as UserIcon,
     Users as UsersIcon,
 } from "react-feather";
-import NavItem from "./NavItem";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { FirebaseUser } from "../../models/authentication-models";
 import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
@@ -15,8 +15,12 @@ import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
 import { UserData } from "../../models/user-models";
 import { lgDownHidden, lgUpHidden } from "../../display/display";
+import { MenuItem } from '../../models/menu-models';
+import NavItem from './NavItem';
+import ListSubheader from '@material-ui/core/ListSubheader';
+import * as React from 'react';
 
-const navItems = [
+const navItems: MenuItem[] = [
     {
         href: AppRoute.USERS,
         icon: UsersIcon,
@@ -36,20 +40,25 @@ const navItems = [
         href: AppRoute.PRICES,
         icon: ShoppingCart,
         title: "Prices",
+        subItems: [{
+            href: AppRoute.PRICING_SETUP,
+            icon: Settings,
+            title: "Pricing Setup",
+        }]
     },
     {
         href: AppRoute.ACCOUNT,
         icon: UserIcon,
         title: "Account",
-    },
-    {
-        href: AppRoute.SETTINGS,
-        icon: SettingsIcon,
-        title: "Settings",
+        subItems: [{
+            href: AppRoute.SETTINGS,
+            icon: Settings,
+            title: "Settings",
+        }]
     },
     {
         href: AppRoute.EXAMPLE_DASHBOARD,
-        icon: BarChartIcon,
+        icon: BarChart,
         title: "Example Dashboard",
     },
 ];
@@ -93,15 +102,11 @@ export default function DashboardSidebar() {
             </Box>
             <Divider/>
             <Box sx={{p: 2}}>
-                <List>
-                    {navItems.map((item) => (
-                        <NavItem
-                            href={item.href}
-                            key={item.title}
-                            title={item.title}
-                            icon={item.icon}
-                        />
-                    ))}
+                <List subheader={
+                    <ListSubheader component="div" id="nested-list-subheader">
+                        Back Office Menu
+                    </ListSubheader>
+                }>{navItems.map((item) => <NavItem key={item.href} menuItem={item}/>)}
                 </List>
             </Box>
             <Box sx={{flexGrow: 1}}/>

@@ -23,7 +23,11 @@ export async function document<T>(document: string, uid: string): Promise<T> {
 
 export async function save<T>(collection: string, document: WithUid<T>): Promise<any> {
     if (hasUidWithValue<T>(document)) {
-        return update<T>(collection, document);
+        if (document.markedForDelete) {
+            return remove<T>(collection, document.uid);
+        } else {
+            return update<T>(collection, document);
+        }
     } else {
         return create<T>(collection, document);
     }

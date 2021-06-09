@@ -32,8 +32,9 @@ import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import useAllUsers from "../../hooks/use-all-users";
 import NamedAvatar from "../users/NamedAvatar";
 import useSelectedItems from '../../hooks/use-selected-items';
+import TableContainer from '@material-ui/core/TableContainer';
 
-export default function CompaniesList(props: { rest?: any[] }) {
+export default function CompaniesList() {
   const navigate = useNavigate();
   const allUsers = useAllUsers()
   const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
@@ -69,30 +70,31 @@ export default function CompaniesList(props: { rest?: any[] }) {
   }, [companies])
 
   return (
-      <Card {...props.rest}>
+      <Card>
         <PerfectScrollbar>
           <Box sx={{minWidth: 1050}}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                        checked={selectedItems.itemsSelected.length === companies.length}
-                        color="primary"
-                        indeterminate={
-                          selectedItems.itemsSelected.length > 0 &&
-                          selectedItems.itemsSelected.length < companies.length
-                        }
-                        onChange={handleSelectAll}
-                    />
-                  </TableCell>
-                  <TableCell>Action</TableCell>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Address</TableCell>
-                  <TableCell>Primary Contact</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Registration date</TableCell>
-                </TableRow>
+            <TableContainer sx={{maxHeight: 800}}>
+              <Table stickyHeader size="small">
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="checkbox">
+                      <Checkbox
+                          checked={selectedItems.itemsSelected.length === companies.length}
+                          color="primary"
+                          indeterminate={
+                            selectedItems.itemsSelected.length > 0 &&
+                            selectedItems.itemsSelected.length < companies.length
+                          }
+                          onChange={handleSelectAll}
+                      />
+                    </TableCell>
+                    <TableCell>Action</TableCell>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Address</TableCell>
+                    <TableCell>Primary Contact</TableCell>
+                    <TableCell>Phone</TableCell>
+                    <TableCell>Registration date</TableCell>
+                  </TableRow>
               </TableHead>
               <TableBody>
                 {companies.slice(0, limit).map((company) => {
@@ -172,6 +174,7 @@ export default function CompaniesList(props: { rest?: any[] }) {
                 />
               </Grid>
             </Grid>
+            </TableContainer>
           </Box>
         </PerfectScrollbar>
       </Card>

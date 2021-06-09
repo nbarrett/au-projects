@@ -70,6 +70,7 @@ module.exports = {
     "react/jsx-max-props-per-line": "off",
     "react/jsx-one-expression-per-line": "off",
     "react/jsx-props-no-spreading": "off",
+    "react/no-array-index-key": "off",
     "react/react-in-jsx-scope": "off",
     "react/require-default-props": "off",
     "react/self-closing-comp": "off",

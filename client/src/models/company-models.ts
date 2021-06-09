@@ -11,6 +11,7 @@ export interface Company extends HasAuditTimestamps {
     website?: string;
     notes?: string;
     availableProducts?: string[];
+    pricingTier?: string;
 }
 
 export interface Address {

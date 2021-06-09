@@ -15,6 +15,7 @@ export interface HasUid {
 export interface WithUid<T> {
     uid: string;
     data: T;
+    markedForDelete?: boolean
 }
 
 export interface HasAuditTimestamps {
@@ -26,4 +27,15 @@ export interface TabPanelProps {
     children?: React.ReactNode;
     index: number;
     value: number;
+}
+
+export interface Property {
+    name: string;
+    value: string | number;
+}
+
+export interface CellAddress {
+    field: string;
+    rowIndex: number;
+    numeric: boolean;
 }

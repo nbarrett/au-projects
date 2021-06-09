@@ -12,6 +12,11 @@ export interface Product extends HasAuditTimestamps {
     media?: any;
 }
 
+export interface PricingTier extends HasAuditTimestamps {
+    name: string;
+    pricingFactor: number;
+}
+
 export interface ProductConfiguration {
     lossesAllowance: number;
     thicknesses: number[]
