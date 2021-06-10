@@ -23,8 +23,8 @@ import { chunk, range } from "lodash";
 import { ToolbarButton } from "../../models/toolbar-models";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
-import useProductData from '../../hooks/use-product-data';
-import GroupAddIcon from '@material-ui/icons/GroupAdd';
+import useProductData from "../../hooks/use-product-data";
+import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 
 export default function ProductList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -41,13 +41,13 @@ export default function ProductList() {
         setFilteredProducts(filteredProducts)
         setPage(1);
         const MigrationTasks = [<Button onClick={productData.priceMigration} key={"Migrate products"} sx={{pr: 1}}
-                                        size={'small'}
+                                        size={"small"}
                                         color="secondary"
                                         variant="contained">{"Migrate"}</Button>,
-            <Button onClick={productData.backupProducts} key={"Backup products"} sx={{pr: 1}} size={'small'}
+            <Button onClick={productData.backupProducts} key={"Backup products"} sx={{pr: 1}} size={"small"}
                     color="secondary"
                     variant="contained">{"Backup"}</Button>,
-            <Button onClick={productData.saveAllProducts} key={"Save products"} sx={{pr: 1}} size={'small'}
+            <Button onClick={productData.saveAllProducts} key={"Save products"} sx={{pr: 1}} size={"small"}
                     color="primary"
                     variant="contained">{"Save products"}</Button>];
 
@@ -56,8 +56,7 @@ export default function ProductList() {
                 <IconButton key={"new-product"} onClick={() => {
                     productData.add();
                 }}>
-                    <GroupAddIcon fontSize="large"
-                                  color="action"/>
+                    <AddShoppingCartIcon color="secondary" fontSize="large"/>
                 </IconButton>
             </Tooltip>,
             "export",

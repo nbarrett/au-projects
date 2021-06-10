@@ -110,10 +110,10 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
-                        <DataBoundAutoComplete<Product> field={"data.markup"} label={"Markup (%)"}
+                        <DataBoundAutoComplete<Product> field={"data.markup"} label={"Markup"}
                                                         type={"number"} allDocuments={products} document={product}
                                                         onChange={changeField} inputProps={{
-                            startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                            endAdornment: <InputAdornment position="end">%</InputAdornment>,
                         }}/>
                     </Grid>
                     <Grid item md={6} xs={12}>

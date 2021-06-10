@@ -37,21 +37,23 @@ export function DataBoundAutoComplete<T>(props: {
             options={uniqueValuesFor(props.field)}
             renderInput={(params) =>
                 <TextField  {...params}
+                    // InputProps={{
+                    //     startAdornment:
+                    //         <>
+                    //             <InputAdornment position="start">
+                    //                 {params.InputProps.startAdornment}
+                    //             </InputAdornment>{props.inputProps?.startAdornment}
+                    //         </>,
+                    //     endAdornment:
+                    //         <>
+                    //             <InputAdornment position="end">
+                    //                 {params.InputProps.endAdornment}
+                    //             </InputAdornment>{props.inputProps?.endAdornment}
+                    //         </>
+                    // }}
                             inputProps={{
                                 ...params.inputProps,
                                 autoComplete: "new-password",
-                                startAdornment:
-                                    <>
-                                        <InputAdornment position="start">
-                                            {props.inputProps?.startAdornment}
-                                        </InputAdornment>{params.InputProps.startAdornment}
-                                    </>,
-                                endAdornment:
-                                    <>
-                                        <InputAdornment position="end">
-                                            {props.inputProps?.endAdornment}
-                                        </InputAdornment>{params.InputProps.endAdornment}
-                                    </>
                             }}
                             fullWidth
                             type={props.type}

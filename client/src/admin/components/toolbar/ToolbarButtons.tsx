@@ -17,7 +17,7 @@ export default function ToolbarButtons() {
         <Box sx={{display: {xs: "none", md: "none", lg: "flex"}}}>
             {toolbarButtons.map((caption, index) => typeof caption === "string" ?
                 <Button key={caption || index} sx={{mx: 1}} color="primary"
-                        variant="contained">{caption}</Button> : caption)}
+                        variant="contained">{caption}</Button> : <Box key={index}>{caption}</Box>)}
         </Box>
     );
 }

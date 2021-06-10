@@ -19,13 +19,14 @@ export default function useProductEditing() {
     }
 
     function toggleProductEdit(uid: string) {
-        if (!uid) {
-            log.debug("toggleProductEdit - no uid:", uid)
-        } else if (editEnabled(uid)) {
-            log.debug("toggleProductEdit - removing uid:", uid)
+        // if (!uid) {
+        //     log.info("toggleProductEdit - no uid:", uid)
+        //     setEdit(edit.filter(item => item !== uid))
+        if (editEnabled(uid)) {
+            log.info("toggleProductEdit - removing uid:", uid)
             setEdit(edit.filter(item => item !== uid))
         } else {
-            log.debug("toggleProductEdit - adding uid:", uid)
+            log.info("toggleProductEdit - adding uid:", uid)
             setEdit([uid].concat(edit));
         }
     }

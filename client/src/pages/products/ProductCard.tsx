@@ -7,7 +7,6 @@ import { timeAgo } from "../../util/dates";
 import ProductCardEdit from "./ProductCardEdit";
 import useProductEditing from "../../hooks/use-product-editing";
 import { WithUid } from "../../models/common-models";
-
 export default function ProductCard(props: { product: WithUid<Product>, rest?: any[] }) {
     const editing = useProductEditing();
 
