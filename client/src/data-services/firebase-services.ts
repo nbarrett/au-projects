@@ -1,9 +1,13 @@
 import { HasAuditTimestamps, hasUidWithValue, WithUid } from "../models/common-models";
-
 import { log } from "../util/logging-config";
 import firebase from "firebase/app";
 import { nowAsValue } from "../util/dates";
 import { cloneDeep } from "lodash";
+import { asNumber } from '../util/numbers';
+
+export function newDocument<T>(): WithUid<T> {
+    return {uid: "", data: {}} as WithUid<T>;
+}
 
 export function firebaseFirestore() {
     return firebase.app().firestore();
@@ -21,6 +25,28 @@ export async function document<T>(document: string, uid: string): Promise<T> {
     return userData;
 }
 
+export async function renameField<T>(collection: string, fromName: string, toName: string, deleteOld: boolean, convertToNumber: boolean): Promise<any> {
+    const firestore = firebaseFirestore();
+    const documents = await findAll<T>(collection);
+    return documents.map(document => {
+        const documentReference = firestore.collection(collection).doc(document.uid);
+        const currentValue = document.data[fromName];
+        log.info(`${collection}:${document.uid}:updating from:${toName} to:${currentValue}`);
+        return documentReference.update({
+            [toName]: convertToNumber ? asNumber(currentValue) : currentValue
+        }).then(() => {
+            if (deleteOld) {
+                const removeReference: Promise<void> = documentReference.update({[fromName]: firebase.firestore.FieldValue.delete()});
+                log.info(`${document.uid}:renaming from:${fromName} to:${toName} - remove reference${removeReference}`);
+                return removeReference;
+            } else {
+                log.info(`${document.uid}:not deleting ${fromName} field`);
+                return null;
+            }
+        })
+    })
+}
+
 export async function save<T>(collection: string, document: WithUid<T>): Promise<any> {
     if (hasUidWithValue<T>(document)) {
         if (document.markedForDelete) {
@@ -35,6 +61,10 @@ export async function save<T>(collection: string, document: WithUid<T>): Promise
 
 export async function saveAll<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
     return Promise.all(documents.map(document => save<T>(collection, document)));
+}
+
+export async function saveAllWithId<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
+    return Promise.all(documents.map(document => createWithId<T>(collection, document)));
 }
 
 export async function update<T>(collection: string, document: WithUid<T>): Promise<boolean> {
@@ -62,6 +92,17 @@ export async function create<T>(collection: string, document: WithUid<T>): Promi
     }
     const userDoc = await firebaseFirestore().collection(collection).add(mutableData.data);
     log.info("created:", collection, "document:", document, "returned:", userDoc);
+    return userDoc;
+}
+
+export async function createWithId<T>(collection: string, document: WithUid<T>): Promise<void> {
+    const mutableData: WithUid<T> = cloneDeep(document);
+    if (hasAuditTimestamps(mutableData.data)) {
+        mutableData.data.createdAt = nowAsValue();
+    }
+
+    const userDoc = await firebaseFirestore().collection(collection).doc(mutableData.uid).set(mutableData.data);
+    log.info("created:", collection, "document:", document, "with supplied uid:", mutableData.uid, "returned:", userDoc);
     return userDoc;
 }
 

@@ -209,8 +209,8 @@ export default function Prices() {
   }
 
   function priceWithLosses(product: WithUid<Product>) {
-    const price = product?.data?.price || 0;
-    return price + (price * percentLosses / 100);
+    const costPerKg = product?.data?.costPerKg || 0;
+    return costPerKg + (costPerKg * percentLosses / 100);
   }
 
   function thicknessPrice(product: WithUid<Product>, thickness: number) {
@@ -349,7 +349,7 @@ export default function Prices() {
                             {product.data.hardness}
                           </TableCell>
                           <TableCell align={"right"}>
-                            {asMoney(product.data?.price, 2, "R")}
+                            {asMoney(product.data?.costPerKg, 2, "R")}
                           </TableCell>
                           <TableCell align={"right"}>
                             {asMoney(priceWithLosses(product), 2, "R")}

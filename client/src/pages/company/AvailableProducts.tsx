@@ -27,14 +27,6 @@ export default function AvailableProducts() {
     return (
         <Grid container spacing={3}>
             <Grid item md={6} xs={12}>
-                <Typography color="textPrimary" gutterBottom>
-                    Select items below by checking checkboxes to make products available to {company.company.data.name}.
-                </Typography>
-                <Typography color="textSecondary" variant="body1">
-                    {selectedItems.itemsSelected.length} of {productData.products.length} selected
-                </Typography>
-            </Grid>
-            <Grid item md={6} xs={12}>
                 <TextField
                     select
                     fullWidth
@@ -48,6 +40,14 @@ export default function AvailableProducts() {
                         </MenuItem>
                     ))}
                 </TextField>
+            </Grid>
+            <Grid item md={6} xs={12}>
+                <Typography color="textPrimary" gutterBottom>
+                    Select items below by checking checkboxes to make products available to {company.company.data.name}.
+                </Typography>
+                <Typography color="textSecondary" variant="body1">
+                    {selectedItems.itemsSelected.length} of {productData.products.length} selected
+                </Typography>
             </Grid>
             <Grid item xs={12}>
                 <List>

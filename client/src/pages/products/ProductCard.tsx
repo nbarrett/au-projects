@@ -36,7 +36,7 @@ export default function ProductCard(props: { product: WithUid<Product>, rest?: a
                     </Typography>
                     <Typography align="center" color="textPrimary" variant="body1">
                         SG: {props.product.data.specificGravity}
-                        Price: R{props.product.data.price}
+                        Cost Per KG: R{props.product.data.costPerKg}
                     </Typography>
                 </CardContent>
                 <Box sx={{flexGrow: 1}}/>

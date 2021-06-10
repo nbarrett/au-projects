@@ -25,23 +25,31 @@ import { useRecoilValue } from "recoil";
 import { productsState } from "../../atoms/product-atoms";
 import { cloneDeep, set } from "lodash";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
+import { productMarkup } from '../../mappings/product-mappings';
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const [product, setProduct] = useState<WithUid<Product>>(props.product);
     const products = useRecoilValue<WithUid<Product>[]>(productsState);
     const editing = useProductEditing();
 
-    function changeField(field: string, value: any) {
+    function changeField(field: string, value: any, numeric: boolean) {
         log.info("productChange:" + product.data.title, "field:", field, "value:", value, "typeof:", typeof value);
         const mutableProduct: WithUid<Product> = cloneDeep(product);
-        set(mutableProduct, field, value)
+        set(mutableProduct, field, numeric ? +value : value)
         setProduct(mutableProduct);
     }
 
-    function productChange(event?: any) {
+    function productChange(event: any) {
         const field = event.target.name || event.target.id;
         const value = event.target.value;
-        changeField(field, value);
+        changeField(field, value, false);
+    }
+
+    function numericProductChange(event: any) {
+        const field = event.target.name || event.target.id;
+        log.info("numericProductChange:field:", field);
+        const value = event.target.value;
+        changeField(field, value, true);
     }
 
     useEffect(() => {
@@ -93,11 +101,32 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                                 startAdornment: <InputAdornment position="start">R</InputAdornment>,
                             }}
                             fullWidth
-                            label="Price"
-                            name="data.price"
+                            label="Cost Per KG"
+                            name="data.costPerKg"
                             type="number"
-                            onChange={productChange}
-                            value={product?.data.price || ""}
+                            onChange={numericProductChange}
+                            value={product?.data.costPerKg || ""}
+                            variant="outlined"
+                        />
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <DataBoundAutoComplete<Product> field={"data.markup"} label={"Markup (%)"}
+                                                        type={"number"} allDocuments={products} document={product}
+                                                        onChange={changeField} inputProps={{
+                            startAdornment: <InputAdornment position="start">%</InputAdornment>,
+                        }}/>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
+                        <TextField
+                            InputProps={{
+                                startAdornment: <InputAdornment position="start">R</InputAdornment>,
+                            }}
+                            fullWidth
+                            disabled
+                            label="Price Per KG"
+                            name="data.pricePerKg"
+                            type="number"
+                            value={productMarkup(product)}
                             variant="outlined"
                         />
                     </Grid>
@@ -111,19 +140,22 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                                                         type={"text"} allDocuments={products} document={product}
                                                         onChange={changeField}/>
                     </Grid>
-
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.grade"} label={"Grade"}
                                                         type={"text"} allDocuments={products} document={product}
                                                         onChange={changeField}/>
                     </Grid>
-
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.hardness"} label={"Hardness"}
                                                         type={"text"} allDocuments={products} document={product}
                                                         onChange={changeField}/>
                     </Grid>
-                    <Grid item md={12} xs={12}>
+                    <Grid item md={6} xs={12}>
+                        <DataBoundAutoComplete<Product> field={"data.curingMethod"} label={"Curing Method"}
+                                                        type={"text"} allDocuments={products} document={product}
+                                                        onChange={changeField}/>
+                    </Grid>
+                    <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
                             label="Media"

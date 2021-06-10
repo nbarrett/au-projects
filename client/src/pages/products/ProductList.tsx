@@ -1,5 +1,16 @@
 import { Helmet } from "react-helmet";
-import { Box, Button, Container, Grid, MenuItem, Pagination, TextField, Typography } from "@material-ui/core";
+import {
+    Box,
+    Button,
+    Container,
+    Grid,
+    IconButton,
+    MenuItem,
+    Pagination,
+    TextField,
+    Tooltip,
+    Typography
+} from "@material-ui/core";
 import ProductCard from "./ProductCard";
 import { useSetRecoilState } from "recoil";
 import * as React from "react";
@@ -13,6 +24,7 @@ import { ToolbarButton } from "../../models/toolbar-models";
 import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
 import useProductData from '../../hooks/use-product-data';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 
 export default function ProductList() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -28,10 +40,26 @@ export default function ProductList() {
         log.info("filtering:", navbarSearch.search, filteredProducts.length, "of", productData.products.length, "filtered");
         setFilteredProducts(filteredProducts)
         setPage(1);
+        const MigrationTasks = [<Button onClick={productData.priceMigration} key={"Migrate products"} sx={{pr: 1}}
+                                        size={'small'}
+                                        color="secondary"
+                                        variant="contained">{"Migrate"}</Button>,
+            <Button onClick={productData.backupProducts} key={"Backup products"} sx={{pr: 1}} size={'small'}
+                    color="secondary"
+                    variant="contained">{"Backup"}</Button>,
+            <Button onClick={productData.saveAllProducts} key={"Save products"} sx={{pr: 1}} size={'small'}
+                    color="primary"
+                    variant="contained">{"Save products"}</Button>];
+
         setToolbarButtons([
-            <Button onClick={productData.saveAllProducts} key={"Save products"} sx={{mx: 1}} color="primary"
-                    variant="contained">{"Save products"}</Button>,
-            "add product",
+            <Tooltip title={"New Product"}>
+                <IconButton key={"new-product"} onClick={() => {
+                    productData.add();
+                }}>
+                    <GroupAddIcon fontSize="large"
+                                  color="action"/>
+                </IconButton>
+            </Tooltip>,
             "export",
             "import"])
     }, [productData.products, navbarSearch.search])
@@ -85,8 +113,9 @@ export default function ProductList() {
                     </Box>
                     <Box sx={{pt: 3}}>
                         <Grid container spacing={3}>
-                            {currentPage().map((product) => (
-                                <Grid item key={product?.uid || product?.data?.title} lg={4} md={6} xs={12}>
+                            {currentPage().map((product, index) => (
+                                <Grid item key={product?.uid || product?.data?.title || `new-document-${index}`} lg={4}
+                                      md={6} xs={12}>
                                     <ProductCard product={product}/>
                                 </Grid>
                             ))}

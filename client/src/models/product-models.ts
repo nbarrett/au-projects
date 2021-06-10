@@ -5,11 +5,13 @@ export interface Product extends HasAuditTimestamps {
     description?: string;
     specificGravity: number;
     type?: string;
-    price?: number;
+    costPerKg?: number;
     colour?: string;
     hardness?: string;
+    curingMethod?: string;
     grade?: string;
     media?: any;
+    markup: number;
 }
 
 export interface PricingTier extends HasAuditTimestamps {
