@@ -24,7 +24,7 @@ export default function MenuButton(props: { menuItem: MenuItem }) {
         },
     };
 
-    log.info("active", active, props.menuItem.href, location.pathname)
+    log.debug("active", active, props.menuItem.href, location.pathname)
 
     return (
         <><Button component={NavLink}

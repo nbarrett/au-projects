@@ -3,7 +3,6 @@ import { TransitionProps } from "@material-ui/core/transitions/transition";
 import { useSnackbarNotification } from "./SnackbarNotificationContext";
 import MuiAlert from '@material-ui/core/Alert';
 import React from 'react';
-import { log } from '../util/logging-config';
 
 function SlideTransition(props: TransitionProps) {
     return <Slide {...props} direction="up"/>;
@@ -23,7 +22,6 @@ export const SnackbarNotification = () => {
         return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
     });
 
-    log.info("variant:", variant,)
     return (
         <Snackbar
             anchorOrigin={{vertical: "bottom", horizontal: "center",}}

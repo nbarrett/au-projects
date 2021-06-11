@@ -1,17 +1,18 @@
 import { WithUid } from "../models/common-models";
-import { newDocument, renameField, saveAll, saveAllWithId, subscribe } from "../data-services/firebase-services";
+import { renameField, saveAll, saveAllWithId, subscribe } from "../data-services/firebase-services";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 import { productsState } from '../atoms/product-atoms';
 import { Product } from '../models/product-models';
 import { useSnackbarNotification } from '../snackbarNotification';
+import { newDocument } from '../mappings/document-mappings';
 
 export default function useProductData() {
     const [products, setProducts] = useRecoilState<WithUid<Product>[]>(productsState);
     const notification = useSnackbarNotification();
     useEffect(() => {
-        log.info("Products initial render:", products);
+        log.debug("Products initial render:", products);
         const unsub = subscribe<Product>("products", setProducts)
         return (() => {
             unsub()

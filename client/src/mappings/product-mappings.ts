@@ -1,8 +1,9 @@
 import { WithUid } from "../models/common-models";
-import { Product } from '../models/product-models';
+import { PricedProduct, PricingTier, Product } from '../models/product-models';
 import { stringifyObject } from '../util/strings';
 import { omit } from 'lodash';
 import { asNumber } from '../util/numbers';
+import { log } from '../util/logging-config';
 
 export const DEFAULT_THICKNESSES = [3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 45];
 
@@ -10,6 +11,36 @@ export function productDetails(product: WithUid<Product>): string {
     return stringifyObject(omit(product.data, ["title", "updatedAt", "media"]), null, true);
 }
 
-export function productMarkup(product: WithUid<Product>): number {
-    return asNumber(asNumber(product?.data.costPerKg) * (product?.data.markup / 100), 2);
+export function pricePerKg(product: WithUid<Product>): number {
+    const price = asNumber(product?.data?.costPerKg * (product?.data?.markup / 100), 2);
+    log.debug("pricePerKg:costPerKg:", product?.data?.costPerKg, "markup:", product?.data?.markup, "price:", price);
+    return price;
+}
+
+export function salePricePerKg(product: WithUid<Product>, pricingTier: PricingTier): number {
+    return asNumber(asNumber(pricePerKg(product)) * (pricingTier?.pricingFactor / 100), 2);
+}
+
+export function priceWithLosses(product: WithUid<Product>, percentLosses: number) {
+    const costPerKg = product?.data?.costPerKg || 0;
+    return costPerKg + (costPerKg * percentLosses / 100);
+}
+
+export function thicknessPrice(product: WithUid<Product>, thickness: number, percentLosses: number) {
+    return priceWithLosses(product, percentLosses) * product.data.specificGravity * thickness;
+}
+
+export function toPricedProduct(product: WithUid<Product>, pricingTier: PricingTier): WithUid<PricedProduct> {
+    return {
+        uid: product.uid,
+        data: {
+            ...product.data,
+            ...({
+                pricePerKg: pricePerKg(product),
+                salePricePerKg: salePricePerKg(product, pricingTier),
+                pricingFactor: pricingTier?.pricingFactor,
+                pricingTierName: pricingTier?.name
+            })
+        }
+    };
 }

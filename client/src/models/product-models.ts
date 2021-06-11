@@ -19,6 +19,13 @@ export interface PricingTier extends HasAuditTimestamps {
     pricingFactor: number;
 }
 
+export interface PricedProduct extends Product {
+    pricePerKg: number;
+    salePricePerKg: number;
+    pricingFactor: number;
+    pricingTierName: string;
+}
+
 export interface ProductConfiguration {
     lossesAllowance: number;
     thicknesses: number[]

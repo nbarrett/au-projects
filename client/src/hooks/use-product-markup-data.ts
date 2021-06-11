@@ -14,7 +14,7 @@ export default function usePricingTierMarkupData(subscribeToUpdates: boolean) {
     const collection = "pricingTiers";
 
     useEffect(() => {
-        log.info("usePricingTierMarkupData initial render:", pricingTiers);
+        log.debug("usePricingTierMarkupData initial render:", pricingTiers);
         if (subscribeToUpdates) {
             const unsub = subscribe<PricingTier>(collection, setPricingTiers)
             return (() => {
@@ -28,7 +28,7 @@ export default function usePricingTierMarkupData(subscribeToUpdates: boolean) {
     }, [])
 
     useEffect(() => {
-        log.info("usePricingTierMarkupData change:", pricingTiers);
+        log.debug("usePricingTierMarkupData change:", pricingTiers);
     }, [pricingTiers])
 
     function saveAllPricingTiers(): Promise<any> {
@@ -47,6 +47,10 @@ export default function usePricingTierMarkupData(subscribeToUpdates: boolean) {
         return cloneDeep(pricingTiers);
     }
 
-    return {refresh, saveAllPricingTiers, mutablePricingTiers, pricingTiers, setPricingTiers}
+    function pricingTierForIUid(uid: string) {
+        return pricingTiers?.find(tier => tier?.uid === uid)?.data;
+    }
+
+    return {refresh, saveAllPricingTiers, mutablePricingTiers, pricingTierForIUid, pricingTiers, setPricingTiers}
 
 }

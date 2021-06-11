@@ -10,7 +10,7 @@ export default function useCompanyData() {
     const [companies, setCompanies] = useRecoilState<WithUid<Company>[]>(companiesState);
 
     useEffect(() => {
-        log.info("Companies initial render:", companies);
+        log.debug("Companies initial render:", companies);
         const unsub = subscribe<Company>("companies", setCompanies)
         return (() => {
             unsub()
@@ -24,7 +24,7 @@ export default function useCompanyData() {
 
     function saveAllCompanies() {
         saveAll<Company>("companies", companies).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
         });
     }
 

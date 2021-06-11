@@ -13,22 +13,22 @@ export const currentUserState = atom<FirebaseUser>({
   effects_UNSTABLE: [
     ({setSelf, onSet}) => {
       const data = currentUser()
-      log.info("currentUserState:setSelf:", data)
+      log.debug("currentUserState:setSelf:", data)
       if (data) {
         setSelf(data);
       }
       onSet(newValue => {
         if (newValue instanceof DefaultValue) {
-          log.info("currentUserState:onSet default value - not saving:", newValue)
+          log.debug("currentUserState:onSet default value - not saving:", newValue)
         } else {
-          log.info("currentUserState:onSet:", newValue)
+          log.debug("currentUserState:onSet:", newValue)
           const user = newValue as FirebaseUser;
           const currentUser = firebase.auth().currentUser;
           if (currentUser && user.email != null) {
             currentUser.updateEmail(user.email);
             currentUser.sendEmailVerification();
           } else {
-            log.info("currentUserState:onSet:cant update as user:", user, "currentUser:", currentUser);
+            log.debug("currentUserState:onSet:cant update as user:", user, "currentUser:", currentUser);
           }
         }
       });
@@ -42,16 +42,16 @@ export const currentUserDataState = atom<UserData>({
   effects_UNSTABLE: [
     ({setSelf, onSet}) => {
       currentUserData().then(data => {
-        log.info("currentUserDataState:setSelf:", data)
+        log.debug("currentUserDataState:setSelf:", data)
         if (data) {
           setSelf(data);
         }
       })
       onSet(newValue => {
         if (newValue instanceof DefaultValue) {
-          log.info("currentUserDataState:onSet default value - not saving:", newValue)
+          log.debug("currentUserDataState:onSet default value - not saving:", newValue)
         } else {
-          log.info("currentUserDataState:onSet:", newValue)
+          log.debug("currentUserDataState:onSet:", newValue)
           const firestore = firebase.app().firestore()
           const user = currentUser();
           if (user) {

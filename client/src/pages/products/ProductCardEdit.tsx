@@ -25,7 +25,7 @@ import { useRecoilValue } from "recoil";
 import { productsState } from "../../atoms/product-atoms";
 import { cloneDeep, set } from "lodash";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
-import { productMarkup } from '../../mappings/product-mappings';
+import { pricePerKg } from '../../mappings/product-mappings';
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const [product, setProduct] = useState<WithUid<Product>>(props.product);
@@ -126,7 +126,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             label="Price Per KG"
                             name="data.pricePerKg"
                             type="number"
-                            value={productMarkup(product)}
+                            value={pricePerKg(product)}
                             variant="outlined"
                         />
                     </Grid>

@@ -59,7 +59,7 @@ export function stringifyObject(inputValue, defaultValue?: any, omitEmptyFields?
 }
 
 export function asMoney(numberString: number | undefined, decimalPlaces: number, currencySymbol: string): string {
-  log.info("asMoney:numberString:", numberString, typeof  numberString);
+  log.debug("asMoney:numberString:", numberString, typeof  numberString);
   return numberString ? (currencySymbol + " " + asNumber(numberString).toFixed(2)) : "-"
 }
 

@@ -17,20 +17,20 @@ export default function useSingleCompany() {
 
     function saveCompany() {
         save<Company>("companies", company).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
         });
     }
 
     function findCompany(uid: string): void {
         find<Company>("companies", uid).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
             setCompany(response)
         });
     }
 
 
     function changeField(field: string, value: any) {
-        log.info("companyChange:" + company.data.name, "field:", field, "value:", value, "typeof:", typeof value);
+        log.debug("companyChange:" + company.data.name, "field:", field, "value:", value, "typeof:", typeof value);
         const mutableCompany: WithUid<Company> = cloneDeep(company);
         set(mutableCompany, field, value)
         setCompany(mutableCompany);

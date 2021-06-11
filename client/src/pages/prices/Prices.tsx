@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { Theme } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
@@ -12,148 +11,178 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import { visuallyHidden } from "@material-ui/utils";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import {
-  Avatar,
-  Card,
-  Grid,
-  InputAdornment,
-  ListItemText,
-  MenuItem,
-  Paper,
-  TablePagination,
-  TextField,
-} from "@material-ui/core";
+import { Avatar, Card, Grid, TablePagination, } from "@material-ui/core";
 import { companyId } from "../../mappings/company-mappings";
 import useProductData from "../../hooks/use-product-data";
-import useCompanyData from "../../hooks/use-company-data";
 import useSelectedItems from "../../hooks/use-selected-items";
-import { useNavigate } from "react-router-dom";
-import { DEFAULT_THICKNESSES } from "../../mappings/product-mappings";
 import { WithUid } from "../../models/common-models";
-import { Product } from "../../models/product-models";
-import { chunk, cloneDeep, range } from "lodash";
+import { PricedProduct, PricingTier } from "../../models/product-models";
+import { chunk, range } from "lodash";
 import { log } from "../../util/logging-config";
 import { asMoney, fullTextSearch } from "../../util/strings";
 import { useNavbarSearch } from "../../use-navbar-search";
-import { Company } from "../../models/company-models";
-import { makeStyles } from "@material-ui/styles";
-import clsx from "clsx";
 import { sortBy } from '../../util/arrays';
+import CompanySelector from '../common/CompanySelector';
+import useSingleCompany from '../../hooks/use-single-company';
+import { toPricedProduct } from '../../mappings/product-mappings';
+import usePricingTierMarkupData from '../../hooks/use-product-markup-data';
+import { asNumber } from '../../util/numbers';
+
 
 export default function Prices() {
-  const navigate = useNavigate();
   const navbarSearch = useNavbarSearch();
-  const companyData = useCompanyData()
+  const singleCompany = useSingleCompany();
   const productData = useProductData()
-  const [percentLosses, setPercentLosses] = useState<number>(10);
-  const [markup, setMarkup] = useState<number>(192.5);
+  const pricingTierMarkupData = usePricingTierMarkupData(true);
   const [page, setPage] = useState<number>(1);
-  const [currentCompany, setCurrentCompany] = useState<WithUid<Company>>();
+  const currentCompany = singleCompany.company
   const selectedItems = useSelectedItems();
-  const [filteredProducts, setFilteredProducts] = useState<WithUid<Product>[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<WithUid<PricedProduct>[]>([]);
   const pageSizes: number[] = [5].concat(range(10, productData.products.length + 10, 10));
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
+  const [companyPricingTier, setCompanyPricingTier] = useState<PricingTier>();
   const [orderBy, setOrderBy] = useState<string>("data.title");
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const allowSelection = false;
 
-  const useStyles = makeStyles((theme: Theme) => ({
-    input: {
-      width: 400
-    }
-  }));
+  const cardStyle = {p: 4, m: 2};
 
-  interface HeadCell {
+  interface DataColumn {
+    fieldName: string;
+    cellFormat: CellFormat;
     disablePadding: boolean;
     noWrap: boolean;
-    id: string;
     label: string;
-    numeric: boolean;
   }
 
-  const headCells: readonly HeadCell[] = [
+  enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}
+
+  const dataColumns: readonly DataColumn[] = [
     {
-      id: "data.title",
-      numeric: false,
+      fieldName: "title",
+      cellFormat: CellFormat.STRING,
       disablePadding: true,
       noWrap: true,
       label: "Title",
     },
     {
-      id: "data.specificGravity",
-      numeric: true,
+      fieldName: "costPerKg",
+      cellFormat: CellFormat.CURRENCY,
+      disablePadding: false,
+      noWrap: true,
+      label: "Cost Per Kg",
+    },
+    {
+      fieldName: "markup",
+      cellFormat: CellFormat.PERCENT,
+      disablePadding: false,
+      noWrap: true,
+      label: "Product Markup",
+    },
+    {
+      fieldName: "pricePerKg",
+      cellFormat: CellFormat.CURRENCY,
+      disablePadding: false,
+      noWrap: true,
+      label: "Price Per Kg",
+    },
+    {
+      fieldName: "pricingTierName",
+      cellFormat: CellFormat.STRING,
+      disablePadding: false,
+      noWrap: true,
+      label: "Pricing Tier",
+    },
+    {
+      fieldName: "pricingFactor",
+      cellFormat: CellFormat.PERCENT,
+      disablePadding: false,
+      noWrap: true,
+      label: "Pricing Factor",
+    },
+    {
+      fieldName: "salePricePerKg",
+      cellFormat: CellFormat.CURRENCY,
+      disablePadding: false,
+      noWrap: true,
+      label: "Sale Price Per Kg",
+    },
+    {
+      fieldName: "specificGravity",
+      cellFormat: CellFormat.NUMERIC,
       disablePadding: true,
       noWrap: true,
       label: "Specific Gravity",
     },
     {
-      id: "data.type",
-      numeric: false,
+      fieldName: "type",
+      cellFormat: CellFormat.STRING,
       disablePadding: false,
       noWrap: true,
       label: "Type",
     },
     {
-      id: "data.colour",
-      numeric: false,
+      fieldName: "colour",
+      cellFormat: CellFormat.STRING,
       disablePadding: false,
       noWrap: true,
       label: "Colour",
     },
     {
-      id: "data.hardness",
-      numeric: false,
+      fieldName: "hardness",
+      cellFormat: CellFormat.STRING,
       disablePadding: false,
       noWrap: true,
       label: "Hardness",
     },
     {
-      id: "data.price",
-      numeric: true,
+      fieldName: "curingMethod",
+      cellFormat: CellFormat.STRING,
       disablePadding: false,
       noWrap: true,
-      label: "Unit Price",
+      label: "Curing Method",
     },
     {
-      id: "data.pricePlusLosses",
-      numeric: true,
+      fieldName: "grade",
+      cellFormat: CellFormat.STRING,
       disablePadding: false,
       noWrap: true,
-      label: "Unit Price\n + Losses",
+      label: "Grade",
     },
-  ].concat(DEFAULT_THICKNESSES.map(thickness => ({
-    id: "thickness-cost-" + thickness,
-    numeric: true,
-    disablePadding: false,
-    noWrap: true,
-    label: thickness + " mm"
-  })));
+  ];
 
-  const classes = useStyles();
-
-  function applyFilteredProducts(): WithUid<Product>[] {
-    const filteredProducts = fullTextSearch(productData.products, navbarSearch.search).filter(item => currentCompany?.data?.availableProducts?.includes(item.uid));
-    const sortByColumn = `${order === "asc" ? "" : "-"}${orderBy}`;
-    const filtered = cloneDeep(filteredProducts).sort(sortBy(sortByColumn));
-    log.info("filtering:", navbarSearch.search, "availableProducts:", currentCompany?.data?.availableProducts, filteredProducts.length, "of", productData.products.length, "filtered", "sortByColumn", sortByColumn, "filtered:", filtered);
-    return filtered;
+  function formatCell(pricedProduct: WithUid<PricedProduct>, dataColumn: DataColumn) {
+    const data = pricedProduct.data[dataColumn.fieldName];
+    switch (dataColumn.cellFormat) {
+      case CellFormat.CURRENCY:
+        return asMoney(data, 2, "R");
+      case CellFormat.PERCENT:
+        return asNumber(data, 0) + " %"
+      case CellFormat.NUMERIC:
+        return asNumber(data, 2)
+      default:
+        return data;
+    }
   }
 
-  useEffect(() => {
-    if (!currentCompany && companyData.companies.length > 0) {
-      setCurrentCompany(companyData.companies[0])
-    }
-  }, [companyData.companies])
+  function applyFilteredProducts(): WithUid<PricedProduct>[] {
+    const filteredProducts = fullTextSearch(productData.products, navbarSearch.search).filter(item => currentCompany?.data?.availableProducts?.includes(item.uid));
+    const sortByColumn = `${order === "asc" ? "" : "-"}${orderBy}`;
+    const pricedProducts: WithUid<PricedProduct>[] = filteredProducts.map(product => toPricedProduct(product, companyPricingTier)).sort(sortBy(sortByColumn));
+    log.debug("filtering:", navbarSearch.search, "availableProducts:", currentCompany?.data?.availableProducts, filteredProducts.length, "of", productData.products.length, "filtered", "sortByColumn", sortByColumn, "pricedProducts:", pricedProducts);
+    return pricedProducts;
+  }
 
   useEffect(() => {
     setFilteredProducts(applyFilteredProducts())
     setPage(1);
-  }, [productData.products, navbarSearch.search, currentCompany])
+  }, [productData.products, navbarSearch.search, currentCompany, companyPricingTier])
 
   useEffect(() => {
-    log.info("currentCompany:", currentCompany);
-  }, [currentCompany])
+    const pricingTier = pricingTierMarkupData.pricingTierForIUid(singleCompany.company.data.pricingTier);
+    log.debug("company:", currentCompany, "has pricing tier:", pricingTier);
+    setCompanyPricingTier(pricingTier);
+  }, [currentCompany, pricingTierMarkupData.pricingTiers])
 
   useEffect(() => {
     setFilteredProducts(applyFilteredProducts())
@@ -163,19 +192,19 @@ export default function Prices() {
   function handleRowsPerPageChange(event) {
     setRowsPerPage(+event.target.value);
     setPage(1)
-    log.info("setRowsPerPage:", +event.target.value);
+    log.debug("setRowsPerPage:", +event.target.value);
   }
 
-  function pages(): WithUid<Product>[][] {
+  function pages(): WithUid<PricedProduct>[][] {
     return chunk(filteredProducts, rowsPerPage);
   }
 
-  function currentPage(): WithUid<Product>[] {
+  function currentPage(): WithUid<PricedProduct>[] {
     return pages()[page - 1] || [];
   }
 
   function handlePageChange(event: any, value: number) {
-    log.info("handlePageChange:", value);
+    log.debug("handlePageChange:", value);
     setPage(value);
   }
 
@@ -192,195 +221,114 @@ export default function Prices() {
     selectedItems.toggleItem(uid)
   }
 
-  function CompanySelector() {
-    return <TextField className={clsx(classes.input)}
-                      size={"small"}
-                      select
-                      label="Show prices for"
-                      value={currentCompany?.uid || ""}
-                      onChange={(event) => setCurrentCompany(companyData.companies.find(company => company.uid === event.target.value))}>
-      {companyData.companies.map((option) => (
-          <MenuItem key={option.uid} value={option.uid}>
-            <ListItemText sx={{display: 'inline'}} primary={option.data.name}
-                          secondary={`${option.data.availableProducts?.length || 0} available products`}/>
-          </MenuItem>
-      ))}
-    </TextField>
-  }
-
-  function priceWithLosses(product: WithUid<Product>) {
-    const costPerKg = product?.data?.costPerKg || 0;
-    return costPerKg + (costPerKg * percentLosses / 100);
-  }
-
-  function thicknessPrice(product: WithUid<Product>, thickness: number) {
-    return priceWithLosses(product) * product.data.specificGravity * thickness;
-  }
-
   function createSortHandler(id: string) {
     const newOrder = order === "asc" ? "desc" : "asc";
     setOrderBy(id);
     setOrder(newOrder)
   }
 
+  function TitledMedia(props: { pricedProduct: WithUid<PricedProduct> }) {
+    return <Box sx={{
+      alignItems: "center",
+      display: "flex",
+    }}>
+      <Avatar sizes={"sm"} src={props.pricedProduct.data.media} sx={{mr: 2}}/>
+      <Typography noWrap color="textPrimary" variant="body1">
+        {props.pricedProduct.data.title}
+      </Typography>
+    </Box>;
+  }
+
+  function toAlignment(headCell: DataColumn) {
+    return [CellFormat.NUMERIC, CellFormat.CURRENCY, CellFormat.PERCENT].includes(headCell.cellFormat) ? "right" : "left";
+  }
+
   return (
       <>
-        <Paper sx={{p: 2, margin: "auto", width: "100%"}}>
+        <Card sx={cardStyle}>
           <Grid container spacing={2}>
             <Grid item xs>
               <CompanySelector/>
             </Grid>
+          </Grid>
+        </Card>
+        <Card sx={cardStyle}>
+          <TableContainer sx={{maxHeight: 800}}>
+            <Table size="small">
+              <TableHead>
+                <TableRow>
+                  {allowSelection && <TableCell padding="checkbox">
+                    <Checkbox
+                        checked={selectedItems.itemsSelected.length === productData.products.length}
+                        color="primary"
+                        indeterminate={
+                          selectedItems.itemsSelected.length > 0 &&
+                          selectedItems.itemsSelected.length < productData.products.length
+                        }
+                        onChange={handleSelectAll}
+                    />
+                  </TableCell>}
+                  {dataColumns.map((dataColumn) => (
+                      <TableCell
+                          key={dataColumn.fieldName}
+                          align={toAlignment(dataColumn)}
+                          padding={"normal"}
+                          sortDirection={(orderBy === dataColumn.fieldName ? order : false) as SortDirection}>
+                        <TableSortLabel active={orderBy === dataColumn.fieldName}
+                                        direction={orderBy === dataColumn.fieldName ? order : "asc"}
+                                        onClick={() => createSortHandler(dataColumn.fieldName)}>
+                          <Typography noWrap={dataColumn.noWrap}>{dataColumn.label}</Typography>
+                          {orderBy === dataColumn.fieldName ? (
+                              <Box component="span" sx={visuallyHidden}>
+                                {order === "desc" ? "sorted descending" : "sorted ascending"}
+                              </Box>
+                          ) : null}
+                        </TableSortLabel>
+                      </TableCell>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentPage().map((pricedProduct) => {
+                  return (
+                      <TableRow
+                          hover
+                          key={pricedProduct.uid}
+                          selected={selectedItems.itemsSelected.includes(pricedProduct.uid)}>
+                        {allowSelection && <TableCell padding="checkbox">
+                          <Checkbox
+                              checked={selectedItems.itemsSelected.includes(pricedProduct.uid)}
+                              onChange={(event) => handleSelectOne(event, companyId(pricedProduct))}
+                              value="true"
+                          />
+                        </TableCell>}
+                        {dataColumns.map((dataColumn, index) => (
+                            <TableCell
+                                key={dataColumn.fieldName}
+                                align={toAlignment(dataColumn)}
+                                padding={"normal"}>
+                              {index === 0 ? <TitledMedia pricedProduct={pricedProduct}/> :
+                                  formatCell(pricedProduct, dataColumn)}
+                            </TableCell>
+                        ))}
+                      </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Grid container spacing={2}>
             <Grid item xs>
-              <TextField className={clsx(classes.input)}
-                         InputProps={{
-                           endAdornment: <InputAdornment position="start">%</InputAdornment>,
-                         }}
-                         size={"small"}
-                         type={"number"}
-                         label="Losses"
-                         value={percentLosses}
-                         onChange={(value) => {
-                           const losses = value.target.value;
-                           log.info("value:", losses)
-                           setPercentLosses(+losses)
-                         }}
-              >
-              </TextField>
-            </Grid>
-            <Grid item xs>
-              <TextField className={clsx(classes.input)}
-                         InputProps={{
-                           endAdornment: <InputAdornment position="start">%</InputAdornment>,
-                         }}
-                         size={"small"}
-                         type={"number"}
-                         label="Full Price Factor"
-                         value={markup}
-                         onChange={(value) => {
-                           const markup = value.target.value;
-                           log.info("value:", markup)
-                           setMarkup(+markup)
-                         }}
-              >
-              </TextField>
+              <TablePagination
+                  component="div"
+                  count={filteredProducts.length}
+                  onPageChange={handlePageChange}
+                  onRowsPerPageChange={handleRowsPerPageChange}
+                  page={page}
+                  rowsPerPage={rowsPerPage}
+                  rowsPerPageOptions={pageSizes}/>
             </Grid>
           </Grid>
-        </Paper>
-        <Card>
-          <PerfectScrollbar>
-            <TableContainer sx={{maxHeight: 800}}>
-              <Table size="small" stickyHeader>
-                <TableHead>
-                  <TableRow>
-                    <TableCell align="center" colSpan={7}>
-                      Product Details
-                    </TableCell>
-                    <TableCell align="center" colSpan={DEFAULT_THICKNESSES.length}>
-                      Cost Price per Square Metre
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    {allowSelection && <TableCell padding="checkbox">
-                      <Checkbox
-                          checked={selectedItems.itemsSelected.length === productData.products.length}
-                          color="primary"
-                          indeterminate={
-                            selectedItems.itemsSelected.length > 0 &&
-                            selectedItems.itemsSelected.length < productData.products.length
-                          }
-                          onChange={handleSelectAll}
-                      />
-                    </TableCell>}
-                    {headCells.map((headCell) => (
-                        <TableCell
-                            key={headCell.id}
-                            align={headCell.numeric ? "right" : "left"}
-                            padding={"normal"}
-                            sortDirection={(orderBy === headCell.id ? order : false) as SortDirection}>
-                          <TableSortLabel active={orderBy === headCell.id}
-                                          direction={orderBy === headCell.id ? order : "asc"}
-                                          onClick={() => createSortHandler(headCell.id)}>
-                            <Typography noWrap={headCell.noWrap}>{headCell.label}</Typography>
-                            {orderBy === headCell.id ? (
-                                <Box component="span" sx={visuallyHidden}>
-                                  {order === "desc" ? "sorted descending" : "sorted ascending"}
-                                </Box>
-                            ) : null}
-                          </TableSortLabel>
-                        </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {currentPage().map((product) => {
-                    return (
-                        <TableRow
-                            hover
-                            key={product.uid}
-                            selected={selectedItems.itemsSelected.includes(product.uid)}>
-                          {allowSelection && <TableCell padding="checkbox">
-                            <Checkbox
-                                checked={selectedItems.itemsSelected.includes(product.uid)}
-                                onChange={(event) => handleSelectOne(event, companyId(product))}
-                                value="true"
-                            />
-                          </TableCell>}
-                          <TableCell>
-                            <Box sx={{
-                              alignItems: "center",
-                              display: "flex",
-                            }}>
-                              <Avatar sizes={"sm"} src={product.data.media} sx={{mr: 2}}/>
-                              <Typography noWrap color="textPrimary" variant="body1">
-                                {product.data.title}
-                              </Typography>
-                            </Box>
-                          </TableCell>
-                          <TableCell align={"right"}>
-                            {product.data.specificGravity}
-                          </TableCell>
-                          <TableCell>
-                            {product.data.type}
-                          </TableCell>
-                          <TableCell>
-                            {product.data.colour}
-                          </TableCell>
-                          <TableCell>
-                            {product.data.hardness}
-                          </TableCell>
-                          <TableCell align={"right"}>
-                            {asMoney(product.data?.costPerKg, 2, "R")}
-                          </TableCell>
-                          <TableCell align={"right"}>
-                            {asMoney(priceWithLosses(product), 2, "R")}
-                          </TableCell>
-                          {DEFAULT_THICKNESSES.map(thickness => {
-                            const pricePerSquareMetre = thicknessPrice(product, thickness);
-                            return <TableCell key={`${product.uid}-${thickness}`}
-                                              align={"right"}>
-                              <ListItemText primary={asMoney(pricePerSquareMetre, 2, "R")}
-                                            secondary={asMoney(pricePerSquareMetre * markup / 100, 2, "R")}/>
-                            </TableCell>;
-                          })}
-                        </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Grid container spacing={2}>
-              <Grid item xs>
-                <TablePagination
-                    component="div"
-                    count={filteredProducts.length}
-                    onPageChange={handlePageChange}
-                    onRowsPerPageChange={handleRowsPerPageChange}
-                    page={page}
-                    rowsPerPage={rowsPerPage}
-                    rowsPerPageOptions={pageSizes}/>
-              </Grid>
-            </Grid>
-          </PerfectScrollbar>
         </Card>
       </>
   );

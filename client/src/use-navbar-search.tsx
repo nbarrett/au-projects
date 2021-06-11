@@ -10,14 +10,14 @@ export function useNavbarSearch(): { search: string; onChange(value: string): vo
     const [search, setSearch] = useRecoilState<string>(navbarSearchState)
 
     useEffect(() => {
-        log.info("location.pathname changed to", location.pathname)
+        log.debug("location.pathname changed to", location.pathname)
         const search = currentStoredValue();
-        log.info("search:", search)
+        log.debug("search:", search)
         setSearch(search);
     }, [location.pathname])
 
     useEffect(() => {
-        log.info("changeEvents:", search)
+        log.debug("changeEvents:", search)
     }, [search])
 
     function currentStoredValue() {
@@ -30,7 +30,7 @@ export function useNavbarSearch(): { search: string; onChange(value: string): vo
 
     function onChange(search: string) {
         const searchKey = key();
-        log.info("onChange:value", search, "setting local storage:", searchKey)
+        log.debug("onChange:value", search, "setting local storage:", searchKey)
         localStorage.setItem(searchKey, search)
         setSearch(search);
     }

@@ -8,7 +8,7 @@ import { FIREBASE_CONFIG } from "./constants";
 import { log } from "./util/logging-config";
 
 firebase.initializeApp(FIREBASE_CONFIG).auth()
-    .onAuthStateChanged((user) => log.info("onAuthStateChanged:user:", user?.email));
+    .onAuthStateChanged((user) => log.debug("onAuthStateChanged:user:", user?.email));
 
 
 ReactDOM.render(<AppContainer/>, document.getElementById("root"));
