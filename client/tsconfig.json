@@ -2,7 +2,11 @@
   "compilerOptions": {
     "target": "es2019",
     "sourceMap": true,
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "noImplicitAny": false,
     "skipLibCheck": true,
@@ -15,7 +19,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "strict": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
