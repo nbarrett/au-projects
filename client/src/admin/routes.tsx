@@ -5,7 +5,7 @@ import Account from "../pages/account/Account";
 import UserList from "../pages/users/UserList";
 import Login from "../pages/login/Login";
 import NotFound from "../pages/NotFound";
-import ProductList from "../pages/products/ProductList";
+import Products from "../pages/products/Products";
 import Register from "../pages/login/Register";
 import EmailVerification from "../pages/email-verification/EmailVerification";
 import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
@@ -29,7 +29,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.EXAMPLE_DASHBOARD, element: <ExampleDashboard/>},
         {path: AppRoute.PRICES, element: <Prices/>},
         {path: AppRoute.PRICING_SETUP, element: <PricingSetup/>},
-        {path: AppRoute.PRODUCTS, element: <ProductList/>},
+        {path: AppRoute.PRODUCTS, element: <Products/>},
         {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],

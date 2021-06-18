@@ -1,4 +1,4 @@
-import { makeStyles, createStyles } from "@material-ui/styles";
+import { createStyles, makeStyles } from "@material-ui/styles";
 
 export default function GlobalStyles() {
   const useStyles = makeStyles(() =>
@@ -32,4 +32,15 @@ export default function GlobalStyles() {
   );
   useStyles();
   return null;
+};
+
+export const cardStyle = {p: 1, m: 1};
+export const cellStyle = {
+  p: 0.1, m: 0, width: 130,
+  color: 'white',
+  backgroundColor: 'white',
+  // opacity: [0.9, 0.8, 0.7],
+  '&:hover': {
+    backgroundColor: 'white',
+  }
 };

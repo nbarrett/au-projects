@@ -2,16 +2,17 @@ import { Helmet } from "react-helmet";
 import {
     Box,
     Button,
-    Container,
+    FormControl,
+    FormControlLabel,
     Grid,
     IconButton,
     MenuItem,
     Pagination,
+    RadioGroup,
     TextField,
     Tooltip,
     Typography
 } from "@material-ui/core";
-import ProductCard from "./ProductCard";
 import { useSetRecoilState } from "recoil";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -25,19 +26,23 @@ import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
 import useProductData from "../../hooks/use-product-data";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
+import ProductCards from './ProductCards';
+import Radio from '@material-ui/core/Radio';
+import BasicEditingGrid from './BasicEditingGrid';
 
-export default function ProductList() {
+export default function Products() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
     const navbarSearch = useNavbarSearch();
     const productData = useProductData();
     const [filteredProducts, setFilteredProducts] = useState<WithUid<Product>[]>([]);
     const [page, setPage] = useState<number>(1);
+    const [viewAs, setViewAs] = useState<string>("table");
     const pageSizes: number[] = [5].concat(range(10, productData.products.length + 10, 10));
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
 
     useEffect(() => {
         const filteredProducts = fullTextSearch(productData.products, navbarSearch.search);
-        log.info("filtering:", navbarSearch.search, filteredProducts.length, "of", productData.products.length, "filtered");
+        log.debug("filtering:", navbarSearch.search, filteredProducts.length, "of", productData.products.length, "filtered");
         setFilteredProducts(filteredProducts)
         setPage(1);
         const MigrationTasks = [<Button onClick={productData.priceMigration} key={"Migrate products"} sx={{pr: 1}}
@@ -65,7 +70,7 @@ export default function ProductList() {
 
     useEffect(() => {
         if (filteredProducts) {
-            log.info("pages():", pages(), "currentPage()", currentPage());
+            log.debug("pages():", pages(), "currentPage()", currentPage());
         }
     }, [filteredProducts])
 
@@ -78,21 +83,34 @@ export default function ProductList() {
     }
 
     function handlePageChange(event: React.ChangeEvent<unknown>, value: number) {
-        log.info("handlePageChange:", value);
+        log.debug("handlePageChange:", value);
         setPage(value);
     }
 
     return (
         <>
             <Helmet>
-                <title>AU Products</title>
+                <title>Products | AU Projects</title>
             </Helmet>
-            <Box sx={{backgroundColor: "background.default", minHeight: "100%", py: 3}}>
-                <Container maxWidth={false}>
-                    <Box sx={{display: "flex", alignItems: "center", justifyContent: "center", pt: 3}}>
-                        <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
-                        <Pagination color="primary" count={pages().length} size="small" onChange={handlePageChange}/>
-                        <TextField sx={{width: 150, marginRight: 2}} id="items-per-page"
+            <Box sx={{paddingLeft: 0, flexGrow: 1, width: window.innerWidth - 280}}>
+                <Grid container sx={{p: 3, pb: 0}}
+                      justifyContent="space-between"
+                      alignItems="center" spacing={3}>
+                    <Grid item xs>
+                        <FormControl component="fieldset">
+                            <RadioGroup row aria-label="position" defaultValue="table" value={viewAs} onChange={(x) => {
+                                const newValue = x.target.value;
+                                log.info("x.target.value", x.target.value, "newValue", newValue);
+                                setViewAs(newValue)
+                            }} name="row-radio-buttons-group">
+                                <FormControlLabel value={"table"} control={<Radio/>} label="Display as Table"/>
+                                <FormControlLabel value={"cards"} control={<Radio/>} label="Display as Cards"/>
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs>
+                        <TextField id="items-per-page"
+                                   fullWidth
                                    select
                                    size={"small"}
                                    label="products per page"
@@ -100,7 +118,7 @@ export default function ProductList() {
                                    onChange={(event) => {
                                        setItemsPerPage(+event.target.value);
                                        setPage(1)
-                                       log.info("setItemsPerPage:", +event.target.value);
+                                       log.debug("setItemsPerPage:", +event.target.value);
                                    }}
                                    variant="outlined">
                             {pageSizes.map((option, index) => (
@@ -109,18 +127,21 @@ export default function ProductList() {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Box>
-                    <Box sx={{pt: 3}}>
-                        <Grid container spacing={3}>
-                            {currentPage().map((product, index) => (
-                                <Grid item key={product?.uid || product?.data?.title || `new-document-${index}`} lg={4}
-                                      md={6} xs={12}>
-                                    <ProductCard product={product}/>
-                                </Grid>
-                            ))}
-                        </Grid>
-                    </Box>
-                </Container>
+                    </Grid>
+                    <Grid item xs>
+                        <Pagination color="primary" count={pages().length} size="small"
+                                    onChange={handlePageChange}/>
+                    </Grid>
+                    <Grid item xs>
+                        <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
+                    </Grid>
+                </Grid>
+                <Grid container sx={{p: 3}} spacing={3}>
+                    <Grid item xs>
+                        {viewAs === "cards" && <ProductCards products={currentPage()}/>}
+                        {viewAs === "table" && <BasicEditingGrid products={currentPage()}/>}
+                    </Grid>
+                </Grid>
             </Box>
         </>
     );

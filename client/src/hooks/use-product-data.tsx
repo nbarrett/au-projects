@@ -1,12 +1,13 @@
 import { WithUid } from "../models/common-models";
-import { renameField, saveAll, saveAllWithId, subscribe } from "../data-services/firebase-services";
+import { findAll, renameField, saveAll, saveAllWithId, subscribe } from "../data-services/firebase-services";
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 import { productsState } from '../atoms/product-atoms';
-import { Product } from '../models/product-models';
+import { PricingTier, Product } from '../models/product-models';
 import { useSnackbarNotification } from '../snackbarNotification';
 import { newDocument } from '../mappings/document-mappings';
+import { sortBy } from '../util/arrays';
 
 export default function useProductData() {
     const [products, setProducts] = useRecoilState<WithUid<Product>[]>(productsState);
@@ -15,6 +16,7 @@ export default function useProductData() {
         log.debug("Products initial render:", products);
         const unsub = subscribe<Product>("products", setProducts)
         return (() => {
+            log.info("unsub")
             unsub()
         })
     }, [])
@@ -25,7 +27,14 @@ export default function useProductData() {
 
 
     function saveAllProducts() {
-        saveAll<Product>("products", products).then((response) => notification.success(`${products.length} products were saved`));
+        saveAll<Product>("products", products)
+            .then((response) => notification.success(`${products.length} products were saved`))
+            .catch(error => notification.error(error.toString()));
+    }
+
+    function refresh(): void {
+        subscribe<Product>("products", setProducts)
+        notification.success(`Products were refreshed to their previous values`)
     }
 
     function backupProducts() {
@@ -50,6 +59,10 @@ export default function useProductData() {
         return product;
     }
 
-    return {saveAllProducts, priceMigration, backupProducts, products, setProducts, add}
+    function setSingleProduct(product: WithUid<Product>): void {
+        setProducts(products.map(item => item.uid === product.uid ? product : item))
+    }
+
+    return {saveAllProducts, priceMigration, backupProducts, products, setSingleProduct, setProducts, add, refresh}
 
 }

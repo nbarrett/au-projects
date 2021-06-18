@@ -121,7 +121,7 @@ export default function DashboardSidebar() {
                     onClose={() => setMobileNavOpen(false)}
                     open={mobileNavOpen}
                     variant="temporary"
-                    PaperProps={{sx: {width: 256,},}}>
+                    PaperProps={{sx: {width: 256}}}>
                     {content}
                 </Drawer>
             </Box>

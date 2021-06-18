@@ -32,7 +32,7 @@ const DashboardLayoutContainer = experimentalStyled("div")({
 });
 
 const DashboardLayoutContent = experimentalStyled("div")({
-  flex: "1 1 auto",
+  flex: "1 1 auto ",
   height: "100%",
   overflow: "auto",
 });

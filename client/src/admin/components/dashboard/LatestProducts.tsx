@@ -23,7 +23,7 @@ export default function LatestProducts(props) {
     const [products, setProducts] = useState<WithUid<Product>[]>([]);
 
     useEffect(() => {
-        log.info("ProductList initial render");
+        log.info("LatestProducts initial render");
         queryProducts();
     }, [])
 

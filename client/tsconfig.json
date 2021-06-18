@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "plugins": [{ "transform": "ts-transformer-keys/transformer" }],
     "target": "es2019",
     "sourceMap": true,
     "lib": [
@@ -20,7 +21,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": true
+    "strict": false,
+    "strictNullChecks": false
   },
   "include": [
     "src"

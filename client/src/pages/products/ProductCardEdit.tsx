@@ -15,47 +15,17 @@ import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { Product } from "../../models/product-models";
 import * as React from "react";
-import { useEffect, useState } from "react";
-import { log } from "../../util/logging-config";
 import useProductEditing from "../../hooks/use-product-editing";
 import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { useRecoilValue } from "recoil";
-import { productsState } from "../../atoms/product-atoms";
-import { cloneDeep, set } from "lodash";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import { pricePerKg } from '../../mappings/product-mappings';
+import useUniqueValues from '../../hooks/use-unique-values';
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
-    const [product, setProduct] = useState<WithUid<Product>>(props.product);
-    const products = useRecoilValue<WithUid<Product>[]>(productsState);
     const editing = useProductEditing();
-
-    function changeField(field: string, value: any, numeric: boolean) {
-        log.info("productChange:" + product.data.title, "field:", field, "value:", value, "typeof:", typeof value);
-        const mutableProduct: WithUid<Product> = cloneDeep(product);
-        set(mutableProduct, field, numeric ? +value : value)
-        setProduct(mutableProduct);
-    }
-
-    function productChange(event: any) {
-        const field = event.target.name || event.target.id;
-        const value = event.target.value;
-        changeField(field, value, false);
-    }
-
-    function numericProductChange(event: any) {
-        const field = event.target.name || event.target.id;
-        log.info("numericProductChange:field:", field);
-        const value = event.target.value;
-        changeField(field, value, true);
-    }
-
-    useEffect(() => {
-        log.info("changed product:", product);
-    }, [product])
-
+    const uniqueValues = useUniqueValues(editing.products);
     return (
         <Card
             sx={{
@@ -71,8 +41,8 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             fullWidth
                             label="Title"
                             name="data.title"
-                            onChange={productChange}
-                            value={product?.data.title || ""}
+                            onChange={editing.productChange}
+                            value={editing.product?.data.title || ""}
                             variant="outlined"
                         />
                     </Grid>
@@ -85,15 +55,16 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             fullWidth
                             label="Description"
                             name="data.description"
-                            onChange={productChange}
-                            value={product?.data.description || ""}
+                            onChange={editing.productChange}
+                            value={editing.product?.data.description || ""}
                             variant="outlined"
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.specificGravity"} label={"Specific Gravity"}
-                                                        type={"number"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"number"} options={uniqueValues.values.specificGravity}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <TextField
@@ -104,15 +75,16 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             label="Cost Per KG"
                             name="data.costPerKg"
                             type="number"
-                            onChange={numericProductChange}
-                            value={product?.data.costPerKg || ""}
+                            onChange={editing.numericProductChange}
+                            value={editing.product?.data.costPerKg || ""}
                             variant="outlined"
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.markup"} label={"Markup"}
-                                                        type={"number"} allDocuments={products} document={product}
-                                                        onChange={changeField} inputProps={{
+                                                        type={"number"} options={uniqueValues.values.markup}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField} inputProps={{
                             endAdornment: <InputAdornment position="end">%</InputAdornment>,
                         }}/>
                     </Grid>
@@ -126,42 +98,47 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             label="Price Per KG"
                             name="data.pricePerKg"
                             type="number"
-                            value={pricePerKg(product)}
+                            value={pricePerKg(editing.product)}
                             variant="outlined"
                         />
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.type"} label={"Type"}
-                                                        type={"text"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"text"} options={uniqueValues.values.type}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.colour"} label={"Colour"}
-                                                        type={"text"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"text"} options={uniqueValues.values.colour}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.grade"} label={"Grade"}
-                                                        type={"text"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"text"} options={uniqueValues.values.grade}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.hardness"} label={"Hardness"}
-                                                        type={"text"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"text"} options={uniqueValues.values.hardness}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.curingMethod"} label={"Curing Method"}
-                                                        type={"text"} allDocuments={products} document={product}
-                                                        onChange={changeField}/>
+                                                        type={"text"} options={uniqueValues.values.curingMethod}
+                                                        document={editing.product}
+                                                        onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
                             label="Media"
                             name="data.media"
-                            onChange={productChange}
-                            value={product?.data?.media || ""}
+                            onChange={editing.productChange}
+                            value={editing.product?.data?.media || ""}
                             variant="outlined"
                         />
                     </Grid>
@@ -172,7 +149,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
             <Box sx={{p: 2}}>
                 <Grid container spacing={2} sx={{justifyContent: "space-between"}}>
                     <Grid item sx={{alignItems: "center", display: "flex"}}>
-                        <Tooltip title={`Delete ${product?.data?.title}`}>
+                        <Tooltip title={`Delete ${editing.product?.data?.title}`}>
                             <IconButton onClick={() => {
                                 remove<Product>("products", props.product.uid).then(() => editing.toggleProductEdit(props.product.uid || ""));
                             }}>
@@ -184,15 +161,15 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                         alignItems: "center",
                         display: "flex",
                     }}>
-                        <Tooltip title={`Save ${product?.data?.title}`}>
+                        <Tooltip title={`Save ${editing.product?.data?.title}`}>
                             <IconButton onClick={() => {
-                                save<Product>("products", product)
+                                save<Product>("products", editing.product)
                                     .then(() => editing.toggleProductEdit(props.product.uid || ""));
                             }}>
                                 <SaveIcon color="primary"/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={`Undo changes to ${product?.data?.title}`}>
+                        <Tooltip title={`Undo changes to ${editing.product?.data?.title}`}>
                             <IconButton onClick={() => editing.toggleProductEdit(props.product.uid || "")}>
                                 <UndoIcon
                                     color="action"/>

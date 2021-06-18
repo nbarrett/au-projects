@@ -11,22 +11,23 @@ import TableSortLabel from "@material-ui/core/TableSortLabel";
 import Typography from "@material-ui/core/Typography";
 import Checkbox from "@material-ui/core/Checkbox";
 import { visuallyHidden } from "@material-ui/utils";
-import { Avatar, Card, Grid, TablePagination, } from "@material-ui/core";
+import { Card, Grid, TablePagination, } from "@material-ui/core";
 import { companyId } from "../../mappings/company-mappings";
 import useProductData from "../../hooks/use-product-data";
 import useSelectedItems from "../../hooks/use-selected-items";
-import { WithUid } from "../../models/common-models";
+import { CellFormat, DataColumn, WithUid } from "../../models/common-models";
 import { PricedProduct, PricingTier } from "../../models/product-models";
 import { chunk, range } from "lodash";
 import { log } from "../../util/logging-config";
-import { asMoney, fullTextSearch } from "../../util/strings";
+import { fullTextSearch } from "../../util/strings";
 import { useNavbarSearch } from "../../use-navbar-search";
 import { sortBy } from '../../util/arrays';
 import CompanySelector from '../common/CompanySelector';
 import useSingleCompany from '../../hooks/use-single-company';
-import { toPricedProduct } from '../../mappings/product-mappings';
 import usePricingTierMarkupData from '../../hooks/use-product-markup-data';
-import { asNumber } from '../../util/numbers';
+import { TitledMedia, toAlignment } from '../products/ProductComponents';
+import { toPricedProduct } from '../../mappings/product-mappings';
+import { formatCell } from '../../mappings/document-mappings';
 
 
 export default function Prices() {
@@ -46,16 +47,6 @@ export default function Prices() {
   const allowSelection = false;
 
   const cardStyle = {p: 4, m: 2};
-
-  interface DataColumn {
-    fieldName: string;
-    cellFormat: CellFormat;
-    disablePadding: boolean;
-    noWrap: boolean;
-    label: string;
-  }
-
-  enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}
 
   const dataColumns: readonly DataColumn[] = [
     {
@@ -151,20 +142,6 @@ export default function Prices() {
     },
   ];
 
-  function formatCell(pricedProduct: WithUid<PricedProduct>, dataColumn: DataColumn) {
-    const data = pricedProduct.data[dataColumn.fieldName];
-    switch (dataColumn.cellFormat) {
-      case CellFormat.CURRENCY:
-        return asMoney(data, 2, "R");
-      case CellFormat.PERCENT:
-        return asNumber(data, 0) + " %"
-      case CellFormat.NUMERIC:
-        return asNumber(data, 2)
-      default:
-        return data;
-    }
-  }
-
   function applyFilteredProducts(): WithUid<PricedProduct>[] {
     const filteredProducts = fullTextSearch(productData.products, navbarSearch.search).filter(item => currentCompany?.data?.availableProducts?.includes(item.uid));
     const sortByColumn = `${order === "asc" ? "" : "-"}${orderBy}`;
@@ -225,22 +202,6 @@ export default function Prices() {
     const newOrder = order === "asc" ? "desc" : "asc";
     setOrderBy(id);
     setOrder(newOrder)
-  }
-
-  function TitledMedia(props: { pricedProduct: WithUid<PricedProduct> }) {
-    return <Box sx={{
-      alignItems: "center",
-      display: "flex",
-    }}>
-      <Avatar sizes={"sm"} src={props.pricedProduct.data.media} sx={{mr: 2}}/>
-      <Typography noWrap color="textPrimary" variant="body1">
-        {props.pricedProduct.data.title}
-      </Typography>
-    </Box>;
-  }
-
-  function toAlignment(headCell: DataColumn) {
-    return [CellFormat.NUMERIC, CellFormat.CURRENCY, CellFormat.PERCENT].includes(headCell.cellFormat) ? "right" : "left";
   }
 
   return (
@@ -307,7 +268,7 @@ export default function Prices() {
                                 key={dataColumn.fieldName}
                                 align={toAlignment(dataColumn)}
                                 padding={"normal"}>
-                              {index === 0 ? <TitledMedia pricedProduct={pricedProduct}/> :
+                              {index === 0 ? <TitledMedia product={pricedProduct}/> :
                                   formatCell(pricedProduct, dataColumn)}
                             </TableCell>
                         ))}

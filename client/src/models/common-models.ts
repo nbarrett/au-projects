@@ -39,3 +39,22 @@ export interface CellAddress {
     rowIndex: number;
     numeric: boolean;
 }
+
+export enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}
+
+export enum CellComponent {TEXTFIELD, AUTOCOMPLETE}
+
+
+export interface DataColumn {
+    fieldName: string;
+    cellFormat: CellFormat;
+    component?: CellComponent;
+    disablePadding: boolean;
+    disabled?: boolean;
+    noWrap: boolean;
+    label: string;
+}
+
+export interface UniqueValues {
+    [fieldName: string]: any[]
+}
