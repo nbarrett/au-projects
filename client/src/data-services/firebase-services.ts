@@ -43,61 +43,86 @@ export async function renameField<T>(collection: string, fromName: string, toNam
     })
 }
 
-export async function save<T>(collection: string, document: WithUid<T>): Promise<any> {
+export async function save<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<any> {
     if (hasUidWithValue<T>(document)) {
         if (document.markedForDelete) {
-            return remove<T>(collection, document.uid);
+            return remove<T>(collection, document.uid, batch);
         } else {
-            return update<T>(collection, document);
+            return update<T>(collection, document, batch);
         }
     } else {
-        return create<T>(collection, document);
+        return create<T>(collection, document, batch);
     }
 }
 
-export async function saveAll<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
-    return Promise.all(documents.map(document => save<T>(collection, document)));
+export async function saveAll<T>(collection: string, documents: WithUid<T>[]): Promise<any> {
+    const batch: firebase.firestore.WriteBatch = firebaseFirestore().batch();
+    return Promise.all(documents.map(document => save<T>(collection, document, batch))).then(()=> batch.commit());
 }
 
 export async function saveAllWithId<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
-    return Promise.all(documents.map(document => createWithId<T>(collection, document)));
+    const batch: firebase.firestore.WriteBatch = firebaseFirestore().batch();
+    return Promise.all(documents.map(document => createWithId<T>(collection, document, batch)));
 }
 
-export async function update<T>(collection: string, document: WithUid<T>): Promise<boolean> {
+export async function update<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<boolean> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.updatedAt = nowAsValue();
     }
     const documentPath = `${collection}/${mutableData.uid}`;
-    await firebaseFirestore().doc(documentPath).update(mutableData.data as firebase.firestore.UpdateData)
+    const documentRef = firebaseFirestore().doc(documentPath);
+    if (batch) {
+        await batch.update(documentRef, mutableData.data as firebase.firestore.UpdateData);
+    } else {
+        await documentRef.update(mutableData.data as firebase.firestore.UpdateData)
+    }
     log.debug("updated:", documentPath);
     return true;
 }
 
-export async function remove<T>(collection: string, uid: string): Promise<string> {
+export async function remove<T>(collection: string, uid: string, batch?: firebase.firestore.WriteBatch): Promise<string> {
     const documentPath = `${collection}/${uid}`;
-    const userDoc = await firebaseFirestore().doc(documentPath).delete()
-    log.debug("removed:", documentPath, userDoc);
+    const documentReference = firebaseFirestore().doc(documentPath);
+    if (batch) {
+        await batch.delete(documentReference);
+    } else {
+        await documentReference.delete()
+    }
+    log.debug("removed:", documentPath);
     return uid;
 }
 
-export async function create<T>(collection: string, document: WithUid<T>): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
+export async function create<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.createdAt = nowAsValue();
     }
-    const userDoc = await firebaseFirestore().collection(collection).add(mutableData.data);
+    const documentReference = firebaseFirestore().collection(collection).doc();
+    let userDoc;
+    if (batch) {
+        userDoc = await batch.set(documentReference, mutableData.data);
+    } else {
+        userDoc = await documentReference.set(mutableData.data);
+    }
     log.debug("created:", collection, "document:", document, "returned:", userDoc);
     return userDoc;
 }
 
-export async function createWithId<T>(collection: string, document: WithUid<T>): Promise<void> {
+export async function createWithId<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<void> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.createdAt = nowAsValue();
     }
+    const documentReference = firebaseFirestore().collection(collection).doc(mutableData.uid);
 
-    const userDoc = await firebaseFirestore().collection(collection).doc(mutableData.uid).set(mutableData.data);
+    let userDoc;
+    if (batch) {
+        userDoc = await batch.set(documentReference, mutableData.data);
+    } else {
+        userDoc = await documentReference.set(mutableData.data);
+    }
+
     log.debug("created:", collection, "document:", document, "with supplied uid:", mutableData.uid, "returned:", userDoc);
     return userDoc;
 }

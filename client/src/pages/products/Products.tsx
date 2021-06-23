@@ -28,7 +28,7 @@ import useProductData from "../../hooks/use-product-data";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
 import ProductCards from './ProductCards';
 import Radio from '@material-ui/core/Radio';
-import BasicEditingGrid from './BasicEditingGrid';
+import ProductsDataGrid from './ProductsDataGrid';
 
 export default function Products() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -108,7 +108,7 @@ export default function Products() {
                             </RadioGroup>
                         </FormControl>
                     </Grid>
-                    <Grid item xs>
+                    {viewAs === "cards" && <><Grid item xs>
                         <TextField id="items-per-page"
                                    fullWidth
                                    select
@@ -128,18 +128,18 @@ export default function Products() {
                             ))}
                         </TextField>
                     </Grid>
-                    <Grid item xs>
-                        <Pagination color="primary" count={pages().length} size="small"
-                                    onChange={handlePageChange}/>
-                    </Grid>
-                    <Grid item xs>
-                        <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
-                    </Grid>
+                        <Grid item xs>
+                            <Pagination color="primary" count={pages().length} size="small"
+                                        onChange={handlePageChange}/>
+                        </Grid>
+                        <Grid item xs>
+                            <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
+                        </Grid></>}
                 </Grid>
                 <Grid container sx={{p: 3}} spacing={3}>
                     <Grid item xs>
                         {viewAs === "cards" && <ProductCards products={currentPage()}/>}
-                        {viewAs === "table" && <BasicEditingGrid products={currentPage()}/>}
+                        {viewAs === "table" && <ProductsDataGrid products={productData.products}/>}
                     </Grid>
                 </Grid>
             </Box>

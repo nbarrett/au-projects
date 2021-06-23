@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { DataGrid, GridEditCellPropsParams, GridEditRowModelParams, GridToolbar } from '@material-ui/data-grid';
+import { useState } from 'react';
+import { DataGrid, GridEditRowModelParams, GridPageChangeParams, GridToolbar } from '@material-ui/data-grid';
 import useProductData from '../../hooks/use-product-data';
 import { productColumns } from './ProductsTable';
 import { CellFormat, DataColumn, WithUid } from '../../models/common-models';
 import { Product } from '../../models/product-models';
 import { log } from '../../util/logging-config';
 import cloneDeep from 'lodash/cloneDeep';
-import get from 'lodash/get';
 import { columnHasNumber } from './ProductComponents';
 import { Box, Grid, IconButton, Tooltip, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -15,11 +15,11 @@ import UndoIcon from '@material-ui/icons/Undo';
 import { useSnackbarNotification } from '../../snackbarNotification';
 import map from 'lodash/map';
 
-export default function BasicEditingGrid(props: { products: WithUid<Product>[] }) {
-
+export default function ProductsDataGrid(props: { products: WithUid<Product>[] }) {
     const productData = useProductData()
     const inputRows = props.products.map(item => toRow(item));
     const notification = useSnackbarNotification();
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
 
     function handleEditRowModelChange(params: GridEditRowModelParams) {
         map(params.model, ((editedData, uid) => {
@@ -51,14 +51,19 @@ export default function BasicEditingGrid(props: { products: WithUid<Product>[] }
             id: item.fieldName,
             field: item.fieldName.replace("data.", ""),
             headerName: item.label,
-            width: 280,
+            width: 180,
             editable: true,
+            noWrap: true,
             type: item.cellFormat === CellFormat.STRING ? "string" : "number"
         };
     }
 
     function toRow(item: WithUid<Product>) {
         return {id: item.uid, ...item.data};
+    }
+
+    function handlePageSizeChange(value: GridPageChangeParams) {
+        setItemsPerPage(value.pageSize)
     }
 
     return (
@@ -74,14 +79,14 @@ export default function BasicEditingGrid(props: { products: WithUid<Product>[] }
                     </Tooltip>
                 </Grid>
                 <Grid item>
-                    <Tooltip title={`Save all change`}>
+                    <Tooltip title={`Save all product changes`}>
                         <IconButton onClick={() => {
                             productData.saveAllProducts();
                         }}>
                             <SaveIcon color="primary"/>
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title={`Undo all changes`}>
+                    <Tooltip title={`Undo all product changes`}>
                         <IconButton onClick={() => {
                             productData.refresh()
                         }}>
@@ -101,7 +106,10 @@ export default function BasicEditingGrid(props: { products: WithUid<Product>[] }
             <div style={{height: window.innerHeight - 200, width: '100%'}}>
                 <DataGrid components={{
                     Toolbar: GridToolbar,
-                }}isCellEditable={(params) => true}
+                }} pageSize={itemsPerPage}
+                          onPageSizeChange={(value) => handlePageSizeChange(value)}
+                          rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
+                          pagination
                           disableSelectionOnClick
                           onEditRowModelChange={handleEditRowModelChange}
                           checkboxSelection rows={inputRows}
