@@ -1,4 +1,4 @@
-import { chain, isNumber } from "lodash";
+import { chain, isNaN, isNumber } from "lodash";
 import { log } from "./logging-config";
 
 export function sumValues(items: any[], fieldName) {
@@ -20,7 +20,7 @@ export function asNumber(numberString?: any, decimalPlaces?: number): number {
         return numberString;
     }
     const numberValue: string = numberArgumentSupplied ? numberString : parseFloat(numberString.replace(/[^\d.-]/g, ""));
-    if (Number.isNaN(+numberValue)) {
+    if (isNaN(+numberValue)) {
         return 0;
     }
     const returnValue: number = decimalPlacesSupplied ? +parseFloat(numberValue).toFixed(decimalPlaces) : parseFloat(numberValue);

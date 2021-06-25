@@ -2,18 +2,132 @@ import * as React from 'react';
 import { useState } from 'react';
 import { DataGrid, GridEditRowModelParams, GridPageChangeParams, GridToolbar } from '@material-ui/data-grid';
 import useProductData from '../../hooks/use-product-data';
-import { productColumns } from './ProductsTable';
-import { CellFormat, DataColumn, WithUid } from '../../models/common-models';
+import { CellComponent, CellFormat, DataColumn, WithUid } from '../../models/common-models';
 import { Product } from '../../models/product-models';
 import { log } from '../../util/logging-config';
 import cloneDeep from 'lodash/cloneDeep';
-import { columnHasNumber } from './ProductComponents';
 import { Box, Grid, IconButton, Tooltip, Typography } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SaveIcon from '@material-ui/icons/Save';
 import UndoIcon from '@material-ui/icons/Undo';
 import { useSnackbarNotification } from '../../snackbarNotification';
 import map from 'lodash/map';
+import { asCurrency, asPercent, pricePerKgFromRow } from '../../mappings/product-mappings';
+import { first, isNumber, isUndefined, last } from 'lodash';
+
+export const productColumns: readonly DataColumn[] = [
+    {
+        fieldName: "data.title",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.TEXTFIELD,
+        disablePadding: true,
+        noWrap: true,
+        label: "Title",
+    },
+    {
+        fieldName: "data.description",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.TEXTFIELD,
+        disablePadding: true,
+        noWrap: true,
+        label: "Description",
+    },
+    {
+        fieldName: "data.specificGravity",
+        editable: true,
+        cellFormat: CellFormat.NUMERIC,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: true,
+        noWrap: true,
+        label: "Specific Gravity",
+    },
+    {
+        fieldName: "data.costPerKg",
+        editable: true,
+        cellFormat: CellFormat.CURRENCY,
+        component: CellComponent.TEXTFIELD,
+        disablePadding: false,
+        noWrap: true,
+        label: "Cost Per Kg",
+        valueGetter: asCurrency,
+    },
+    {
+        fieldName: "data.markup",
+        editable: true,
+        cellFormat: CellFormat.PERCENT,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Product Markup",
+        valueGetter: asPercent,
+    },
+    {
+        fieldName: "data.pricePerKg",
+        editable: false,
+        cellFormat: CellFormat.CURRENCY,
+        component: CellComponent.TEXTFIELD,
+        disablePadding: false,
+        noWrap: true,
+        label: "Price Per Kg",
+        valueGetter: pricePerKgFromRow,
+    },
+    {
+        fieldName: "data.type",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Type",
+    },
+    {
+        fieldName: "data.colour",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Colour",
+    },
+    {
+        fieldName: "data.grade",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Grade",
+    },
+    {
+        fieldName: "data.hardness",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Hardness",
+    },
+    {
+        fieldName: "data.curingMethod",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.AUTOCOMPLETE,
+        disablePadding: false,
+        noWrap: true,
+        label: "Curing Method",
+    },
+    {
+        fieldName: "data.media",
+        editable: true,
+        cellFormat: CellFormat.STRING,
+        component: CellComponent.TEXTFIELD,
+        disablePadding: false,
+        noWrap: true,
+        label: "Media",
+    },
+];
 
 export default function ProductsDataGrid(props: { products: WithUid<Product>[] }) {
     const productData = useProductData()
@@ -24,10 +138,13 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
     function handleEditRowModelChange(params: GridEditRowModelParams) {
         map(params.model, ((editedData, uid) => {
             map(editedData, ((value, field) => {
-                log.debug("field", field, "value", value.value, "uid", uid);
+
+                log.debug("field", field, "value", value.value, typeof value.value, "uid", uid);
                 const updatedProduct = findProduct(uid);
                 if (updatedProduct) {
-                    updatedProduct.data[field] = cellFieldValue(field, value.value);
+                    const editedValue = cellFieldValue(field, value.value);
+                    updatedProduct.data[field] = editedValue;
+                    value.value = editedValue;
                     log.debug("updatedProduct:", updatedProduct);
                     productData.setSingleProduct(updatedProduct)
                 } else {
@@ -38,8 +155,27 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
     }
 
     function cellFieldValue(field: string, value) {
-        log.debug("value:", value)
-        return columnHasNumber(productColumns.find(item => item.fieldName.endsWith(field))) ? +value : value
+        log.debug("cellFieldValue:value", value, typeof value)
+        const dataColumn: DataColumn = productColumns.find(item => item.fieldName.endsWith(field));
+        let cleanedValue;
+        if (isUndefined(value)) {
+            log.debug("cellFieldValue:cleanedValue:", cleanedValue, "field:", field);
+            cleanedValue = "";
+        } else if (isNumber(value)) {
+            cleanedValue = value;
+        } else {
+            const values = value?.toString()?.split(" ");
+            if (dataColumn.cellFormat === CellFormat.CURRENCY) {
+                cleanedValue = +last(values)
+            } else if (dataColumn.cellFormat === CellFormat.PERCENT) {
+                cleanedValue = +first(values)
+            } else {
+                cleanedValue = values.join(" ");
+            }
+            log.debug("cellFieldValue:values:", values, "cleanedValue:", cleanedValue, "dataColumn:", dataColumn);
+        }
+
+        return cleanedValue
     }
 
     function findProduct(id) {
@@ -52,9 +188,17 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             field: item.fieldName.replace("data.", ""),
             headerName: item.label,
             width: 180,
-            editable: true,
+            editable: item.editable,
             noWrap: true,
-            type: item.cellFormat === CellFormat.STRING ? "string" : "number"
+            type: item.cellFormat === CellFormat.STRING ? "string" : "number",
+            valueGetter: item.valueGetter,
+            sortComparator: (v1, v2, cellParams1, cellParams2) => {
+                const value1 = cellFieldValue(cellParams1.field, cellParams1.value);
+                const value2 = cellFieldValue(cellParams2.field, cellParams2.value);
+                const sortResult = isNumber(value1) ? value1 - value2 : value1.localeCompare(value2);
+                log.debug("value1:", value1, "value2:", value2, "sortResult:", sortResult);
+                return sortResult;
+            },
         };
     }
 
@@ -103,7 +247,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
                     </Typography>
                 </Grid>
             </Grid>
-            <div style={{height: window.innerHeight - 200, width: '100%'}}>
+            <div style={{height: window.innerHeight - 250, width: '100%'}}>
                 <DataGrid components={{
                     Toolbar: GridToolbar,
                 }} pageSize={itemsPerPage}

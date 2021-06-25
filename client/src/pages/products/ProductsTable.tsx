@@ -14,7 +14,7 @@ import { visuallyHidden } from "@material-ui/utils";
 import { companyId } from "../../mappings/company-mappings";
 import useProductData from "../../hooks/use-product-data";
 import useSelectedItems from "../../hooks/use-selected-items";
-import { CellComponent, CellFormat, DataColumn, WithUid } from "../../models/common-models";
+import { WithUid } from "../../models/common-models";
 import { Product } from "../../models/product-models";
 import { log } from "../../util/logging-config";
 import { useNavbarSearch } from "../../use-navbar-search";
@@ -24,106 +24,7 @@ import useProductEditing from '../../hooks/use-product-editing';
 import useUniqueValues from '../../hooks/use-unique-values';
 import { createStyles, makeStyles } from '@material-ui/styles';
 import { cardStyle } from '../../admin/components/GlobalStyles';
-
-export const productColumns: readonly DataColumn[] = [
-  {
-    fieldName: "data.title",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.TEXTFIELD,
-    disablePadding: true,
-    noWrap: true,
-    label: "Title",
-  },
-  {
-    fieldName: "data.description",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.TEXTFIELD,
-    disablePadding: true,
-    noWrap: true,
-    label: "Description",
-  },
-  {
-    fieldName: "data.specificGravity",
-    cellFormat: CellFormat.NUMERIC,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: true,
-    noWrap: true,
-    label: "Specific Gravity",
-  },
-  {
-    fieldName: "data.costPerKg",
-    cellFormat: CellFormat.CURRENCY,
-    component: CellComponent.TEXTFIELD,
-    disablePadding: false,
-    noWrap: true,
-    label: "Cost Per Kg",
-  },
-  {
-    fieldName: "data.markup",
-    cellFormat: CellFormat.PERCENT,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Product Markup",
-  },
-  {
-    fieldName: "data.pricePerKg",
-    cellFormat: CellFormat.CURRENCY,
-    component: CellComponent.TEXTFIELD,
-    disabled: true,
-    disablePadding: false,
-    noWrap: true,
-    label: "Pricing Per Kg",
-  },
-  {
-    fieldName: "data.type",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Type",
-  },
-  {
-    fieldName: "data.colour",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Colour",
-  },
-  {
-    fieldName: "data.grade",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Grade",
-  },
-  {
-    fieldName: "data.hardness",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Hardness",
-  },
-  {
-    fieldName: "data.curingMethod",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.AUTOCOMPLETE,
-    disablePadding: false,
-    noWrap: true,
-    label: "Curing Method",
-  },
-  {
-    fieldName: "data.media",
-    cellFormat: CellFormat.STRING,
-    component: CellComponent.TEXTFIELD,
-    disablePadding: false,
-    noWrap: true,
-    label: "Media",
-  },
-];
+import { productColumns } from './ProductsDataGrid';
 
 export default function ProductsTable(props: { products: WithUid<Product>[] }) {
   const navbarSearch = useNavbarSearch();
@@ -223,7 +124,6 @@ export default function ProductsTable(props: { products: WithUid<Product>[] }) {
                       </TableCell>}
                       <TitledMedia product={product} hideTitle/>{productColumns.map((dataColumn, index) => (
                         <TableCell
-                            // sx={cellStyle}
                             key={dataColumn.fieldName}
                             align={toAlignment(dataColumn)}
                             padding={"none"}>

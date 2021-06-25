@@ -62,7 +62,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.specificGravity"} label={"Specific Gravity"}
-                                                        type={"number"} options={uniqueValues.values.specificGravity}
+                                                        type={"number"} options={uniqueValues.field("specificGravity")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>
@@ -82,7 +82,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.markup"} label={"Markup"}
-                                                        type={"number"} options={uniqueValues.values.markup}
+                                                        type={"number"} options={uniqueValues.field("markup")}
                                                         document={editing.product}
                                                         onChange={editing.changeField} inputProps={{
                             endAdornment: <InputAdornment position="end">%</InputAdornment>,
@@ -104,31 +104,31 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.type"} label={"Type"}
-                                                        type={"text"} options={uniqueValues.values.type}
+                                                        type={"text"} options={uniqueValues.field("type")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.colour"} label={"Colour"}
-                                                        type={"text"} options={uniqueValues.values.colour}
+                                                        type={"text"} options={uniqueValues.field("colour")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.grade"} label={"Grade"}
-                                                        type={"text"} options={uniqueValues.values.grade}
+                                                        type={"text"} options={uniqueValues.field("grade")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.hardness"} label={"Hardness"}
-                                                        type={"text"} options={uniqueValues.values.hardness}
+                                                        type={"text"} options={uniqueValues.field("hardness")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>
                     <Grid item md={6} xs={12}>
                         <DataBoundAutoComplete<Product> field={"data.curingMethod"} label={"Curing Method"}
-                                                        type={"text"} options={uniqueValues.values.curingMethod}
+                                                        type={"text"} options={uniqueValues.field("curingMethod")}
                                                         document={editing.product}
                                                         onChange={editing.changeField}/>
                     </Grid>

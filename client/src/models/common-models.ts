@@ -51,8 +51,11 @@ export interface DataColumn {
     component?: CellComponent;
     disablePadding: boolean;
     disabled?: boolean;
+    editable?: boolean;
     noWrap: boolean;
     label: string;
+    valueGetter?:any;
+    sortComparator?:any;
 }
 
 export interface UniqueValues {

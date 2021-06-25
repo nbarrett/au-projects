@@ -72,33 +72,38 @@ export default function CompanyDetails() {
                 />
             </Grid>
             <Grid item md={6} xs={12}>
-                <DataBoundAutoComplete<Company> field={"data.address.suburb"} label={"Suburb"} type={"text"}
+                <DataBoundAutoComplete<Company> field={"data.address.suburb"} size={"medium"} label={"Suburb"}
+                                                type={"text"}
                                                 onChange={company.changeField} document={company.company}
-                                                options={uniqueValues.values.suburb}/>
+                                                options={uniqueValues.field("address.suburb")}/>
             </Grid>
             <Grid item md={6} xs={12}>
-                <DataBoundAutoComplete<Company> field={"data.address.province"} label={"Province"} type={"text"}
+                <DataBoundAutoComplete<Company> field={"data.address.province"} size={"medium"} label={"Province"}
+                                                type={"text"}
                                                 onChange={company.changeField} document={company.company}
-                                                options={uniqueValues.values.province||[]}/>
+                                                options={uniqueValues.field("address.province")}/>
             </Grid>
             <Grid item md={6} xs={12}>
-                <DataBoundAutoComplete<Company> field={"data.address.postcode"} label={"Postcode"} type={"text"}
+                <DataBoundAutoComplete<Company> field={"data.address.postcode"} size={"medium"} label={"Postcode"}
+                                                type={"text"}
                                                 onChange={company.changeField} document={company.company}
-                                                options={uniqueValues.values.postcode||[]}/>
+                                                options={uniqueValues.field("address.postcode")}/>
             </Grid>
             <Grid item md={6} xs={12}>
-                <DataBoundAutoComplete<Company> field={"data.address.city"} label={"City"} type={"text"}
+                <DataBoundAutoComplete<Company> field={"data.address.city"} size={"medium"} label={"City"} type={"text"}
                                                 onChange={company.changeField} document={company.company}
-                                                options={uniqueValues.values.city||[]}/>
+                                                options={uniqueValues.field("address.city")}/>
             </Grid>
             <Grid item md={6} xs={12}>
-                <DataBoundAutoComplete<Company> field={"data.address.country"} label={"Country"} type={"text"}
+                <DataBoundAutoComplete<Company> field={"data.address.country"} size={"medium"} label={"Country"}
+                                                type={"text"}
                                                 onChange={company.changeField} document={company.company}
-                                                options={uniqueValues.values.country||[]}/>
+                                                options={uniqueValues.field("address.country")}/>
             </Grid>
             <Grid item md={6} xs={12}>
                 <TextField
                     fullWidth
+                    size={"medium"}
                     label="Media"
                     name="data.avatarUrl"
                     onChange={company.companyChange}

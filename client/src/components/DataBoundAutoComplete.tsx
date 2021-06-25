@@ -17,12 +17,10 @@ export function DataBoundAutoComplete<T>(props: {
     const numeric: boolean = props.type === "number";
     const value: string = get(props.document, props.field) || "";
 
-
     function productChange(event?: any) {
         const field = event.target.name || event.target.id;
         const value = event.target.value;
         props.onChange(field, value, numeric);
-
     }
     return (
         <Autocomplete
@@ -33,7 +31,7 @@ export function DataBoundAutoComplete<T>(props: {
             value={value}
             getOptionLabel={item => item?.toString()}
             onChange={(event, value) => props.onChange(props.field, value, numeric)}
-            options={props.options}
+            options={props.options || []}
             renderInput={(params) =>
                 <TextField  {...params}
                     // InputProps={{

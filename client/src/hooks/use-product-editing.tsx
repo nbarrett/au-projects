@@ -5,7 +5,7 @@ import { productsInEditModeState, productsState } from "../atoms/product-atoms";
 import { log } from "../util/logging-config";
 import { CellComponent, CellFormat, DataColumn, WithUid } from '../models/common-models';
 import { Product } from '../models/product-models';
-import { cloneDeep, last, set } from 'lodash';
+import { cloneDeep, set } from 'lodash';
 import { DataBoundAutoComplete } from '../components/DataBoundAutoComplete';
 import { InputAdornment, TextField } from '@material-ui/core';
 import get from 'lodash/get';
@@ -75,7 +75,6 @@ export default function useProductEditing(asTable?: boolean) {
             setEdit([uid].concat(edit));
         }
     }
-
     function cellComponent<T>(document: WithUid<T>, dataColumn: DataColumn) {
         const data = document.data[dataColumn.fieldName];
         const type = dataColumn.cellFormat === CellFormat.NUMERIC ? "number" : "text";
@@ -86,7 +85,7 @@ export default function useProductEditing(asTable?: boolean) {
                                                        sx={cellStyle}
                                                        size={"small"}
                                                        type={type}
-                                                       options={uniqueValues.values[last(dataColumn.fieldName.split("."))]}
+                                                       options={[]}
                                                        document={product}
                                                        onChange={changeField} inputProps={{
                     endAdornment: dataColumn.cellFormat === CellFormat.PERCENT ?

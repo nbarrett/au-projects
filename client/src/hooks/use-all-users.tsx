@@ -10,7 +10,7 @@ export default function useAllUsers() {
     const [users, setUsers] = useRecoilState<WithUid<UserData>[]>(usersState);
 
     useEffect(() => {
-        log.info("Users initial render:", users);
+        log.debug("Users initial render:", users);
         const unsub = subscribe<UserData>("users", setUsers)
         return (() => {
             unsub()
@@ -18,13 +18,13 @@ export default function useAllUsers() {
     }, [])
 
     useEffect(() => {
-        log.info("Users change:", users);
+        log.debug("Users change:", users);
     }, [users])
 
 
     function saveAllUsers() {
         saveAll<UserData>("users", users).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
         });
     }
 

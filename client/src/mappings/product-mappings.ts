@@ -4,6 +4,7 @@ import { stringifyObject } from '../util/strings';
 import { omit } from 'lodash';
 import { asNumber } from '../util/numbers';
 import { log } from '../util/logging-config';
+import { GridValueGetterParams } from '@material-ui/data-grid';
 
 export const DEFAULT_THICKNESSES = [3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 45];
 
@@ -11,10 +12,28 @@ export function productDetails(product: WithUid<Product>): string {
     return stringifyObject(omit(product.data, ["title", "updatedAt", "media"]), null, true);
 }
 
-export function pricePerKg(product: WithUid<Product>): number {
-    const price = asNumber(product?.data?.costPerKg * (product?.data?.markup / 100), 2);
-    log.debug("pricePerKg:costPerKg:", product?.data?.costPerKg, "markup:", product?.data?.markup, "price:", price);
+export function pricePerKgFromRow(params: GridValueGetterParams): string {
+    const product = params.row as Product;
+    const number = pricePerKgFunction(product.costPerKg, product.markup);
+    return number ? "R " + number.toFixed(2) : undefined;
+}
+
+export function asCurrency(params: GridValueGetterParams): string {
+    return params.value ? "R " + asNumber(params.value).toFixed(2) : undefined;
+}
+
+export function asPercent(params: GridValueGetterParams): string {
+    return params.value ? (params.value + " %") : "";
+}
+
+function pricePerKgFunction(costPerKg: number, markup: number): number {
+    const price = asNumber(costPerKg * (markup / 100), 2);
+    log.debug("pricePerKg:costPerKg:", costPerKg, "markup:", markup, "price:", price);
     return price;
+}
+
+export function pricePerKg(product: WithUid<Product>): number {
+    return pricePerKgFunction(product?.data?.costPerKg, product?.data?.markup);
 }
 
 export function salePricePerKg(product: WithUid<Product>, pricingTier: PricingTier): number {

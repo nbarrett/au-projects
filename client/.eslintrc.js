@@ -30,6 +30,7 @@ module.exports = {
   },
   rules: {
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/dot-notation": "off",
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-shadow": "off",
@@ -38,7 +39,7 @@ module.exports = {
     "comma-dangle": "off",
     "func-names": "off",
     "import/first": "off",
-    "import/no-cycle":"off",
+    "import/no-cycle": "off",
     "import/no-unresolved": "off",
     "import/order": "off",
     "import/prefer-default-export": "off",
