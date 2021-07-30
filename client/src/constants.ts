@@ -1,18 +1,19 @@
 export const APP_NAME = "AU Projects";
 
 export enum AppRoute {
-  LOGIN = "login",
   ACCOUNT = "account",
-  USERS = "users",
-  USERS_EDIT = "users/:uid",
   COMPANIES = "companies",
   COMPANIES_EDIT = "companies/:uid",
   DASHBOARD = "dashboard",
-  PRODUCTS = "products",
   EXAMPLE_DASHBOARD = "example-dashboard",
+  LOGIN = "login",
   PRICES = "prices",
   PRICING_SETUP = "pricing-setup",
-  SETTINGS = "settings"
+  PRODUCT_COMPOUNDS = "product-compounds",
+  PRODUCTS = "products",
+  SETTINGS = "settings",
+  USERS = "users",
+  USERS_EDIT = "users/:uid",
 }
 
 export enum PublicRoute {

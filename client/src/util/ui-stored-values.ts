@@ -10,6 +10,7 @@ export enum StoredValue {
   MOBILE_OPEN = "mobile-open",
   NAVBAR_SEARCH = "navbar-search",
   PRICING_TIERS = "pricing-tiers",
+  PRODUCT_COMPOUNDS = "product-compounds",
   PRODUCTS = "products",
   PRODUCTS_IN_EDIT_MODE = "products-in-edit-mode",
   TOOLBAR_BUTTONS = "toolbar-buttons",

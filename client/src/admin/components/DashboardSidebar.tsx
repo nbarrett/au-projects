@@ -35,6 +35,11 @@ const navItems: MenuItem[] = [
         href: AppRoute.PRODUCTS,
         icon: ShoppingBagIcon,
         title: "Products",
+        subItems: [{
+            href: AppRoute.PRODUCT_COMPOUNDS,
+            icon: ShoppingBagIcon,
+            title: "Product Compounds",
+        }]
     },
     {
         href: AppRoute.PRICES,

@@ -15,6 +15,7 @@ import CompanyEdit from "../pages/company/CompanyEdit";
 import ExampleDashboard from '../pages/example-dashboard/ExampleDashboard';
 import Prices from '../pages/prices/Prices';
 import { PricingSetup } from '../pages/price-setup/PricingSetup';
+import { ProductCompounds } from '../pages/products/ProductCompounds';
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -30,6 +31,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.PRICES, element: <Prices/>},
         {path: AppRoute.PRICING_SETUP, element: <PricingSetup/>},
         {path: AppRoute.PRODUCTS, element: <Products/>},
+        {path: AppRoute.PRODUCT_COMPOUNDS, element: <ProductCompounds/>},
         {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],

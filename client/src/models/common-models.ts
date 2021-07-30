@@ -37,7 +37,7 @@ export interface Property {
 export interface CellAddress {
     field: string;
     rowIndex: number;
-    numeric: boolean;
+    numeric?: boolean;
 }
 
 export enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}

@@ -18,7 +18,7 @@ export default function useUniqueValues<T>(allDocuments: WithUid<T>[]) {
     })
 
     function processDocuments(allDocuments: any[], values: UniqueValues) {
-        allDocuments.forEach((document: WithUid<T>) => {
+        allDocuments.forEach((document) => {
             Object.entries(document).forEach((fieldValue: [string, string]) => {
                 const field = fieldValue[0];
                 const value: any = typeof fieldValue[1] === "string" ? fieldValue[1].trim() : fieldValue[1];
