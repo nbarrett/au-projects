@@ -26,9 +26,9 @@ import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
 import useProductData from "../../hooks/use-product-data";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import ProductCards from './ProductCards';
-import Radio from '@material-ui/core/Radio';
-import ProductsDataGrid from './ProductsDataGrid';
+import ProductCards from "./ProductCards";
+import Radio from "@material-ui/core/Radio";
+import ProductsDataGrid from "./ProductsDataGrid";
 
 export default function Products() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -100,7 +100,7 @@ export default function Products() {
                         <FormControl component="fieldset">
                             <RadioGroup row aria-label="position" defaultValue="table" value={viewAs} onChange={(x) => {
                                 const newValue = x.target.value;
-                                log.info("x.target.value", x.target.value, "newValue", newValue);
+                                log.debug("x.target.value", x.target.value, "newValue", newValue);
                                 setViewAs(newValue)
                             }} name="row-radio-buttons-group">
                                 <FormControlLabel value={"table"} control={<Radio/>} label="Display as Table"/>

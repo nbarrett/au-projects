@@ -2,7 +2,7 @@ import { Grid, } from "@material-ui/core";
 import { Product } from "../../models/product-models";
 import * as React from "react";
 import { WithUid } from "../../models/common-models";
-import ProductCard from './ProductCard';
+import ProductCard from "./ProductCard";
 
 export default function ProductCards(props: { products: WithUid<Product>[] }) {
     return <Grid container spacing={3}>

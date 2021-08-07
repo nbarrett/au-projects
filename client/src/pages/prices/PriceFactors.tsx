@@ -5,7 +5,7 @@ import { Card, Grid, InputAdornment, TextField, } from "@material-ui/core";
 import { log } from "../../util/logging-config";
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
-import CompanySelector from '../common/CompanySelector';
+import CompanySelector from "../common/CompanySelector";
 
 export default function PriceFactors() {
   const [percentLosses, setPercentLosses] = useState<number>(10);
@@ -38,7 +38,7 @@ export default function PriceFactors() {
                        value={percentLosses}
                        onChange={(value) => {
                          const losses = value.target.value;
-                         log.info("value:", losses)
+                         log.debug("value:", losses)
                          setPercentLosses(+losses)
                        }}
             >
@@ -55,7 +55,7 @@ export default function PriceFactors() {
                        value={markup}
                        onChange={(value) => {
                          const markup = value.target.value;
-                         log.info("value:", markup)
+                         log.debug("value:", markup)
                          setMarkup(+markup)
                        }}>
             </TextField>

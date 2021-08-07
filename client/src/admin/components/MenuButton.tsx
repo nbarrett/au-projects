@@ -1,11 +1,11 @@
-import { MenuItem } from '../../models/menu-models';
-import { Button } from '@material-ui/core';
-import { NavLink, useLocation } from 'react-router-dom';
-import { SxProps } from '@material-ui/system';
-import { Theme } from '@material-ui/core/styles';
-import { log } from '../../util/logging-config';
+import { MenuItem } from "../../models/menu-models";
+import { Button } from "@material-ui/core";
+import { NavLink, useLocation } from "react-router-dom";
+import { SxProps } from "@material-ui/system";
+import { Theme } from "@material-ui/core/styles";
+import { log } from "../../util/logging-config";
 
-export default function MenuButton(props: { menuItem: MenuItem }) {
+export default function MenuButton(props: { menuItem: MenuItem, omitIcon?: boolean }) {
     const location = useLocation();
     const active = location.pathname.endsWith(props.menuItem.href);
     const buttonTheme: SxProps<Theme> = {
@@ -29,7 +29,7 @@ export default function MenuButton(props: { menuItem: MenuItem }) {
     return (
         <><Button component={NavLink}
                   sx={buttonTheme} to={props.menuItem.href}>
-            {<props.menuItem.icon/>}
+            {props.omitIcon ? null : <props.menuItem.icon/>}
             <span>{props.menuItem.title}</span>
         </Button></>
     );

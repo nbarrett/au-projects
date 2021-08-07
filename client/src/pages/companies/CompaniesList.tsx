@@ -31,8 +31,8 @@ import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
 import useAllUsers from "../../hooks/use-all-users";
 import NamedAvatar from "../users/NamedAvatar";
-import useSelectedItems from '../../hooks/use-selected-items';
-import TableContainer from '@material-ui/core/TableContainer';
+import useSelectedItems from "../../hooks/use-selected-items";
+import TableContainer from "@material-ui/core/TableContainer";
 
 export default function CompaniesList() {
   const navigate = useNavigate();
@@ -90,6 +90,7 @@ export default function CompaniesList() {
                     </TableCell>
                     <TableCell>Action</TableCell>
                     <TableCell>Name</TableCell>
+                    <TableCell>Code</TableCell>
                     <TableCell>Address</TableCell>
                     <TableCell>Primary Contact</TableCell>
                     <TableCell>Phone</TableCell>
@@ -136,9 +137,11 @@ export default function CompaniesList() {
                           </Box>
                         </TableCell>
                         <TableCell>
+                          {company.data.code}
+                        </TableCell>
+                        <TableCell>
                           {`${companyAddress(company.data)}`}
                         </TableCell>
-
                         <TableCell>
                           <NamedAvatar user={contact?.data}/>
                         </TableCell>

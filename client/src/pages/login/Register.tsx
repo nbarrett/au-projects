@@ -67,7 +67,7 @@ const Register = () => {
                 firstName: values.firstName,
                 lastName: values.lastName,
               }).then((response) => {
-                log.info("response:", response);
+                log.debug("response:", response);
                 navigate(APP_DASHBOARD, { replace: true });
               });
             }}

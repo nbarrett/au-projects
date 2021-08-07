@@ -20,8 +20,8 @@ import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
-import { pricePerKg } from '../../mappings/product-mappings';
-import useUniqueValues from '../../hooks/use-unique-values';
+import { pricePerKg } from "../../mappings/product-mappings";
+import useUniqueValues from "../../hooks/use-unique-values";
 
 export default function ProductCardEdit(props: { product: WithUid<Product>, rest?: any[] }) {
     const editing = useProductEditing();

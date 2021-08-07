@@ -20,7 +20,7 @@ export default function Companies() {
     })
 
     useEffect(() => {
-        log.info(companyData.companies);
+        log.debug(companyData.documents);
     })
 
     return (

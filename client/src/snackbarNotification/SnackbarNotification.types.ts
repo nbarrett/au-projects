@@ -1,7 +1,7 @@
-import { Color } from '@material-ui/core/Alert/Alert';
+import { AlertColor } from "@material-ui/core/Alert/Alert";
 
 export type SnackbarNotificationContextState = {
-  variant: Color;
+  variant: AlertColor;
   isOpen: boolean;
   message: string;
 };

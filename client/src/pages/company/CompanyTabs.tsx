@@ -2,19 +2,19 @@ import * as React from "react";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import Box from "@material-ui/core/Box";
-import CompanyDetails from './CompanyDetails';
-import AvailableProducts from './AvailableProducts';
-import AppBar from '@material-ui/core/AppBar';
-import { Divider, Grid, IconButton, Tooltip } from '@material-ui/core';
-import { remove, save } from '../../data-services/firebase-services';
-import { Company } from '../../models/company-models';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SaveIcon from '@material-ui/icons/Save';
-import UndoIcon from '@material-ui/icons/Undo';
-import { useNavigate } from 'react-router-dom';
-import useSingleCompany from '../../hooks/use-single-company';
-import { APP_PATH, AppRoute } from '../../constants';
-import { TabPanelProps } from '../../models/common-models';
+import CompanyDetails from "./CompanyDetails";
+import AvailableProducts from "./AvailableProducts";
+import AppBar from "@material-ui/core/AppBar";
+import { Divider, Grid, IconButton, Tooltip } from "@material-ui/core";
+import { remove, save } from "../../data-services/firebase-services";
+import { Company } from "../../models/company-models";
+import DeleteIcon from "@material-ui/icons/Delete";
+import SaveIcon from "@material-ui/icons/Save";
+import UndoIcon from "@material-ui/icons/Undo";
+import { useNavigate } from "react-router-dom";
+import useSingleCompany from "../../hooks/use-single-company";
+import { APP_PATH, AppRoute } from "../../constants";
+import { TabPanelProps } from "../../models/common-models";
 
 function TabPanel(props: TabPanelProps) {
     const {children, value, index, ...other} = props;
@@ -56,7 +56,7 @@ export default function CompanyTabs() {
     };
 
     return (
-        <Box sx={{bgcolor: 'background.paper'}}>
+        <Box sx={{bgcolor: "background.paper"}}>
             <AppBar position="static">
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" indicatorColor="secondary"
                       textColor="inherit"

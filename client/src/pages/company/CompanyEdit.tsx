@@ -8,7 +8,7 @@ import { WithUid } from "../../models/common-models";
 import { useEffect } from "react";
 import CompanyUsers from "./CompanyUsers";
 import useSingleCompany from "../../hooks/use-single-company";
-import CompanyTabs from './CompanyTabs';
+import CompanyTabs from "./CompanyTabs";
 
 export default function CompanyEdit() {
     const {uid} = useParams();
@@ -16,10 +16,10 @@ export default function CompanyEdit() {
 
     useEffect(() => {
         if (uid === "new") {
-            log.info("Creating new company:");
+            log.debug("Creating new company:");
             company.setCompany({uid: "", data: {}} as WithUid<Company>);
         } else if (uid) {
-            log.info("finding company:", uid);
+            log.debug("finding company:", uid);
             company.findCompany(uid)
         } else {
             log.error("Need to specify company /uid or /new");

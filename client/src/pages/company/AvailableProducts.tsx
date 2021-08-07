@@ -7,12 +7,12 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Checkbox from "@material-ui/core/Checkbox";
 import { Grid, ListItemAvatar, MenuItem, TextField, Typography } from "@material-ui/core";
 import { log } from "../../util/logging-config";
-import { productDetails } from '../../mappings/product-mappings';
-import useSingleCompany from '../../hooks/use-single-company';
-import useSelectedItems from '../../hooks/use-selected-items';
-import useProductData from '../../hooks/use-product-data';
-import { sortBy } from '../../util/arrays';
-import usePricingTierMarkupData from '../../hooks/use-product-markup-data';
+import useSingleCompany from "../../hooks/use-single-company";
+import useSelectedItems from "../../hooks/use-selected-items";
+import useProductData from "../../hooks/use-product-data";
+import { sortBy } from "../../util/arrays";
+import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
+import { productDetails } from "../../constants";
 
 export default function AvailableProducts() {
     const company = useSingleCompany();
@@ -20,7 +20,7 @@ export default function AvailableProducts() {
     const selectedItems = useSelectedItems(company.company.data.availableProducts || []);
     const pricingTierMarkupData = usePricingTierMarkupData(true);
     useEffect(() => {
-        log.info("itemsSelected:", selectedItems.itemsSelected);
+        log.debug("itemsSelected:", selectedItems.itemsSelected);
         company.changeField("data.availableProducts", selectedItems.itemsSelected)
     }, [selectedItems.itemsSelected])
 

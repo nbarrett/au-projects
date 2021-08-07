@@ -1,9 +1,9 @@
-import { CellFormat, DataColumn, WithUid } from '../../models/common-models';
-import { Product } from '../../models/product-models';
-import Box from '@material-ui/core/Box';
-import { Avatar } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import * as React from 'react';
+import { CellFormat, DataColumn, WithUid } from "../../models/common-models";
+import { Product } from "../../models/product-models";
+import Box from "@material-ui/core/Box";
+import { Avatar } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import * as React from "react";
 
 export function TitledMedia(props: { product?: WithUid<Product>, hideTitle?:boolean }) {
     return <Box sx={{
@@ -17,8 +17,13 @@ export function TitledMedia(props: { product?: WithUid<Product>, hideTitle?:bool
     </Box>;
 }
 
-export function columnHasNumber(headCell: DataColumn) {
-    return [CellFormat.NUMERIC, CellFormat.CURRENCY, CellFormat.PERCENT].includes(headCell.cellFormat);
+export function columnHasNumber(headCell: DataColumn): boolean {
+    return cellFormatHasNumber(headCell.cellFormat);
+}
+
+export function cellFormatHasNumber(cellFormat: CellFormat): boolean {
+    const percents: CellFormat[] = [CellFormat.NUMERIC, CellFormat.CURRENCY, CellFormat.PERCENT];
+    return percents.includes(cellFormat);
 }
 
 export function toAlignment(headCell: DataColumn) {

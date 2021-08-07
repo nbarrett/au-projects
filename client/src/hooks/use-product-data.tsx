@@ -3,10 +3,11 @@ import { renameField, saveAll, saveAllWithId, subscribe } from "../data-services
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
-import { productsState } from '../atoms/product-atoms';
-import { Product } from '../models/product-models';
-import { useSnackbarNotification } from '../snackbarNotification';
-import { newDocument } from '../mappings/document-mappings';
+import { productsState } from "../atoms/product-atoms";
+import { Product } from "../models/product-models";
+import { useSnackbarNotification } from "../snackbarNotification";
+import { newDocument } from "../mappings/document-mappings";
+import cloneDeep from "lodash/cloneDeep";
 
 export default function useProductData() {
     const [products, setProducts] = useRecoilState<WithUid<Product>[]>(productsState);
@@ -15,7 +16,7 @@ export default function useProductData() {
         log.debug("Products initial render:", products);
         const unsub = subscribe<Product>("products", setProducts)
         return (() => {
-            log.info("unsub")
+            log.debug("unsub")
             unsub()
         })
     }, [])
@@ -33,7 +34,7 @@ export default function useProductData() {
 
     function refresh(): void {
         subscribe<Product>("products", setProducts)
-        notification.success(`Products were refreshed to their previous values`)
+        notification.success("Products were refreshed to their previous values")
     }
 
     function backupProducts() {
@@ -62,6 +63,10 @@ export default function useProductData() {
         setProducts(products.map(item => item.uid === product.uid ? product : item))
     }
 
-    return {saveAllProducts, priceMigration, backupProducts, products, setSingleProduct, setProducts, add, refresh}
+    function findProduct(id): WithUid<Product> {
+        return cloneDeep(products.find(item => item.uid === id));
+    }
+
+    return {saveAllProducts, priceMigration, backupProducts, products, setSingleProduct, setProducts, add, refresh, findProduct}
 
 }

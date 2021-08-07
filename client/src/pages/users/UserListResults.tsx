@@ -79,14 +79,14 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
   };
 
   function handleChange(event?: any, value?: any): any {
-    log.info("value:", value)
+    log.debug("value:", value)
   }
 
   function userChange(event: any, user: WithUid<UserData>) {
     const value = event.target.value;
     const mutableUser: WithUid<UserData> = cloneDeep(user);
     mutableUser.data.companyId = value;
-    log.info("userChange:" + value, "mutableUser:", mutableUser);
+    log.debug("userChange:" + value, "mutableUser:", mutableUser);
     allUsers.setOne(mutableUser)
   }
 
@@ -138,7 +138,7 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
                               label="Works for"
                               value={user.data.companyId || ""}
                               onChange={(event) => userChange(event, user)}>
-                            {companyData.companies.map((option) => (
+                            {companyData.documents.map((option) => (
                                 <MenuItem key={option.uid} value={option.uid}>
                                   {option.data.name}
                                 </MenuItem>

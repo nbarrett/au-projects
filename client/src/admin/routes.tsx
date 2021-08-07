@@ -12,10 +12,12 @@ import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../
 import Companies from "../pages/companies/Companies";
 import { Settings } from "../pages/settings/Settings";
 import CompanyEdit from "../pages/company/CompanyEdit";
-import ExampleDashboard from '../pages/example-dashboard/ExampleDashboard';
-import Prices from '../pages/prices/Prices';
-import { PricingSetup } from '../pages/price-setup/PricingSetup';
-import { ProductCompounds } from '../pages/products/ProductCompounds';
+import ExampleDashboard from "../pages/example-dashboard/ExampleDashboard";
+import Prices from "../pages/prices/Prices";
+import { PricingSetup } from "../pages/price-setup/PricingSetup";
+import { ProductCodings } from "../pages/products/ProductCodings";
+import { ProductCodingType } from "../models/product-models";
+import { productRoute } from "../mappings/product-mappings";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -31,7 +33,26 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.PRICES, element: <Prices/>},
         {path: AppRoute.PRICING_SETUP, element: <PricingSetup/>},
         {path: AppRoute.PRODUCTS, element: <Products/>},
-        {path: AppRoute.PRODUCT_COMPOUNDS, element: <ProductCompounds/>},
+        {
+          path: productRoute(ProductCodingType.HARDNESS),
+          element: <ProductCodings productCodingType={ProductCodingType.HARDNESS}/>
+        },
+        {
+          path: productRoute(ProductCodingType.COMPOUND),
+          element: <ProductCodings productCodingType={ProductCodingType.COMPOUND}/>
+        },
+        {
+          path: productRoute(ProductCodingType.COLOUR),
+          element: <ProductCodings productCodingType={ProductCodingType.COLOUR}/>
+        },
+        {
+          path: productRoute(ProductCodingType.GRADE),
+          element: <ProductCodings productCodingType={ProductCodingType.GRADE}/>
+        },
+        {
+          path: productRoute(ProductCodingType.CURING_METHOD),
+          element: <ProductCodings productCodingType={ProductCodingType.CURING_METHOD}/>
+        },
         {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],

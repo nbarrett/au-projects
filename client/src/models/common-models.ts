@@ -42,19 +42,17 @@ export interface CellAddress {
 
 export enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}
 
-export enum CellComponent {TEXTFIELD, AUTOCOMPLETE}
-
-
 export interface DataColumn {
-    fieldName: string;
+    renderEditCell?: any;
+    renderCell?: any;
+    fieldName?: string;
     cellFormat: CellFormat;
-    component?: CellComponent;
     disablePadding: boolean;
     disabled?: boolean;
     editable?: boolean;
     noWrap: boolean;
     label: string;
-    valueGetter?:any;
+    valueFormatter?:any;
     sortComparator?:any;
 }
 

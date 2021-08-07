@@ -3,7 +3,7 @@ import { log } from "../util/logging-config";
 import firebase from "firebase/app";
 import { nowAsValue } from "../util/dates";
 import { cloneDeep } from "lodash";
-import { asNumber } from '../util/numbers';
+import { asNumber } from "../util/numbers";
 
 export function firebaseFirestore() {
     return firebase.app().firestore();

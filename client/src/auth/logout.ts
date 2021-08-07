@@ -17,7 +17,7 @@ export const useLogout = () => {
                 .signOut()
                 .then(() => {
                     localStorage.removeItem("account_ids");
-                    log.info?.("location.pathname", location.pathname)
+                    log.debug?.("location.pathname", location.pathname)
                     if (!location.pathname.includes(PublicRoute.LOGIN)) {
                         navigate(`/${PublicRoute.LOGIN}`, {replace: true});
                     }

@@ -1,7 +1,7 @@
 import { atom } from "recoil";
 import { StoredValue } from "../util/ui-stored-values";
 import { WithUid } from "../models/common-models";
-import { PricingTier, Product, ProductCompound } from "../models/product-models";
+import { PricingTier, Product, ProductCoding, } from "../models/product-models";
 
 export const productsInEditModeState = atom<string[]>({
   key: StoredValue.PRODUCTS_IN_EDIT_MODE,
@@ -18,8 +18,8 @@ export const pricingTierState = atom<WithUid<PricingTier>[]>({
   default: []
 });
 
-export const productCompoundState = atom<WithUid<ProductCompound>[]>({
-  key: StoredValue.PRODUCT_COMPOUNDS,
+export const productCodingState = atom<WithUid<ProductCoding>[]>({
+  key: StoredValue.PRODUCT_CODING,
   default: []
 });
 

@@ -16,23 +16,23 @@ import {
 import React, { useEffect } from "react";
 import { EditableTableCell } from "./EditableTableCell";
 import { log } from "../../util/logging-config";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from "@material-ui/icons/Delete";
 import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
 import { CellAddress, WithUid } from "../../models/common-models";
 import { PricingTier } from "../../models/product-models";
 import AddchartIcon from "@material-ui/icons/Addchart";
-import { Helmet } from 'react-helmet';
-import SaveIcon from '@material-ui/icons/Save';
-import UndoIcon from '@material-ui/icons/Undo';
+import { Helmet } from "react-helmet";
+import SaveIcon from "@material-ui/icons/Save";
+import UndoIcon from "@material-ui/icons/Undo";
 import { set } from "lodash";
-import { asNumber } from '../../util/numbers';
-import { useSnackbarNotification } from '../../snackbarNotification';
+import { asNumber } from "../../util/numbers";
+import { useSnackbarNotification } from "../../snackbarNotification";
 
 export function PricingSetup() {
     const pricingTierMarkupData = usePricingTierMarkupData(false);
     const notification = useSnackbarNotification();
     useEffect(() => {
-        log.info("PricingSetup:initial render")
+        log.debug("PricingSetup:initial render")
     }, []);
 
     function markForDelete(uid: string) {
@@ -54,7 +54,7 @@ export function PricingSetup() {
         const value = event.target.value;
         const index: number = address.rowIndex;
         const updates: WithUid<PricingTier>[] = pricingTierMarkupData.mutablePricingTiers();
-        log.info("onChange:value", value, typeof value, "address:", address, "updates:", updates);
+        log.debug("onChange:value", value, typeof value, "address:", address, "updates:", updates);
         set(updates[index], address.field, address.numeric ? asNumber(value) : value);
         pricingTierMarkupData.setPricingTiers(updates)
     }

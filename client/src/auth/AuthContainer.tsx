@@ -1,36 +1,31 @@
-import {
-  Container,
-  ContainerProps,
-  Paper,
-  useMediaQuery,
-} from "@material-ui/core";
-import { makeStyles, createStyles } from "@material-ui/styles";
+import { Container, ContainerProps, Paper, useMediaQuery, } from "@material-ui/core";
+import { createStyles, makeStyles } from "@material-ui/styles";
 import { ReactNode } from "react";
-import { PRIMARY_GRADIENT  } from "../theme/theme";
+import { PRIMARY_GRADIENT } from "../theme/theme";
 import { Theme } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      width: "100vw",
-      height: "100vh",
-      backgroundImage: PRIMARY_GRADIENT,
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    paper: {
-      width: "100%",
-      [theme.breakpoints.down("xs")]: {
+    createStyles({
+      root: {
         width: "100vw",
         height: "100vh",
-        borderRadius: 0,
+        backgroundImage: PRIMARY_GRADIENT,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
       },
-      overflowY: "auto",
-      padding: 0,
-      opacity: 0.9,
-    },
-  })
+      paper: {
+        width: "100%",
+        [theme.breakpoints.down("xs")]: {
+          width: "100vw",
+          height: "100vh",
+          borderRadius: 0,
+        },
+        overflow: "auto",
+        padding: 0,
+        opacity: 0.9,
+      },
+    })
 );
 
 type AuthContainerProps = {

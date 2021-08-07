@@ -13,5 +13,9 @@ export function companyAddress(company: Company): string {
 }
 
 export function companyId(company: WithUid<Company>): string {
-    return company.uid || company.data.id || "new";
+    return company.uid || "new";
+}
+
+export function companyCodeAndName(company: WithUid<Company>) {
+    return company?.data?.code ? `${company?.data?.name}` : null;
 }

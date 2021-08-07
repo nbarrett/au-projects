@@ -1,10 +1,10 @@
 import { log } from "../../util/logging-config";
 import { TableCell, TextField } from "@material-ui/core";
 import React, { useEffect } from "react";
-import { CellAddress } from '../../models/common-models';
-import { makeStyles } from '@material-ui/styles';
-import { Theme } from '@material-ui/core/styles';
-import { InputProps as StandardInputProps } from '@material-ui/core/Input/Input';
+import { CellAddress } from "../../models/common-models";
+import { makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
+import { InputProps as StandardInputProps } from "@material-ui/core/Input/Input";
 import isNumber from "lodash/isNumber";
 
 export function EditableTableCell(props: { inputProps?: Partial<StandardInputProps>, value: string | number, address: CellAddress, onChange: (event: any, address: CellAddress) => void }) {

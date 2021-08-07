@@ -12,7 +12,7 @@ export const useSigninWithEmail = () => {
     password,
     rememberMe,
   }: UseSigninWithEmailProps): Promise<any> {
-    log.info("about to login:setPersistence");
+    log.debug("about to login:setPersistence");
     await firebase
         .auth()
         .setPersistence(
@@ -20,7 +20,7 @@ export const useSigninWithEmail = () => {
                 ? firebase.auth.Auth.Persistence.LOCAL
                 : firebase.auth.Auth.Persistence.SESSION
         );
-    log.info("about to login:signInWithEmailAndPassword");
+    log.debug("about to login:signInWithEmailAndPassword");
     return firebase.auth().signInWithEmailAndPassword(email, password).catch(error => {
       log.error("error happened during login:", error);
       if (error.code === "auth/wrong-password") {
@@ -49,7 +49,7 @@ export function useSignupWithEmail() {
   }: SignupWithEmailProps): Promise<any> {
     const emailNoSpaces = email.replace(/ /g, "");
     try {
-      log.info("SignupWithEmail:email", emailNoSpaces, "password:", password);
+      log.debug("SignupWithEmail:email", emailNoSpaces, "password:", password);
       firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
       const userCredential: firebase.auth.UserCredential = await firebase
         .auth()
@@ -61,14 +61,14 @@ export function useSignupWithEmail() {
         .collection("users")
         .doc(uid)
         .set(user);
-      log.info("created new user with email:", emailNoSpaces, "uid:", newUser);
+      log.debug("created new user with email:", emailNoSpaces, "uid:", newUser);
       const verificationResult = await userCredential.user
         ?.sendEmailVerification()
         .catch(function (error) {
           log.error("sendEmailVerification failed with error:", error);
           return Promise.reject(notification.error(error));
         });
-      log.info("sendEmailVerification result:", verificationResult);
+      log.debug("sendEmailVerification result:", verificationResult);
       return newUser;
     } catch (error) {
       let registrationError = "Error registering account";

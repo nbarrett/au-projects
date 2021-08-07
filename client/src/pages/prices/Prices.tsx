@@ -21,13 +21,13 @@ import { chunk, range } from "lodash";
 import { log } from "../../util/logging-config";
 import { fullTextSearch } from "../../util/strings";
 import { useNavbarSearch } from "../../use-navbar-search";
-import { sortBy } from '../../util/arrays';
-import CompanySelector from '../common/CompanySelector';
-import useSingleCompany from '../../hooks/use-single-company';
-import usePricingTierMarkupData from '../../hooks/use-product-markup-data';
-import { TitledMedia, toAlignment } from '../products/ProductComponents';
-import { toPricedProduct } from '../../mappings/product-mappings';
-import { formatCell } from '../../mappings/document-mappings';
+import { sortBy } from "../../util/arrays";
+import CompanySelector from "../common/CompanySelector";
+import useSingleCompany from "../../hooks/use-single-company";
+import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
+import { TitledMedia, toAlignment } from "../products/ProductComponents";
+import { toPricedProduct } from "../../mappings/product-mappings";
+import { formatCell } from "../../mappings/document-mappings";
 
 
 export default function Prices() {
@@ -43,7 +43,7 @@ export default function Prices() {
   const [rowsPerPage, setRowsPerPage] = useState<number>(20);
   const [companyPricingTier, setCompanyPricingTier] = useState<PricingTier>();
   const [orderBy, setOrderBy] = useState<string>("data.title");
-  const [order, setOrder] = useState<'asc' | 'desc'>('asc');
+  const [order, setOrder] = useState<"asc" | "desc">("asc");
   const allowSelection = false;
 
   const cardStyle = {p: 4, m: 2};

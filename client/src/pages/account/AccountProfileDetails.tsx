@@ -15,14 +15,14 @@ export default function AccountProfileDetails(props: any) {
     const [userDataEdit, setUserDataEdit] = useState<UserData>(userData);
 
     useEffect(() => {
-        log.info("useEffect:user:", user);
+        log.debug("useEffect:user:", user);
         if (user) {
             setUserEdit(user)
         }
     }, [user])
 
     useEffect(() => {
-        log.info("useEffect:userData:", userData);
+        log.debug("useEffect:userData:", userData);
         if (userData) {
             setUserDataEdit(userData)
         }
@@ -31,7 +31,7 @@ export default function AccountProfileDetails(props: any) {
     const userDataChange = (event?: any) => {
         const field = event.target.name;
         const value = event.target.value;
-        log.info("userDataChange:   field:", field, "value:", value);
+        log.debug("userDataChange:   field:", field, "value:", value);
         setUserDataEdit({
             ...userDataEdit,
             [field]: value,
@@ -41,7 +41,7 @@ export default function AccountProfileDetails(props: any) {
     const userChange = (event?: any) => {
         const field = event.target.name;
         const value = event.target.value;
-        log.info("userChange:field:", field, "value:", value);
+        log.debug("userChange:field:", field, "value:", value);
         setUserEdit({
             ...userEdit,
             [field]: value,
@@ -111,14 +111,14 @@ export default function AccountProfileDetails(props: any) {
                     }}
                 >
                     <Button color="primary" variant="contained" onClick={() => {
-                        log.info("saving ", userEdit, "and", userDataEdit)
+                        log.debug("saving ", userEdit, "and", userDataEdit)
                         if (user.email !== userEdit.email) {
                             setUser(userEdit)
                             const message = `${userEdit.email} will need to be verified before your next login, so please respond to an email in your inbox`;
-                            log.info("showing message:", message);
+                            log.debug("showing message:", message);
                             notification.success(message);
                         } else {
-                            log.info("no change to user's email")
+                            log.debug("no change to user's email")
                         }
                         setUserData(userDataEdit)
                     }}>

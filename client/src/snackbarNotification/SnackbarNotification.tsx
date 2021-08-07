@@ -1,20 +1,15 @@
 import { AlertProps, Slide, Snackbar, } from "@material-ui/core";
 import { TransitionProps } from "@material-ui/core/transitions/transition";
 import { useSnackbarNotification } from "./SnackbarNotificationContext";
-import MuiAlert from '@material-ui/core/Alert';
-import React from 'react';
+import MuiAlert from "@material-ui/core/Alert";
+import React from "react";
 
 function SlideTransition(props: TransitionProps) {
     return <Slide {...props} direction="up"/>;
 }
 
 export const SnackbarNotification = () => {
-    const {
-        isOpen,
-        message,
-        variant,
-        closeNotification,
-    } = useSnackbarNotification();
+    const {isOpen, message, variant, closeNotification} = useSnackbarNotification();
     const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
         props,
         ref,
@@ -29,7 +24,7 @@ export const SnackbarNotification = () => {
             open={isOpen}
             autoHideDuration={5000}
             onClose={closeNotification}>
-            <Alert onClose={closeNotification} severity={variant} sx={{width: '100%'}}>
+            <Alert onClose={closeNotification} severity={variant} sx={{width: "100%"}}>
                 {message}
                 </Alert>
         </Snackbar>

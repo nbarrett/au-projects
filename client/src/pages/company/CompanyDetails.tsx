@@ -4,15 +4,15 @@ import { Company } from "../../models/company-models";
 import useCompanyData from "../../hooks/use-company-data";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import useSingleCompany from "../../hooks/use-single-company";
-import useUniqueValues from '../../hooks/use-unique-values';
+import useUniqueValues from "../../hooks/use-unique-values";
 
 export default function CompanyDetails() {
     const company = useSingleCompany();
     const companyData = useCompanyData();
-    const uniqueValues = useUniqueValues(companyData.companies);
+    const uniqueValues = useUniqueValues(companyData.documents);
     return (
         <Grid container spacing={3}>
-            <Grid item xs={12}>
+            <Grid item xs={10}>
                 <TextField
                     fullWidth
                     autoComplete="off"
@@ -20,6 +20,17 @@ export default function CompanyDetails() {
                     name="data.name"
                     onChange={company.companyChange}
                     value={company.company?.data?.name || ""}
+                    variant="outlined"
+                />
+            </Grid>
+            <Grid item xs={2}>
+                <TextField
+                    fullWidth
+                    autoComplete="off"
+                    label="Code"
+                    name="data.code"
+                    onChange={company.companyChange}
+                    value={company.company?.data?.code || ""}
                     variant="outlined"
                 />
             </Grid>

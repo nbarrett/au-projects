@@ -18,17 +18,17 @@ export default function Login() {
     const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
 
     useEffect(() => {
-        log.info("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+        log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
         if (!loading && user?.uid && !user?.emailVerified) {
             setShowVerifyEmail(true);
             const message = `${user.email} has not yet been verified so please respond to an email in your inbox`;
-            log.info("showing message:", message);
+            log.debug("showing message:", message);
             notification.error(message);
         }
     }, [user, loading])
 
     function resendVerification() {
-        log.info("Login:resendVerification user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+        log.debug("Login:resendVerification user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
         if (user) {
             user.sendEmailVerification();
             logout();
@@ -69,9 +69,9 @@ export default function Login() {
                                 password: values.password,
                                 rememberMe: values.rememberMe,
                             };
-                            log.info("Login:signinData", signinData);
+                            log.debug("Login:signinData", signinData);
                             signinWithEmail(signinData).then(response => {
-                                log.info("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+                                log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
                                 if (!loading) {
                                     actions.setSubmitting(false);
                                 }

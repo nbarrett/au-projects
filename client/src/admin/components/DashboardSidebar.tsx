@@ -15,10 +15,12 @@ import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { AppRoute } from "../../constants";
 import { UserData } from "../../models/user-models";
 import { lgDownHidden, lgUpHidden } from "../../display/display";
-import { MenuItem } from '../../models/menu-models';
-import NavItem from './NavItem';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import * as React from 'react';
+import { MenuItem } from "../../models/menu-models";
+import NavItem from "./NavItem";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import * as React from "react";
+import { ProductCodingType } from "../../models/product-models";
+import { productRoute } from "../../mappings/product-mappings";
 
 const navItems: MenuItem[] = [
     {
@@ -35,11 +37,27 @@ const navItems: MenuItem[] = [
         href: AppRoute.PRODUCTS,
         icon: ShoppingBagIcon,
         title: "Products",
-        subItems: [{
-            href: AppRoute.PRODUCT_COMPOUNDS,
-            icon: ShoppingBagIcon,
-            title: "Product Compounds",
-        }]
+        subItems: [
+            {
+                href: productRoute(ProductCodingType.COMPOUND),
+                title: "Compounds",
+            },
+            {
+                href: productRoute(ProductCodingType.COLOUR),
+                title: "Colours",
+            },
+            {
+                href: productRoute(ProductCodingType.CURING_METHOD),
+                title: "Curing Methods",
+            },
+            {
+                href: productRoute(ProductCodingType.GRADE),
+                title: "Grades",
+            },
+            {
+                href: productRoute(ProductCodingType.HARDNESS),
+                title: "Hardnesses",
+            }]
     },
     {
         href: AppRoute.PRICES,

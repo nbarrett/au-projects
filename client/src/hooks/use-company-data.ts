@@ -7,27 +7,31 @@ import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 
 export default function useCompanyData() {
-    const [companies, setCompanies] = useRecoilState<WithUid<Company>[]>(companiesState);
-
+    const [documents, setDocuments] = useRecoilState<WithUid<Company>[]>(companiesState);
+    const collection = "companies";
     useEffect(() => {
-        log.debug("Companies initial render:", companies);
-        const unsub = subscribe<Company>("companies", setCompanies)
+        log.debug("Companies initial render:", documents);
+        const unsub = subscribe<Company>(collection, setDocuments)
         return (() => {
             unsub()
         })
     }, [])
 
     useEffect(() => {
-        log.debug("Companies change:", companies);
-    }, [companies])
+        log.debug("Companies change:", documents);
+    }, [documents])
 
 
     function saveAllCompanies() {
-        saveAll<Company>("companies", companies).then((response) => {
+        saveAll<Company>(collection, documents).then((response) => {
             log.debug("response was:", response)
         });
     }
 
-    return {saveAllCompanies, companies, setCompanies}
+    function companyForUid(uid: string): WithUid<Company> {
+        return documents?.find(company => company?.uid === uid);
+    }
+
+    return {saveAllCompanies, companyForUid, documents, setDocuments}
 
 }

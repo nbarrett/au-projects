@@ -4,10 +4,11 @@ import isNumber from "lodash/isNumber";
 import isObject from "lodash/isObject";
 import map from "lodash/map";
 import startCase from "lodash/startCase";
+import toLower from "lodash/toLower";
 import { log } from "./logging-config";
 import { UserData } from "../models/user-models";
 import { v4 as uuidv4 } from "uuid";
-import { asNumber } from './numbers';
+import { asNumber } from "./numbers";
 
 export function replaceAll(find: any, replace: any, str: any): string | number {
   let replacedValue;
@@ -66,6 +67,10 @@ export function asMoney(numberString: number | undefined, decimalPlaces: number,
 export function stripLineBreaks(str, andTrim: boolean) {
   const replacedValue = str.replace(/(\r\n|\n|\r)/gm, "");
   return andTrim && replacedValue ? replacedValue.trim() : replacedValue;
+}
+
+export function titleCase(str): string {
+  return startCase(toLower(str));
 }
 
 export function left(str, chars) {

@@ -2,7 +2,7 @@ import { ReactNode, useState } from "react";
 import { SnackbarNotification } from "./SnackbarNotification";
 import { SnackbarNotificationContextState, } from "./SnackbarNotification.types";
 import { SnackbarNotificationContext } from "./SnackbarNotificationContext";
-import { Color } from '@material-ui/core/Alert/Alert';
+import { AlertColor } from "@material-ui/core/Alert/Alert";
 
 type SnackbarNotificationProviderProps = {
   children: ReactNode;
@@ -18,7 +18,7 @@ export const SnackbarNotificationProvider = ({
   });
 
   const showNotification = (
-      variant: Color,
+      variant: AlertColor,
       message: string
   ) => {
     setState({

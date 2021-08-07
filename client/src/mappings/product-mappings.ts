@@ -1,15 +1,13 @@
 import { WithUid } from "../models/common-models";
-import { PricedProduct, PricingTier, Product } from '../models/product-models';
-import { stringifyObject } from '../util/strings';
-import { omit } from 'lodash';
-import { asNumber } from '../util/numbers';
-import { log } from '../util/logging-config';
-import { GridValueGetterParams } from '@material-ui/data-grid';
+import { PricedProduct, PricingTier, Product, ProductCodingType } from "../models/product-models";
+import { asNumber } from "../util/numbers";
+import { log } from "../util/logging-config";
+import { GridValueGetterParams } from "@material-ui/data-grid";
+import { AppRoute } from "../constants";
+import kebabCase from "lodash/kebabCase";
 
-export const DEFAULT_THICKNESSES = [3, 4, 5, 6, 7, 8, 9, 10, 12, 15, 20, 25, 30, 35, 40, 45];
-
-export function productDetails(product: WithUid<Product>): string {
-    return stringifyObject(omit(product.data, ["title", "updatedAt", "media"]), null, true);
+export function productRoute(type: ProductCodingType): string {
+    return `${AppRoute.PRODUCTS}/${kebabCase(type)}`;
 }
 
 export function pricePerKgFromRow(params: GridValueGetterParams): string {
@@ -19,6 +17,7 @@ export function pricePerKgFromRow(params: GridValueGetterParams): string {
 }
 
 export function asCurrency(params: GridValueGetterParams): string {
+    log.debug("asCurrency:", params.value);
     return params.value ? "R " + asNumber(params.value).toFixed(2) : undefined;
 }
 

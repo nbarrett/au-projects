@@ -3,10 +3,10 @@ import { findAll, saveAll, subscribe } from "../data-services/firebase-services"
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
-import { PricingTier } from '../models/product-models';
-import { pricingTierState } from '../atoms/product-atoms';
-import cloneDeep from 'lodash/cloneDeep';
-import { sortBy } from '../util/arrays';
+import { PricingTier } from "../models/product-models";
+import { pricingTierState } from "../atoms/product-atoms";
+import cloneDeep from "lodash/cloneDeep";
+import { sortBy } from "../util/arrays";
 
 export default function usePricingTierMarkupData(subscribeToUpdates: boolean) {
     const [pricingTiers, setPricingTiers] = useRecoilState<WithUid<PricingTier>[]>(pricingTierState);

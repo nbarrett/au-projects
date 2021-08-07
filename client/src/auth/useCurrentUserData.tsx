@@ -20,10 +20,10 @@ export function useCurrentUserData() {
         .then((userData) => {
           if (userData.exists) {
             const data = userData.data();
-            log.info("userData found:", data);
+            log.debug("userData found:", data);
             setUserData(data as UserData);
           } else {
-            log.info("userData doesnt exist");
+            log.debug("userData doesnt exist");
           }
         });
     }

@@ -10,19 +10,19 @@ export default function useSingleUser() {
     const [user, setUser] = useRecoilState<WithUid<UserData>>(userState);
 
     useEffect(() => {
-        log.info("User change:", user);
+        log.debug("User change:", user);
     }, [user])
 
 
     function saveUser() {
         save<UserData>("users", user).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
         });
     }
 
     function findUser(uid: string) {
         find<UserData>("users", uid).then((response) => {
-            log.info("response was:", response)
+            log.debug("response was:", response)
             setUser(response)
         });
     }
