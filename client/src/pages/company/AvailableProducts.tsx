@@ -12,13 +12,15 @@ import useSelectedItems from "../../hooks/use-selected-items";
 import useProductData from "../../hooks/use-product-data";
 import { sortBy } from "../../util/arrays";
 import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
-import { productDetails } from "../../constants";
+import useProductCoding from "../../hooks/use-product-coding";
 
 export default function AvailableProducts() {
     const company = useSingleCompany();
     const productData = useProductData()
+    const productCoding = useProductCoding()
     const selectedItems = useSelectedItems(company.company.data.availableProducts || []);
     const pricingTierMarkupData = usePricingTierMarkupData(true);
+
     useEffect(() => {
         log.debug("itemsSelected:", selectedItems.itemsSelected);
         company.changeField("data.availableProducts", selectedItems.itemsSelected)
@@ -71,8 +73,8 @@ export default function AvailableProducts() {
                                 />}
                             </ListItemAvatar>
                             <ListItemText
-                                primary={product.data.title}
-                                secondary={productDetails(product)}
+                                primary={productCoding.productCode(product.data)}
+                                secondary={productCoding.productDescription(product.data)}
                             />
                         </ListItem>
                     ))}

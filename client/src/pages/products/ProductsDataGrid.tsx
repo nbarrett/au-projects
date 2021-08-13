@@ -6,14 +6,13 @@ import {
     GridColDef,
     GridEditRowsModel,
     GridToolbar,
-    GridToolbarContainer,
-    GridValueGetterParams
+    GridToolbarContainer
 } from "@material-ui/data-grid";
 import useProductData from "../../hooks/use-product-data";
 import { WithUid } from "../../models/common-models";
 import { Product, ProductCoding, ProductCodingType } from "../../models/product-models";
 import { log } from "../../util/logging-config";
-import { IconButton, Select, TextField, Tooltip } from "@material-ui/core";
+import { IconButton, Select, Tooltip } from "@material-ui/core";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
@@ -86,7 +85,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             field: "productCode",
             type: "string",
             headerName: "Product Code",
-            valueFormatter: productCode,
+            valueFormatter: productCodings.productCodeFromGrid,
             flex: 1,
             minWidth: 180,
         },
@@ -206,23 +205,6 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         },
     ];
 
-    function productCode(params: GridValueGetterParams): string {
-        const product = params.row as Product;
-        return defaultString(
-            companyData.companyForUid(product.compoundOwner)?.data?.code,
-            "-",
-            productCodings.productCodingForUid(product.curingMethod)?.data?.code,
-            productCodings.productCodingForUid(product.hardness)?.data?.code,
-            productCodings.productCodingForUid(product.type)?.data?.code,
-            productCodings.productCodingForUid(product.grade)?.data?.code,
-            productCodings.productCodingForUid(product.colour)?.data?.code
-        );
-    }
-
-    function defaultString(...fields: string[]): string {
-        return fields.map(item => item ? item : "").join("");
-    }
-
     function changeField(field: string, value: any, uid: string) {
         log.debug("field", field, "value", value, typeof value, "uid", uid);
         const updatedProduct = productData.findProduct(uid);
@@ -336,7 +318,6 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
 
     function ProductCodeSelect(props: { gridCellParams: GridCellParams, codingsForType: WithUid<ProductCoding>[] }) {
         const {id, value, field} = props.gridCellParams;
-        const [open, setOpen] = useState<boolean>(false);
         log.debug("ProductCodeSelect:", id, field, value);
         return (
             <Select

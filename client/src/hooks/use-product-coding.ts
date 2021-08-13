@@ -1,14 +1,17 @@
 import { WithUid } from "../models/common-models";
 import { findAll, saveAll, subscribe } from "../data-services/firebase-services";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
-import { ProductCoding, ProductCodingType } from "../models/product-models";
+import { Product, ProductCoding, ProductCodingType } from "../models/product-models";
 import cloneDeep from "lodash/cloneDeep";
 import { sortBy } from "../util/arrays";
 import { productCodingState } from "../atoms/product-atoms";
+import { GridValueGetterParams } from "@material-ui/data-grid";
+import useCompanyData from "./use-company-data";
 
 export default function useProductCoding(subscribeToUpdates?: boolean) {
+    const companyData = useCompanyData();
     const [documents, setDocuments] = useRecoilState<WithUid<ProductCoding>[]>(productCodingState);
     const collection = "productCodings";
 
@@ -65,7 +68,41 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         }
     }
 
+    function productCode(product: Product) {
+        return defaultString("",
+            companyData.companyForUid(product.compoundOwner)?.data?.code,
+            "-",
+            productCodingForUid(product.curingMethod)?.data?.code,
+            productCodingForUid(product.hardness)?.data?.code,
+            productCodingForUid(product.type)?.data?.code,
+            productCodingForUid(product.grade)?.data?.code,
+            productCodingForUid(product.colour)?.data?.code
+        );
+    }
+
+    function productCodeFromGrid(params: GridValueGetterParams): string {
+        return productCode(params.row as Product);
+    }
+
+    function productDescription(product: Product) {
+        return defaultString(", ",
+            companyData.companyForUid(product.compoundOwner)?.data?.name,
+            productCodingForUid(product.curingMethod)?.data?.name,
+            productCodingForUid(product.hardness)?.data?.name,
+            productCodingForUid(product.type)?.data?.name,
+            productCodingForUid(product.grade)?.data?.name,
+            productCodingForUid(product.colour)?.data?.name
+        );
+    }
+
+    function defaultString(separator: string, ...fields: string[]): string {
+        return fields.map(item => item ? item : "").filter(item => item.length > 0).join(separator);
+    }
+
     return {
+        productCodeFromGrid,
+        productDescription,
+        productCode,
         refresh,
         saveAllProductCodings,
         productCodingsForType,

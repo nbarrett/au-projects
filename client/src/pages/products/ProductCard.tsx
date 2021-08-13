@@ -7,10 +7,11 @@ import { timeAgo } from "../../util/dates";
 import ProductCardEdit from "./ProductCardEdit";
 import useProductEditing from "../../hooks/use-product-editing";
 import { WithUid } from "../../models/common-models";
+import useProductCoding from "../../hooks/use-product-coding";
 
 export default function ProductCard(props: { product: WithUid<Product>, rest?: any[] }) {
     const editing = useProductEditing();
-
+    const productCoding = useProductCoding()
     return (
         editing.editEnabled(props.product.uid || "")
             ? <ProductCardEdit product={props.product}/>
@@ -32,7 +33,10 @@ export default function ProductCard(props: { product: WithUid<Product>, rest?: a
                         <Avatar alt="Product" src={props.product.data.media} variant="square"/>
                     </Box>
                     <Typography align="center" color="textPrimary" gutterBottom variant="h4">
-                        {props.product.data.title}
+                        {productCoding.productCode(props.product.data)}
+                    </Typography>
+                    <Typography align="center" color="textPrimary" gutterBottom variant="h5">
+                        {productCoding.productDescription(props.product.data)}
                     </Typography>
                     <Typography align="center" color="textPrimary" variant="body1">
                         SG: {props.product.data.specificGravity}
@@ -54,7 +58,7 @@ export default function ProductCard(props: { product: WithUid<Product>, rest?: a
                             </Typography>}
                         </Grid>
                         <Grid item sx={{alignItems: "center", display: "flex"}}>
-                            <Tooltip title={`Edit ${props.product.data.title}`}>
+                            <Tooltip title={`Edit ${productCoding.productDescription(props.product.data)}`}>
                                 <IconButton onClick={() => editing.toggleProductEdit(props.product.uid || "")}>
                                     <EditIcon
                                         color="action"/>
