@@ -28,7 +28,7 @@ export default function CompanySelector() {
                     onChange={(event) => {
                       return singleCompany.setCompany(companyData.documents.find(company => company.uid === event.target.value) as WithUid<Company>);
                     }}>
-    {companyData.documents.map((option) => (
+    {companyData.documents.filter(item => item.data.availableProducts?.length > 0).map((option) => (
         <MenuItem key={option.uid} value={option.uid}>
           <ListItemText sx={{display: "inline"}} primary={option.data.name}
                         secondary={`${option.data.availableProducts?.length || 0} available products`}/>

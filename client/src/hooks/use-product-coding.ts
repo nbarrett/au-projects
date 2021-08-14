@@ -3,16 +3,19 @@ import { findAll, saveAll, subscribe } from "../data-services/firebase-services"
 import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
-import { Product, ProductCoding, ProductCodingType } from "../models/product-models";
+import { Product, ProductCoding, ProductCodingMap, ProductCodingType } from "../models/product-models";
 import cloneDeep from "lodash/cloneDeep";
+import set from "lodash/set";
 import { sortBy } from "../util/arrays";
-import { productCodingState } from "../atoms/product-atoms";
-import { GridValueGetterParams } from "@material-ui/data-grid";
+import { productCodingMapState, productCodingState } from "../atoms/product-atoms";
+import { GridCellParams, GridColDef, GridValueGetterParams } from "@material-ui/data-grid";
 import useCompanyData from "./use-company-data";
+import { isNumber, isUndefined } from "lodash";
 
 export default function useProductCoding(subscribeToUpdates?: boolean) {
     const companyData = useCompanyData();
     const [documents, setDocuments] = useRecoilState<WithUid<ProductCoding>[]>(productCodingState);
+    const [map, setMap] = useRecoilState<ProductCodingMap>(productCodingMapState);
     const collection = "productCodings";
 
     useEffect(() => {
@@ -31,6 +34,10 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
 
     useEffect(() => {
         log.debug("useProductCoding:documents:", documents);
+        const map: ProductCodingMap = {};
+        documents.forEach((document: WithUid<ProductCoding>) => set(map, [document.uid], document))
+        log.debug("mapResults:", map);
+        setMap(map);
     }, [documents])
 
     function saveAllProductCodings(): Promise<any> {
@@ -51,7 +58,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }
 
     function productCodingForUid(uid: string): WithUid<ProductCoding> {
-        return mutableProductCodings().find(compound => compound?.uid === uid);
+        return map[uid];
     }
 
     function productCodingsForType(productCodingType: ProductCodingType): WithUid<ProductCoding>[] {
@@ -84,6 +91,10 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         return productCode(params.row as Product);
     }
 
+    function productDescriptionGrid(params: GridValueGetterParams): string {
+        return productDescription(params.row as Product);
+    }
+
     function productDescription(product: Product) {
         return defaultString(", ",
             companyData.companyForUid(product.compoundOwner)?.data?.name,
@@ -99,9 +110,33 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         return fields.map(item => item ? item : "").filter(item => item.length > 0).join(separator);
     }
 
+    function ProductCoding(props: GridCellParams) {
+        const {value} = props;
+        log.debug("ProductCoding:", value);
+        return productCodingForUid(value as string)?.data?.name;
+    }
+
+    function cellFieldValue(field: string, value, productColumns: GridColDef[]) {
+        log.debug("cellFieldValue:field", field, "value:", value, typeof value)
+        const dataColumn: GridColDef = productColumns.find(item => item.field === field);
+        let cleanedValue = value;
+        if (isUndefined(value)) {
+            log.debug("cellFieldValue:cleanedValue:", cleanedValue, "field:", field);
+            cleanedValue = "";
+        } else if (isNumber(value)) {
+            cleanedValue = value;
+        } else if (dataColumn.type === "number") {
+            cleanedValue = +value;
+        }
+        log.debug("cellFieldValue:value:", value, "cleanedValue:", cleanedValue, "dataColumn:", dataColumn);
+        return cleanedValue
+    }
+
     return {
+        cellFieldValue,
         productCodeFromGrid,
         productDescription,
+        productDescriptionGrid,
         productCode,
         refresh,
         saveAllProductCodings,
@@ -109,7 +144,8 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         productCodingForUid,
         documents,
         setDocument,
-        setDocuments
+        setDocuments,
+        ProductCoding
     }
 
 }

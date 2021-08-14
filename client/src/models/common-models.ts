@@ -40,22 +40,6 @@ export interface CellAddress {
     numeric?: boolean;
 }
 
-export enum CellFormat {PERCENT, NUMERIC, CURRENCY, STRING}
-
-export interface DataColumn {
-    renderEditCell?: any;
-    renderCell?: any;
-    fieldName?: string;
-    cellFormat: CellFormat;
-    disablePadding: boolean;
-    disabled?: boolean;
-    editable?: boolean;
-    noWrap: boolean;
-    label: string;
-    valueFormatter?:any;
-    sortComparator?:any;
-}
-
 export interface UniqueValues {
     [fieldName: string]: any[]
 }

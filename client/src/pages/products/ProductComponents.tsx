@@ -1,4 +1,4 @@
-import { CellFormat, DataColumn, WithUid } from "../../models/common-models";
+import { WithUid } from "../../models/common-models";
 import { Product } from "../../models/product-models";
 import Box from "@material-ui/core/Box";
 import { Avatar } from "@material-ui/core";
@@ -17,15 +17,3 @@ export function TitledMedia(props: { product?: WithUid<Product>, hideTitle?:bool
     </Box>;
 }
 
-export function columnHasNumber(headCell: DataColumn): boolean {
-    return cellFormatHasNumber(headCell.cellFormat);
-}
-
-export function cellFormatHasNumber(cellFormat: CellFormat): boolean {
-    const percents: CellFormat[] = [CellFormat.NUMERIC, CellFormat.CURRENCY, CellFormat.PERCENT];
-    return percents.includes(cellFormat);
-}
-
-export function toAlignment(headCell: DataColumn) {
-    return columnHasNumber(headCell) ? "right" : "left";
-}

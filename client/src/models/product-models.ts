@@ -1,4 +1,4 @@
-import { HasAuditTimestamps } from "./common-models";
+import { HasAuditTimestamps, WithUid } from "./common-models";
 import { GridColDef } from "@material-ui/data-grid";
 
 export interface Product extends HasAuditTimestamps {
@@ -25,6 +25,10 @@ export interface ProductCoding extends HasAuditTimestamps {
     productCodingType: ProductCodingType,
     name: string;
     code: string;
+}
+
+export interface ProductCodingMap {
+    [key: string]: WithUid<ProductCoding>
 }
 
 export enum ProductCodingType {

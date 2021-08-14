@@ -18,8 +18,8 @@ import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import map from "lodash/map";
-import { asCurrency, asPercent, pricePerKgFromRow } from "../../mappings/product-mappings";
-import { isNumber, isUndefined } from "lodash";
+import { asCurrency, asPercent, pricePerKgFromRow, toRow } from "../../mappings/product-mappings";
+import { isNumber } from "lodash";
 import { makeStyles } from "@material-ui/styles";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import useUniqueValues from "../../hooks/use-unique-values";
@@ -52,14 +52,15 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         }
     );
 
-    const classes = styles(props);
     const sortComparator = (v1, v2, cellParams1, cellParams2) => {
-        const value1 = cellFieldValue(cellParams1.field, cellParams1.value);
-        const value2 = cellFieldValue(cellParams2.field, cellParams2.value);
+        const value1 = productCodings.cellFieldValue(cellParams1.field, cellParams1.value, productColumns);
+        const value2 = productCodings.cellFieldValue(cellParams2.field, cellParams2.value, productColumns);
         const sortResult = isNumber(value1) ? value1 - value2 : value1.localeCompare(value2);
         log.debug("value1:", value1, "value2:", value2, "sortResult:", sortResult);
         return sortResult;
     };
+
+    const classes = styles(props);
     const productColumns: GridColDef[] = [
         {
             field: "title",
@@ -106,7 +107,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             type: "string",
             headerName: "Curing Method",
             renderEditCell: CuringMethodSelect,
-            renderCell: ProductCoding,
+            renderCell: productCodings.ProductCoding,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -117,7 +118,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             type: "string",
             headerName: "Hardness",
             renderEditCell: ProductHardnessSelect,
-            renderCell: ProductCoding,
+            renderCell: productCodings.ProductCoding,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -128,7 +129,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             type: "string",
             headerName: "Type",
             renderEditCell: ProductCompoundSelect,
-            renderCell: ProductCoding,
+            renderCell: productCodings.ProductCoding,
             sortComparator,
             flex: 2,
             minWidth: 180,
@@ -139,7 +140,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             type: "string",
             headerName: "Grade",
             renderEditCell: ProductGradeSelect,
-            renderCell: ProductCoding,
+            renderCell: productCodings.ProductCoding,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -150,7 +151,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             type: "string",
             headerName: "Colour",
             renderEditCell: ProductColourSelect,
-            renderCell: ProductCoding,
+            renderCell: productCodings.ProductCoding,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -205,11 +206,33 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         },
     ];
 
+    const handleCellClick = React.useCallback(
+        (params: GridCellParams) => {
+            const {api, colDef} = params;
+            log.debug("handleCellClick:params:", params)
+            if (colDef.editable) {
+                api.setCellMode(params.id, params.field, "edit");
+            }
+        },
+        []
+    );
+
+    const handleCellLeave = React.useCallback(
+        (params: GridCellParams) => {
+            const {api, colDef} = params;
+            log.debug("handleCellClick:params:", params)
+            if (colDef.editable) {
+                // api.setCellMode(params.id, params.field, "view");
+            }
+        },
+        []
+    );
+
     function changeField(field: string, value: any, uid: string) {
         log.debug("field", field, "value", value, typeof value, "uid", uid);
         const updatedProduct = productData.findProduct(uid);
         if (updatedProduct) {
-            updatedProduct.data[field] = cellFieldValue(field, value);
+            updatedProduct.data[field] = productCodings.cellFieldValue(field, value, productColumns);
             log.debug("updatedProduct:", updatedProduct);
             productData.setSingleProduct(updatedProduct)
         } else {
@@ -225,30 +248,6 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
                 changeField(field, value.value, uid);
             }))
         }))
-    }
-
-    function cellFieldValue(field: string, value) {
-        log.debug("cellFieldValue:field", field, "value:", value, typeof value)
-        const dataColumn: GridColDef = productColumns.find(item => item.field === field);
-        let cleanedValue = value;
-        if (isUndefined(value)) {
-            log.debug("cellFieldValue:cleanedValue:", cleanedValue, "field:", field);
-            cleanedValue = "";
-        } else if (isNumber(value)) {
-            cleanedValue = value;
-        } else if (dataColumn.type === "number") {
-            cleanedValue = +value;
-        }
-        log.debug("cellFieldValue:value:", value, "cleanedValue:", cleanedValue, "dataColumn:", dataColumn);
-        return cleanedValue
-    }
-
-    function toRow(item: WithUid<Product>) {
-        return {id: item.uid, ...item.data};
-    }
-
-    function handlePageSizeChange(value: number) {
-        setItemsPerPage(value)
     }
 
     function AutoCompleteEditInputCell(props: GridCellParams) {
@@ -333,13 +332,6 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
             </Select>);
     }
 
-    function ProductCoding(props: GridCellParams) {
-        const {value} = props;
-        log.debug("ProductCoding:", value);
-        // return value;
-        return productCodings.productCodingForUid(value as string)?.data?.name;
-    }
-
     function CompoundOwner(props: GridCellParams) {
         const {value} = props;
         log.debug("ProductCoding:", value);
@@ -375,7 +367,8 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
                   className={classes.tableCell}
                   components={{Toolbar: CustomToolbar}}
                   pageSize={itemsPerPage}
-                  onPageSizeChange={(value) => handlePageSizeChange(value)}
+                  onCellClick={handleCellClick}
+                  onPageSizeChange={(value) => setItemsPerPage(value)}
                   rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
                   pagination
                   disableSelectionOnClick
