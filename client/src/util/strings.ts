@@ -77,8 +77,12 @@ export function left(str, chars) {
   return str.substr(0, chars);
 }
 
-export function pluraliseWithCount(count: number, text: string) {
-  return `${count} ${count === 1 ? text : text + "s"}`;
+export function pluraliseWithCount(count: number, singularText: string, pluralText?: string) {
+  return `${count} ${pluralise(count, singularText, pluralText)}`;
+}
+
+export function pluralise(count: number, singularText: string, pluralText?: string) {
+  return `${count === 1 ? singularText : pluralText || (singularText + "s")}`;
 }
 
 export function fullTextSearch<T>(itemsToSearch: T[], searchText: string): T[] {

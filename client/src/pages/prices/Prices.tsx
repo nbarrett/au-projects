@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { Grid, } from "@material-ui/core";
-import useProductData from "../../hooks/use-product-data";
+import useProducts from "../../hooks/use-products";
 import { WithUid } from "../../models/common-models";
 import { PricedProduct, PricingTier, Product } from "../../models/product-models";
 import { isNumber } from "lodash";
@@ -22,7 +22,7 @@ export default function Prices() {
   const dataGrid = useDataGrid();
   const navbarSearch = useNavbarSearch();
   const singleCompany = useSingleCompany();
-  const productData = useProductData()
+  const productData = useProducts()
   const productCodings = useProductCoding(false);
   const pricingTierMarkupData = usePricingTierMarkupData(true);
   const currentCompany = singleCompany.company
@@ -139,15 +139,15 @@ export default function Prices() {
   ];
 
   function applyFilteredProducts(): WithUid<PricedProduct>[] {
-    const filteredProducts = fullTextSearch(productData.products, navbarSearch.search).filter(item => currentCompany?.data?.availableProducts?.includes(item.uid));
+    const filteredProducts = fullTextSearch(productData.documents, navbarSearch.search).filter(item => currentCompany?.data?.availableProducts?.includes(item.uid));
     const pricedProducts: WithUid<PricedProduct>[] = filteredProducts.map(product => toPricedProduct(product, companyPricingTier));
-    log.debug("filtering:", navbarSearch.search, "availableProducts:", currentCompany?.data?.availableProducts, filteredProducts.length, "of", productData.products.length, "pricedProducts:", pricedProducts);
+    log.debug("filtering:", navbarSearch.search, "availableProducts:", currentCompany?.data?.availableProducts, filteredProducts.length, "of", productData.documents.length, "pricedProducts:", pricedProducts);
     return pricedProducts;
   }
 
   useEffect(() => {
     setFilteredProducts(applyFilteredProducts())
-  }, [productData.products, navbarSearch.search, currentCompany, companyPricingTier])
+  }, [productData.documents, navbarSearch.search, currentCompany, companyPricingTier])
 
   useEffect(() => {
     const pricingTier = pricingTierMarkupData.pricingTierForIUid(singleCompany.company.data.pricingTier);

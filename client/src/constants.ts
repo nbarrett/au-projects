@@ -30,6 +30,7 @@ export enum PublicRoute {
 }
 
 export const APP_PATH = "app";
+export const FULL_SCREEN = "full-screen";
 export const PUBLIC_PATH = "//*";
 export const APP_DASHBOARD = `/${APP_PATH}/${AppRoute.EXAMPLE_DASHBOARD}`;
 

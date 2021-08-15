@@ -19,11 +19,11 @@ import { makeStyles } from "@material-ui/styles";
 import map from "lodash/map";
 import cloneDeep from "lodash/cloneDeep";
 import { sortBy } from "../../util/arrays";
-import DeleteIcon from "@material-ui/icons/Delete";
 import useProductCoding from "../../hooks/use-product-coding";
 import { pluraliseWithCount, titleCase } from "../../util/strings";
 import { contentContainer } from "../../admin/components/GlobalStyles";
 import useDataGrid from "../../hooks/use-data-grid";
+import DeleteManyIcon from "../common/DeleteManyIcon";
 
 export function ProductCodings(props: { productCodingType: ProductCodingType }) {
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
@@ -31,6 +31,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
     const productCoding = useProductCoding();
     const dataGrid = useDataGrid();
     const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
+    const codingTitle = titleCase(props.productCodingType);
 
     const styles = makeStyles(
         {
@@ -53,64 +54,49 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
     const classes = styles();
 
     useEffect(() => {
-        log.debug("ProductCodings:initial render")
+        log.debug("ProductCodings:initial render");
     }, []);
 
     useEffect(() => {
-        log.debug("selectionModel:", selectionModel)
+        log.debug("selectionModel:", selectionModel);
     }, [selectionModel]);
 
-    function markForDelete(uid: string) {
-        productCoding.setDocuments(productCoding.documents.map(coding => coding.uid === uid ? {
+
+    function markForDelete() {
+        log.debug("marking", selectionModel, "for delete");
+        productCoding.setDocuments(productCoding.documents.map(coding => selectionModel.includes(coding.uid) ? {
             ...coding,
             markedForDelete: true
         } : coding));
     }
 
-    function addDocument(index: number) {
-        const defaultValue: WithUid<ProductCoding> = {
-            data: {
-                productCodingType: props.productCodingType,
-                code: "",
-                name: ""
-            }, uid: ""
-        };
-        productCoding.setDocuments([
-            ...productCoding.documents.slice(0, index),
-            defaultValue,
-            ...productCoding.documents.slice(index)
-        ]);
-    }
 
-    const saveOptions = <>
-            <IconButton onClick={() => addDocument(0)}>
-                <Tooltip title={`New ${props.productCodingType}`}>
+
+    const saveOptions =
+        <>
+            <IconButton onClick={() => productCoding.add(0, props.productCodingType)}>
+                <Tooltip title={`New ${codingTitle}`}>
                     <AddchartIcon color="action"/>
                 </Tooltip>
             </IconButton>
-        <IconButton onClick={() => {
-            productCoding.saveAllProductCodings().then(() => notification.success(`Saved ${productCoding.documents.length} product codes of type ${props.productCodingType}`));
-        }}>
-            <Tooltip title={`Save all changes`}>
-                <SaveIcon color="primary"/>
-            </Tooltip>
-        </IconButton>
-        <IconButton
-            onClick={() => productCoding.refresh().then(() => notification.success(`Any changes were reverted`))}>
-            <Tooltip title={`Undo all changes`}>
-                <UndoIcon color="action"/>
-            </Tooltip>
-        </IconButton>
-        <IconButton disabled={selectionModel.length === 0}
-                    onClick={() => Promise.resolve(selectionModel.forEach(markForDelete)).then(() => notification.success(`${pluraliseWithCount(selectionModel.length, "product code")} were marked for delete. The next save will permanently delete them`))}>
-            <Tooltip title={`Mark ${selectionModel.length} items for delete`}><DeleteIcon
-                color={selectionModel.length === 0 ? "disabled" : "secondary"}/></Tooltip>
-        </IconButton>
-        </>
-    ;
+            <IconButton onClick={() => {
+                productCoding.saveAllProductCodings().then(() => notification.success(`Saved ${pluraliseWithCount(productCoding.documents.length, "product code")} of type ${codingTitle}`));
+            }}>
+                <Tooltip title={`Save all changes`}>
+                    <SaveIcon color="primary"/>
+                </Tooltip>
+            </IconButton>
+            <DeleteManyIcon singular={"product code"} selectionModel={selectionModel} markForDelete={markForDelete}/>
+            <IconButton
+                onClick={() => productCoding.refresh().then(() => notification.success(`Any changes were reverted`))}>
+                <Tooltip title={`Undo all changes`}>
+                    <UndoIcon color="action"/>
+                </Tooltip>
+            </IconButton>
+        </>;
 
     function CustomToolbar() {
-        return (<> <Typography color="textSecondary" variant="h4">Product Codes - {titleCase(props.productCodingType)}</Typography>
+        return (<> <Typography color="textSecondary" variant="h4">Product Codes - {codingTitle}</Typography>
                 <GridToolbarContainer>
                     {saveOptions}
                     <GridToolbar/>
@@ -155,7 +141,6 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
                               setSelectionModel(newSelectionModel);
                           }}
                           selectionModel={selectionModel}
-
                           onPageSizeChange={setItemsPerPage}
                           rowsPerPageOptions={[20]}
                           pagination

@@ -8,7 +8,7 @@ import NotFound from "../pages/NotFound";
 import Products from "../pages/products/Products";
 import Register from "../pages/login/Register";
 import EmailVerification from "../pages/email-verification/EmailVerification";
-import { APP_DASHBOARD, APP_PATH, AppRoute, PUBLIC_PATH, PublicRoute } from "../constants";
+import { APP_DASHBOARD, APP_PATH, AppRoute, FULL_SCREEN, PUBLIC_PATH, PublicRoute } from "../constants";
 import Companies from "../pages/companies/Companies";
 import { Settings } from "../pages/settings/Settings";
 import CompanyEdit from "../pages/company/CompanyEdit";
@@ -19,6 +19,7 @@ import { ProductCodings } from "../pages/products/ProductCodings";
 import { ProductCodingType } from "../models/product-models";
 import { productRoute } from "../mappings/product-mappings";
 import { Orders } from "../pages/orders/Orders";
+import ProductsDataGrid from "../pages/products/ProductsDataGrid";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -36,6 +37,10 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.ORDERS, element: <Orders/>},
         {path: AppRoute.PRODUCTS, element: <Products/>},
         {
+          path: productRoute(ProductCodingType.CURING_METHOD),
+          element: <ProductCodings productCodingType={ProductCodingType.CURING_METHOD}/>
+        },
+        {
           path: productRoute(ProductCodingType.HARDNESS),
           element: <ProductCodings productCodingType={ProductCodingType.HARDNESS}/>
         },
@@ -44,20 +49,24 @@ export default function routes(isLoggedIn: boolean | undefined) {
           element: <ProductCodings productCodingType={ProductCodingType.COMPOUND}/>
         },
         {
-          path: productRoute(ProductCodingType.COLOUR),
-          element: <ProductCodings productCodingType={ProductCodingType.COLOUR}/>
+          path: productRoute(ProductCodingType.TYPE),
+          element: <ProductCodings productCodingType={ProductCodingType.TYPE}/>
         },
         {
           path: productRoute(ProductCodingType.GRADE),
           element: <ProductCodings productCodingType={ProductCodingType.GRADE}/>
         },
         {
-          path: productRoute(ProductCodingType.CURING_METHOD),
-          element: <ProductCodings productCodingType={ProductCodingType.CURING_METHOD}/>
+          path: productRoute(ProductCodingType.COLOUR),
+          element: <ProductCodings productCodingType={ProductCodingType.COLOUR}/>
         },
         {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],
+    },
+    {
+      path: FULL_SCREEN + "/" + AppRoute.PRODUCTS,
+      element: !isLoggedIn ? <MainLayout/> : <ProductsDataGrid/>,
     },
     {
       path: PUBLIC_PATH,

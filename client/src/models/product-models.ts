@@ -2,10 +2,11 @@ import { HasAuditTimestamps, WithUid } from "./common-models";
 import { GridColDef } from "@material-ui/data-grid";
 
 export interface Product extends HasAuditTimestamps {
-    title: string;
+    title?: string;
     description?: string;
-    specificGravity: number;
+    specificGravity?: number;
     compoundOwner?: string;
+    compound?: string;
     type?: string;
     costPerKg?: number;
     colour?: string;
@@ -13,7 +14,7 @@ export interface Product extends HasAuditTimestamps {
     curingMethod?: string;
     grade?: string;
     media?: any;
-    markup: number;
+    markup?: number;
 }
 
 export interface PricingTier extends HasAuditTimestamps {
@@ -32,11 +33,12 @@ export interface ProductCodingMap {
 }
 
 export enum ProductCodingType {
-    COMPOUND = "COMPOUND",
     COLOUR = "COLOUR",
+    COMPOUND = "COMPOUND",
     CURING_METHOD = "CURING_METHOD",
     GRADE = "GRADE",
-    HARDNESS = "HARDNESS"
+    HARDNESS = "HARDNESS",
+    TYPE = "TYPE",
 }
 
 export interface PricedProduct extends Product {

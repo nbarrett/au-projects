@@ -9,14 +9,14 @@ import { Grid, ListItemAvatar, MenuItem, TextField, Typography } from "@material
 import { log } from "../../util/logging-config";
 import useSingleCompany from "../../hooks/use-single-company";
 import useSelectedItems from "../../hooks/use-selected-items";
-import useProductData from "../../hooks/use-product-data";
+import useProducts from "../../hooks/use-products";
 import { sortBy } from "../../util/arrays";
 import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
 import useProductCoding from "../../hooks/use-product-coding";
 
 export default function AvailableProducts() {
     const company = useSingleCompany();
-    const productData = useProductData()
+    const products = useProducts()
     const productCoding = useProductCoding()
     const selectedItems = useSelectedItems(company.company.data.availableProducts || []);
     const pricingTierMarkupData = usePricingTierMarkupData(true);
@@ -48,13 +48,13 @@ export default function AvailableProducts() {
                     Select items below by checking checkboxes to make products available to {company.company.data.name}.
                 </Typography>
                 <Typography color="textSecondary" variant="body1">
-                    {selectedItems.itemsSelected.length} of {productData.products.length} selected
+                    {selectedItems.itemsSelected.length} of {products.documents.length} selected
                 </Typography>
             </Grid>
             <Grid item xs={12}>
                 <List>
-                    {productData.products.map((product, i) => (
-                        <ListItem divider={i < productData.products.length - 1}
+                    {products.documents.map((product, i) => (
+                        <ListItem divider={i < products.documents.length - 1}
                                   key={product.uid}>
                             <ListItemIcon>
                                 <Checkbox

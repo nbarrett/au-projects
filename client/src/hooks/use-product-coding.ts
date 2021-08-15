@@ -48,9 +48,25 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     function saveAllProductCodings(): Promise<any> {
         return saveAll<ProductCoding>(collection, documents).then(() => {
             if (!subscribeToUpdates) {
-                refresh()
+                refresh();
             }
         });
+    }
+
+    function add(index: number, productCodingType: ProductCodingType): WithUid<ProductCoding> {
+        const document: WithUid<ProductCoding> = {
+            data: {
+                productCodingType,
+                code: "",
+                name: ""
+            }, uid: ""
+        };
+        setDocuments([
+            ...documents.slice(0, index),
+            document,
+            ...documents.slice(index)
+        ]);
+        return document;
     }
 
     function refresh(): Promise<any> {
@@ -86,6 +102,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
             "-",
             productCodingForUid(product.curingMethod)?.data?.code,
             productCodingForUid(product.hardness)?.data?.code,
+            productCodingForUid(product.compound)?.data?.code,
             productCodingForUid(product.type)?.data?.code,
             productCodingForUid(product.grade)?.data?.code,
             productCodingForUid(product.colour)?.data?.code
@@ -144,6 +161,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         productDescriptionGrid,
         productCode,
         refresh,
+        add,
         saveAllProductCodings,
         productCodingsForType,
         productCodingForUid,

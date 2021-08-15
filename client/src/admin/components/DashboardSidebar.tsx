@@ -41,25 +41,30 @@ const navItems: MenuItem[] = [
         title: "Products",
         subItems: [
             {
+                href: productRoute(ProductCodingType.CURING_METHOD),
+                title: "Curing Methods",
+            },
+            {
+                href: productRoute(ProductCodingType.HARDNESS),
+                title: "Hardnesses",
+            },
+            {
                 href: productRoute(ProductCodingType.COMPOUND),
                 title: "Compounds",
             },
             {
-                href: productRoute(ProductCodingType.COLOUR),
-                title: "Colours",
-            },
-            {
-                href: productRoute(ProductCodingType.CURING_METHOD),
-                title: "Curing Methods",
+                href: productRoute(ProductCodingType.TYPE),
+                title: "Types",
             },
             {
                 href: productRoute(ProductCodingType.GRADE),
                 title: "Grades",
             },
             {
-                href: productRoute(ProductCodingType.HARDNESS),
-                title: "Hardnesses",
-            }]
+                href: productRoute(ProductCodingType.COLOUR),
+                title: "Colours",
+            },
+        ]
     },
     {
         href: AppRoute.PRICES,
