@@ -6,27 +6,30 @@ import { log } from "../util/logging-config";
 import { Product, ProductCoding, ProductCodingMap, ProductCodingType } from "../models/product-models";
 import cloneDeep from "lodash/cloneDeep";
 import set from "lodash/set";
+import isEmpty from "lodash/isEmpty";
+import isNumber from "lodash/isNumber";
+import isUndefined from "lodash/isUndefined";
 import { sortBy } from "../util/arrays";
 import { productCodingMapState, productCodingState } from "../atoms/product-atoms";
 import { GridCellParams, GridColDef, GridValueGetterParams } from "@material-ui/data-grid";
 import useCompanyData from "./use-company-data";
-import { isNumber, isUndefined } from "lodash";
 
 export default function useProductCoding(subscribeToUpdates?: boolean) {
     const companyData = useCompanyData();
     const [documents, setDocuments] = useRecoilState<WithUid<ProductCoding>[]>(productCodingState);
     const [map, setMap] = useRecoilState<ProductCodingMap>(productCodingMapState);
     const collection = "productCodings";
+    const available = !isEmpty(map);
 
     useEffect(() => {
         log.debug("useProductCoding initial render:", documents);
         if (subscribeToUpdates) {
-            const unsub = subscribe<ProductCoding>(collection, setDocuments)
+            const unsub = subscribe<ProductCoding>(collection, setDocuments);
             return (() => {
-                unsub()
-            })
+                unsub();
+            });
         } else {
-            refresh()
+            refresh();
             return (() => {
             })
         }
@@ -37,7 +40,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
             log.debug("useProductCoding:documents:", documents);
             const map: ProductCodingMap = {};
             documents.forEach((document: WithUid<ProductCoding>) => set(map, [document.uid], document));
-            log.info("map created:", map);
+            log.debug("map created:", map);
             setMap(map);
         }
     }, [documents])
@@ -147,7 +150,8 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         documents,
         setDocument,
         setDocuments,
-        ProductCoding
+        ProductCoding,
+        available
     }
 
 }

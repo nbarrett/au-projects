@@ -21,20 +21,18 @@ import map from "lodash/map";
 import { asCurrency, asPercent, pricePerKgFromRow } from "../../mappings/product-mappings";
 import { isNumber } from "lodash";
 import { makeStyles } from "@material-ui/styles";
-import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
-import useUniqueValues from "../../hooks/use-unique-values";
 import MenuItem from "@material-ui/core/MenuItem";
 import useCompanyData from "../../hooks/use-company-data";
 import { companyCodeAndName } from "../../mappings/company-mappings";
 import useProductCoding from "../../hooks/use-product-coding";
 import useDataGrid from "../../hooks/use-data-grid";
+import Loading from "../common/Loading";
 
 export default function ProductsDataGrid(props: { products: WithUid<Product>[] }) {
     const productData = useProductData();
     const companyData = useCompanyData();
     const dataGrid = useDataGrid();
     const productCodings = useProductCoding(false);
-    const uniqueValues = useUniqueValues(props.products);
     const inputRows = props.products.map(item => dataGrid.toRow<Product>(item));
     const notification = useSnackbarNotification();
     const sortComparator = (v1, v2, cellParams1, cellParams2) => {
@@ -211,7 +209,7 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
 
     useEffect(() => {
         setProductColumns(initialProductColumns);
-    }, [productCodings.documents]);
+    }, [productCodings.available]);
 
     function changeField(field: string, value: any, uid: string) {
         log.debug("field", field, "value", value, typeof value, "uid", uid);
@@ -233,20 +231,6 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
                 changeField(field, value.value, uid);
             }))
         }))
-    }
-
-    function AutoCompleteEditInputCell(props: GridCellParams) {
-        const {id, value, field} = props;
-        log.debug("AutoCompleteEditInputCell:", id, field, value);
-        const isNumeric = isNumber(value);
-        return (
-            <DataBoundAutoComplete<Product> field={"data." + field}
-                                            variant={"outlined"}
-                                            type={isNumeric ? "number" : "string"}
-                                            options={uniqueValues.field(field)}
-                                            document={productData.findProduct(id)}
-                                            onChange={(fieldWithData, value, numeric) => changeField(field, value, id as string)}/>
-        );
     }
 
     function onChange(gridCellParams: GridCellParams, event) {
@@ -348,24 +332,27 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
     }
 
     return (
-        <DataGrid density={"compact"}
-                  className={classes.tableCell}
-                  components={{Toolbar: CustomToolbar}}
-                  pageSize={itemsPerPage}
-                  onCellClick={dataGrid.onCellClick}
-                  onColumnVisibilityChange={(value: GridColumnVisibilityChangeParams) => {
-                      log.debug("onColumnVisibilityChange:value", value.field, value.isVisible);
-                  }}
-                  onPageSizeChange={(value) => setItemsPerPage(value)}
-                  onColumnHeaderOut={(value) => {
-                      log.debug("onColumnHeaderOut:value", value);
-                  }}
-                  rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
-                  pagination
-                  disableSelectionOnClick
-                  onEditRowsModelChange={handleEditRowModelChange}
-                  checkboxSelection
-                  rows={inputRows}
-                  columns={productColumns}/>);
+        <Loading text={"loading products"}
+                 busy={!productCodings.available}>
+            <DataGrid density={"compact"}
+                      className={classes.tableCell}
+                      components={{Toolbar: CustomToolbar}}
+                      pageSize={itemsPerPage}
+                      onCellClick={dataGrid.onCellClick}
+                      onColumnVisibilityChange={(value: GridColumnVisibilityChangeParams) => {
+                          log.debug("onColumnVisibilityChange:value", value.field, value.isVisible);
+                      }}
+                      onPageSizeChange={(value) => setItemsPerPage(value)}
+                      onColumnHeaderOut={(value) => {
+                          log.debug("onColumnHeaderOut:value", value);
+                      }}
+                      rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
+                      pagination
+                      disableSelectionOnClick
+                      onEditRowsModelChange={handleEditRowModelChange}
+                      checkboxSelection
+                      rows={inputRows}
+                      columns={productColumns}/>
+        </Loading>);
 }
 
