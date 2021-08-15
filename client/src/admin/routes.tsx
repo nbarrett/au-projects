@@ -18,6 +18,7 @@ import { PricingSetup } from "../pages/price-setup/PricingSetup";
 import { ProductCodings } from "../pages/products/ProductCodings";
 import { ProductCodingType } from "../models/product-models";
 import { productRoute } from "../mappings/product-mappings";
+import { Orders } from "../pages/orders/Orders";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -32,6 +33,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
         {path: AppRoute.EXAMPLE_DASHBOARD, element: <ExampleDashboard/>},
         {path: AppRoute.PRICES, element: <Prices/>},
         {path: AppRoute.PRICING_SETUP, element: <PricingSetup/>},
+        {path: AppRoute.ORDERS, element: <Orders/>},
         {path: AppRoute.PRODUCTS, element: <Products/>},
         {
           path: productRoute(ProductCodingType.HARDNESS),

@@ -3,21 +3,23 @@ import { useEffect, useState } from "react";
 import { Grid, } from "@material-ui/core";
 import useProductData from "../../hooks/use-product-data";
 import { WithUid } from "../../models/common-models";
-import { PricedProduct, PricingTier } from "../../models/product-models";
+import { PricedProduct, PricingTier, Product } from "../../models/product-models";
 import { isNumber } from "lodash";
 import { log } from "../../util/logging-config";
 import { fullTextSearch } from "../../util/strings";
 import { useNavbarSearch } from "../../use-navbar-search";
 import useSingleCompany from "../../hooks/use-single-company";
 import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
-import { asCurrency, asPercent, pricePerKgFromRow, toPricedProduct, toRow } from "../../mappings/product-mappings";
+import { asCurrency, asPercent, pricePerKgFromRow, toPricedProduct} from "../../mappings/product-mappings";
 import { DataGrid, GridColDef } from "@material-ui/data-grid";
 import { makeStyles } from "@material-ui/styles";
 import useProductCoding from "../../hooks/use-product-coding";
-import Box from "@material-ui/core/Box";
 import { CustomToolbar } from "./CustomToolbar";
+import { contentContainer } from "../../admin/components/GlobalStyles";
+import useDataGrid from "../../hooks/use-data-grid";
 
 export default function Prices() {
+  const dataGrid = useDataGrid();
   const navbarSearch = useNavbarSearch();
   const singleCompany = useSingleCompany();
   const productData = useProductData()
@@ -154,22 +156,20 @@ export default function Prices() {
   }, [currentCompany, pricingTierMarkupData.pricingTiers])
 
   return (
-      <Box sx={{marginTop: 2, paddingLeft: 0, flexGrow: 1, width: window.innerWidth - 280}}>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <DataGrid density={"compact"}
-                      className={classes.tableCell}
-                      components={{Toolbar: CustomToolbar}}
-                      pageSize={itemsPerPage}
-                      onPageSizeChange={(value) => setItemsPerPage(value)}
-                      rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
-                      pagination
-                      disableSelectionOnClick
-                      checkboxSelection
-                      rows={filteredProducts.map(item => toRow(item))}
+      <Grid sx={contentContainer} container spacing={1}>
+        <Grid item xs={12}>
+          <DataGrid density={"compact"}
+                    className={classes.tableCell}
+                    components={{Toolbar: CustomToolbar}}
+                    pageSize={itemsPerPage}
+                    onPageSizeChange={(value) => setItemsPerPage(value)}
+                    rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
+                    pagination
+                    disableSelectionOnClick
+                    checkboxSelection
+                      rows={filteredProducts.map(item => dataGrid.toRow<Product>(item))}
                       columns={productColumns}/>
           </Grid>
         </Grid>
-      </Box>
   );
 }

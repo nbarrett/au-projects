@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Avatar,
   Box,
@@ -71,7 +70,6 @@ export default function CompaniesList() {
 
   return (
       <Card>
-        <PerfectScrollbar>
           <Box sx={{minWidth: 1050}}>
             <TableContainer sx={{maxHeight: 800}}>
               <Table stickyHeader size="small">
@@ -179,7 +177,6 @@ export default function CompaniesList() {
             </Grid>
             </TableContainer>
           </Box>
-        </PerfectScrollbar>
       </Card>
   );
 }

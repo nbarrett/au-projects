@@ -44,3 +44,4 @@ export const cellStyle = {
     backgroundColor: "white",
   }
 };
+export const contentContainer = {marginTop: 1, width: window.innerWidth - 280};

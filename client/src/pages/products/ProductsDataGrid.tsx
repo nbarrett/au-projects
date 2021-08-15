@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
     DataGrid,
     GridCellParams,
@@ -9,7 +9,7 @@ import {
     GridToolbarContainer
 } from "@material-ui/data-grid";
 import useProductData from "../../hooks/use-product-data";
-import { WithUid } from "../../models/common-models";
+import { GridColumnVisibilityChangeParams, WithUid } from "../../models/common-models";
 import { Product, ProductCoding, ProductCodingType } from "../../models/product-models";
 import { log } from "../../util/logging-config";
 import { IconButton, Select, Tooltip } from "@material-ui/core";
@@ -18,7 +18,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import map from "lodash/map";
-import { asCurrency, asPercent, pricePerKgFromRow, toRow } from "../../mappings/product-mappings";
+import { asCurrency, asPercent, pricePerKgFromRow } from "../../mappings/product-mappings";
 import { isNumber } from "lodash";
 import { makeStyles } from "@material-ui/styles";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
@@ -27,31 +27,16 @@ import MenuItem from "@material-ui/core/MenuItem";
 import useCompanyData from "../../hooks/use-company-data";
 import { companyCodeAndName } from "../../mappings/company-mappings";
 import useProductCoding from "../../hooks/use-product-coding";
+import useDataGrid from "../../hooks/use-data-grid";
 
 export default function ProductsDataGrid(props: { products: WithUid<Product>[] }) {
     const productData = useProductData();
     const companyData = useCompanyData();
+    const dataGrid = useDataGrid();
     const productCodings = useProductCoding(false);
     const uniqueValues = useUniqueValues(props.products);
-    const inputRows = props.products.map(item => toRow(item));
+    const inputRows = props.products.map(item => dataGrid.toRow<Product>(item));
     const notification = useSnackbarNotification();
-    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-    const styles = makeStyles(
-        {
-            root: {
-                display: "flex",
-                alignItems: "center",
-                paddingRight: 16,
-            },
-            tableCell: {
-                padding: 15,
-                height: window.innerHeight - 200,
-                width: "100%",
-                backgroundColor: "white"
-            },
-        }
-    );
-
     const sortComparator = (v1, v2, cellParams1, cellParams2) => {
         const value1 = productCodings.cellFieldValue(cellParams1.field, cellParams1.value, productColumns);
         const value2 = productCodings.cellFieldValue(cellParams2.field, cellParams2.value, productColumns);
@@ -59,9 +44,8 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         log.debug("value1:", value1, "value2:", value2, "sortResult:", sortResult);
         return sortResult;
     };
-
-    const classes = styles(props);
-    const productColumns: GridColDef[] = [
+    const [productColumns, setProductColumns] = useState<GridColDef[]>([]);
+    const initialProductColumns: GridColDef[] = [
         {
             field: "title",
             hide: true,
@@ -206,27 +190,28 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         },
     ];
 
-    const handleCellClick = React.useCallback(
-        (params: GridCellParams) => {
-            const {api, colDef} = params;
-            log.debug("handleCellClick:params:", params)
-            if (colDef.editable) {
-                api.setCellMode(params.id, params.field, "edit");
-            }
-        },
-        []
+    const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    const styles = makeStyles(
+        {
+            root: {
+                display: "flex",
+                alignItems: "center",
+                paddingRight: 16,
+            },
+            tableCell: {
+                padding: 15,
+                height: window.innerHeight - 200,
+                width: "100%",
+                backgroundColor: "white"
+            },
+        }
     );
 
-    const handleCellLeave = React.useCallback(
-        (params: GridCellParams) => {
-            const {api, colDef} = params;
-            log.debug("handleCellClick:params:", params)
-            if (colDef.editable) {
-                // api.setCellMode(params.id, params.field, "view");
-            }
-        },
-        []
-    );
+    const classes = styles(props);
+
+    useEffect(() => {
+        setProductColumns(initialProductColumns);
+    }, [productCodings.documents]);
 
     function changeField(field: string, value: any, uid: string) {
         log.debug("field", field, "value", value, typeof value, "uid", uid);
@@ -234,9 +219,9 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
         if (updatedProduct) {
             updatedProduct.data[field] = productCodings.cellFieldValue(field, value, productColumns);
             log.debug("updatedProduct:", updatedProduct);
-            productData.setSingleProduct(updatedProduct)
+            productData.setSingleProduct(updatedProduct);
         } else {
-            notification.error(`Cant update product based with id: ${uid}, ${field}, ${JSON.stringify(value)}`)
+            notification.error(`Cant update product based with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
         }
     }
 
@@ -367,8 +352,14 @@ export default function ProductsDataGrid(props: { products: WithUid<Product>[] }
                   className={classes.tableCell}
                   components={{Toolbar: CustomToolbar}}
                   pageSize={itemsPerPage}
-                  onCellClick={handleCellClick}
+                  onCellClick={dataGrid.onCellClick}
+                  onColumnVisibilityChange={(value: GridColumnVisibilityChangeParams) => {
+                      log.debug("onColumnVisibilityChange:value", value.field, value.isVisible);
+                  }}
                   onPageSizeChange={(value) => setItemsPerPage(value)}
+                  onColumnHeaderOut={(value) => {
+                      log.debug("onColumnHeaderOut:value", value);
+                  }}
                   rowsPerPageOptions={[5, 10, 15, 20, 15, 30, 50, 60, 80, 100]}
                   pagination
                   disableSelectionOnClick

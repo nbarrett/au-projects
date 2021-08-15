@@ -12,6 +12,7 @@ export enum AppRoute {
   DASHBOARD = "dashboard",
   EXAMPLE_DASHBOARD = "example-dashboard",
   LOGIN = "login",
+  ORDERS = "orders",
   PRICES = "prices",
   PRICING_SETUP = "prices/pricing-setup",
   PRODUCTS = "products",

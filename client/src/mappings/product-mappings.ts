@@ -63,6 +63,3 @@ export function toPricedProduct(product: WithUid<Product>, pricingTier: PricingT
     };
 }
 
-export function toRow(item: WithUid<Product>) {
-    return {id: item.uid, ...item.data};
-}

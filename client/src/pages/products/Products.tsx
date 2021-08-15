@@ -1,6 +1,5 @@
 import { Helmet } from "react-helmet";
 import {
-    Box,
     Button,
     FormControl,
     FormControlLabel,
@@ -10,8 +9,7 @@ import {
     Pagination,
     RadioGroup,
     TextField,
-    Tooltip,
-    Typography
+    Tooltip
 } from "@material-ui/core";
 import { useSetRecoilState } from "recoil";
 import * as React from "react";
@@ -26,9 +24,11 @@ import { toolbarButtonState } from "../../atoms/navbar-atoms";
 import { WithUid } from "../../models/common-models";
 import useProductData from "../../hooks/use-product-data";
 import AddShoppingCartIcon from "@material-ui/icons/AddShoppingCart";
-import ProductCards from "./ProductCards";
 import Radio from "@material-ui/core/Radio";
+import { contentContainer } from "../../admin/components/GlobalStyles";
+import ProductCards from "./ProductCards";
 import ProductsDataGrid from "./ProductsDataGrid";
+import Typography from "@material-ui/core/Typography";
 
 export default function Products() {
     const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
@@ -92,57 +92,51 @@ export default function Products() {
             <Helmet>
                 <title>Products | AU Projects</title>
             </Helmet>
-            <Box sx={{paddingLeft: 0, flexGrow: 1, width: window.innerWidth - 280}}>
-                <Grid container sx={{p: 3, pb: 0}}
-                      justifyContent="space-between"
-                      alignItems="center" spacing={3}>
-                    <Grid item xs>
-                        <FormControl component="fieldset">
-                            <RadioGroup row aria-label="position" defaultValue="table" value={viewAs} onChange={(x) => {
-                                const newValue = x.target.value;
-                                log.debug("x.target.value", x.target.value, "newValue", newValue);
-                                setViewAs(newValue)
-                            }} name="row-radio-buttons-group">
-                                <FormControlLabel value={"table"} control={<Radio/>} label="Display as Table"/>
-                                <FormControlLabel value={"cards"} control={<Radio/>} label="Display as Cards"/>
-                            </RadioGroup>
-                        </FormControl>
-                    </Grid>
-                    {viewAs === "cards" && <><Grid item xs>
-                        <TextField id="items-per-page"
-                                   fullWidth
-                                   select
-                                   size={"small"}
-                                   label="products per page"
-                                   value={itemsPerPage}
-                                   onChange={(event) => {
-                                       setItemsPerPage(+event.target.value);
-                                       setPage(1)
-                                       log.debug("setItemsPerPage:", +event.target.value);
-                                   }}
-                                   variant="outlined">
-                            {pageSizes.map((option, index) => (
-                                <MenuItem key={option} value={option}>
-                                    {option}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
-                        <Grid item xs>
-                            <Pagination color="primary" count={pages().length} size="small"
-                                        onChange={handlePageChange}/>
-                        </Grid>
-                        <Grid item xs>
-                            <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
-                        </Grid></>}
+            <Grid sx={contentContainer} container spacing={3}>
+                <Grid item xs>
+                    <FormControl component="fieldset">
+                        <RadioGroup row aria-label="position" defaultValue="table" value={viewAs} onChange={(x) => {
+                            const newValue = x.target.value;
+                            log.debug("x.target.value", x.target.value, "newValue", newValue);
+                            setViewAs(newValue);
+                        }} name="row-radio-buttons-group">
+                            <FormControlLabel value={"table"} control={<Radio/>} label="Display as Table"/>
+                            <FormControlLabel value={"cards"} control={<Radio/>} label="Display as Cards"/>
+                        </RadioGroup>
+                    </FormControl>
                 </Grid>
-                <Grid container sx={{p: 3}} spacing={3}>
-                    <Grid item xs>
-                        {viewAs === "cards" && <ProductCards products={currentPage()}/>}
-                        {viewAs === "table" && <ProductsDataGrid products={productData.products}/>}
-                    </Grid>
+                {viewAs === "cards" &&
+                <Grid item xs>
+                    <TextField id="items-per-page"
+                               fullWidth
+                               select
+                               size={"small"}
+                               label="products per page"
+                               value={itemsPerPage}
+                               onChange={(event) => {
+                                   setItemsPerPage(+event.target.value);
+                                   setPage(1);
+                                   log.debug("setItemsPerPage:", +event.target.value);
+                               }}
+                               variant="outlined">
+                        {pageSizes.map((option, index) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                </Grid>}
+                {viewAs === "cards" && <Grid item xs>
+                    <Pagination color="primary" count={pages().length} size="small"
+                                onChange={handlePageChange}/>
+                </Grid>}
+                {viewAs === "cards" && <Grid item xs>
+                    <Typography>Showing {filteredProducts.length} of {productData.products.length} products</Typography>
+                </Grid>}
+                <Grid item xs={12}>
+                    {viewAs === "cards" && <ProductCards products={currentPage()}/>}
+                    {viewAs === "table" && <ProductsDataGrid products={productData.products}/>}
                 </Grid>
-            </Box>
-        </>
-    );
+            </Grid>
+        </>);
 }

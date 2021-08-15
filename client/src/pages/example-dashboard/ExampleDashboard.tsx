@@ -6,8 +6,6 @@ import TasksProgress from "../../admin/components/dashboard/TasksProgress";
 import TotalProfit from "../../admin/components/dashboard/TotalProfit";
 import Sales from "../../admin/components/dashboard/Sales";
 import SalesByCustomer from "../../admin/components/dashboard/SalesByCustomer";
-import LatestProducts from "../../admin/components/dashboard/LatestProducts";
-import { LatestOrders } from "../../admin/components/dashboard/LatestOrders";
 
 export default function ExampleDashboard() {
     return (
@@ -35,12 +33,6 @@ export default function ExampleDashboard() {
                         </Grid>
                         <Grid item lg={4} md={6} xl={3} xs={12}>
                             <SalesByCustomer sx={{height: "100%"}}/>
-                        </Grid>
-                        <Grid item lg={4} md={6} xl={3} xs={12}>
-                            <LatestProducts sx={{height: "100%"}}/>
-                        </Grid>
-                        <Grid item lg={8} md={12} xl={9} xs={12}>
-                            <LatestOrders/>
                         </Grid>
                     </Grid>
                 </Container>

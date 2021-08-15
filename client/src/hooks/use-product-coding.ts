@@ -33,11 +33,13 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }, [])
 
     useEffect(() => {
-        log.debug("useProductCoding:documents:", documents);
-        const map: ProductCodingMap = {};
-        documents.forEach((document: WithUid<ProductCoding>) => set(map, [document.uid], document))
-        log.debug("mapResults:", map);
-        setMap(map);
+        if (documents.length > 0) {
+            log.debug("useProductCoding:documents:", documents);
+            const map: ProductCodingMap = {};
+            documents.forEach((document: WithUid<ProductCoding>) => set(map, [document.uid], document));
+            log.info("map created:", map);
+            setMap(map);
+        }
     }, [documents])
 
     function saveAllProductCodings(): Promise<any> {
@@ -58,7 +60,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }
 
     function productCodingForUid(uid: string): WithUid<ProductCoding> {
-        return map[uid];
+        return cloneDeep(map[uid]);
     }
 
     function productCodingsForType(productCodingType: ProductCodingType): WithUid<ProductCoding>[] {

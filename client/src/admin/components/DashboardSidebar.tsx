@@ -2,6 +2,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { Avatar, Box, Divider, Drawer, List, Typography, } from "@material-ui/core";
 import {
     BarChart,
+    DollarSign,
+    Layout,
     Settings,
     ShoppingBag as ShoppingBagIcon,
     ShoppingCart,
@@ -25,7 +27,7 @@ import { productRoute } from "../../mappings/product-mappings";
 const navItems: MenuItem[] = [
     {
         href: AppRoute.USERS,
-        icon: UsersIcon,
+        icon: UserIcon,
         title: "Users",
     },
     {
@@ -61,7 +63,7 @@ const navItems: MenuItem[] = [
     },
     {
         href: AppRoute.PRICES,
-        icon: ShoppingCart,
+        icon: DollarSign,
         title: "Prices",
         subItems: [{
             href: AppRoute.PRICING_SETUP,
@@ -70,8 +72,13 @@ const navItems: MenuItem[] = [
         }]
     },
     {
+        href: AppRoute.ORDERS,
+        icon: ShoppingCart,
+        title: "Orders",
+    },
+    {
         href: AppRoute.ACCOUNT,
-        icon: UserIcon,
+        icon: Layout,
         title: "Account",
         subItems: [{
             href: AppRoute.SETTINGS,
