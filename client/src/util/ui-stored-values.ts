@@ -9,6 +9,8 @@ export enum StoredValue {
   FIRESTORE = "firestore",
   MOBILE_OPEN = "mobile-open",
   NAVBAR_SEARCH = "navbar-search",
+  ORDER = "order",
+  ORDERS = "orders",
   PRICING_TIERS = "pricing-tiers",
   PRODUCT_CODING = "product-coding",
   PRODUCT_CODING_MAP = "product-coding-map",

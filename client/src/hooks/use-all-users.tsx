@@ -33,6 +33,10 @@ export default function useAllUsers() {
         setUsers(newUsers);
     }
 
-    return {saveAllUsers, users, setUsers, setOne}
+    function userForUid(uid: string): UserData {
+        return users?.find(user => user?.uid === uid)?.data;
+    }
+
+    return {saveAllUsers, users, setUsers, setOne, userForUid}
 
 }

@@ -1,6 +1,7 @@
 import { asNumber } from "./numbers";
 import { DateTime } from "luxon";
-import { isNumber } from "lodash";
+import isNumber from "lodash/isNumber";
+import isDate from "lodash/isDate";
 
 export interface DateValue {
     value: number;
@@ -20,10 +21,6 @@ export const DateFormats = {
     yyyymmdd: "YYYYMMDD"
 };
 
-export function isDate(value) {
-    return value && asDateTime(value).isValid;
-}
-
 export function asDate(value): Date {
     return value && asDateTime(value).toJSDate();
 }
@@ -32,7 +29,7 @@ export function asDateTime(dateValue?: any, inputFormat?: string): DateTime {
     if (!dateValue) {
         return DateTime.now();
     } else if (inputFormat) {
-        return DateTime.fromFormat(dateValue, inputFormat)
+        return DateTime.fromFormat(dateValue, inputFormat);
     } else if (isNumber(dateValue)) {
         return DateTime.fromMillis(dateValue)
     } else if (isDate(dateValue)) {

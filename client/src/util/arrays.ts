@@ -1,7 +1,7 @@
 import get from "lodash/get";
 
-export const range = (start: number, end: number) => {
-  return Array.from({length: end - start + 1}, (v, k) => k + start);
+export const range = (start: number, end: number, step?:number) => {
+  return Array.from({length: end - start + (step||1)}, (v, k) => k + start);
 };
 
 export const descending = () => (a, b) => b - a;

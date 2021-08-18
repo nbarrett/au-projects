@@ -18,7 +18,7 @@ import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import map from "lodash/map";
-import { asCurrency, asPercent, pricePerKgFromRow } from "../../mappings/product-mappings";
+import { asCurrencyFromGrid, asPercent, pricePerKgFromGrid } from "../../mappings/product-mappings";
 import { isNumber } from "lodash";
 import { makeStyles } from "@material-ui/styles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -179,7 +179,7 @@ export default function ProductsDataGrid() {
             editable: true,
             type: "number",
             headerName: "Cost Per Kg",
-            valueFormatter: asCurrency,
+            valueFormatter: asCurrencyFromGrid,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -199,7 +199,7 @@ export default function ProductsDataGrid() {
             editable: false,
             type: "number",
             headerName: "Price Per Kg",
-            valueFormatter: pricePerKgFromRow,
+            valueFormatter: pricePerKgFromGrid,
             sortComparator,
             flex: 1,
             minWidth: 180,

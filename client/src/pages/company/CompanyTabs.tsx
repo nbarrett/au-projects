@@ -7,14 +7,14 @@ import AvailableProducts from "./AvailableProducts";
 import AppBar from "@material-ui/core/AppBar";
 import { Divider, Grid, IconButton, Tooltip } from "@material-ui/core";
 import { remove, save } from "../../data-services/firebase-services";
-import { Company } from "../../models/company-models";
 import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useNavigate } from "react-router-dom";
-import useSingleCompany from "../../hooks/use-single-company";
 import { APP_PATH, AppRoute } from "../../constants";
 import { TabPanelProps } from "../../models/common-models";
+import useSingleCompany from "../../hooks/use-single-company";
+import { Company } from "../../models/company-models";
 
 function TabPanel(props: TabPanelProps) {
     const {children, value, index, ...other} = props;
@@ -43,7 +43,7 @@ function a11yProps(index: number) {
 
 export default function CompanyTabs() {
     const navigate = useNavigate();
-    const company = useSingleCompany();
+    const document = useSingleCompany();
 
     function backToCompanies() {
         navigate(`/${APP_PATH}/${AppRoute.COMPANIES}`);
@@ -77,9 +77,9 @@ export default function CompanyTabs() {
                 <Grid container justifyContent="space-between"
                       alignItems="center">
                     <Grid item sx={{alignItems: "center", display: "flex"}}>
-                        <Tooltip title={`Delete ${company.company?.data?.name}`}>
+                        <Tooltip title={`Delete ${document.document?.data?.name}`}>
                             <IconButton onClick={() => {
-                                remove<Company>("companies", company.company.uid).then(backToCompanies);
+                                remove<Company>("companies", document.document.uid).then(backToCompanies);
                             }}>
                                 <DeleteIcon color="secondary"/>
                             </IconButton>
@@ -89,14 +89,14 @@ export default function CompanyTabs() {
                         alignItems: "center",
                         display: "flex",
                     }}>
-                        <Tooltip title={`Save changes to ${company.company?.data?.name}`}>
+                        <Tooltip title={`Save changes to ${document.document?.data?.name}`}>
                             <IconButton onClick={() => {
-                                save<Company>("companies", company.company).then(backToCompanies);
+                                save<Company>("companies", document.document).then(backToCompanies);
                             }}>
                                 <SaveIcon color="primary"/>
                             </IconButton>
                         </Tooltip>
-                        <Tooltip title={`Undo changes to ${company.company?.data?.name}`}>
+                        <Tooltip title={`Undo changes to ${document.document?.data?.name}`}>
                             <IconButton onClick={backToCompanies}>
                                 <UndoIcon
                                     color="action"/>

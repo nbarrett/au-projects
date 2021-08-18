@@ -97,7 +97,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }
 
     function productCode(product: Product) {
-        return defaultString("",
+        return product ? defaultString("",
             companyData.companyForUid(product.compoundOwner)?.data?.code,
             "-",
             productCodingForUid(product.curingMethod)?.data?.code,
@@ -106,7 +106,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
             productCodingForUid(product.type)?.data?.code,
             productCodingForUid(product.grade)?.data?.code,
             productCodingForUid(product.colour)?.data?.code
-        );
+        ) : "-";
     }
 
     function productCodeFromGrid(params: GridValueGetterParams): string {
@@ -118,14 +118,14 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }
 
     function productDescription(product: Product) {
-        return defaultString(", ",
+        return product ? defaultString(", ",
             companyData.companyForUid(product.compoundOwner)?.data?.name,
             productCodingForUid(product.curingMethod)?.data?.name,
             productCodingForUid(product.hardness)?.data?.name,
             productCodingForUid(product.type)?.data?.name,
             productCodingForUid(product.grade)?.data?.name,
             productCodingForUid(product.colour)?.data?.name
-        );
+        ) : "-";
     }
 
     function defaultString(separator: string, ...fields: string[]): string {

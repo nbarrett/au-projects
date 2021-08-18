@@ -17,10 +17,10 @@ export default function CompanyImage() {
                     }}
                 >
                     <Typography color="textPrimary" gutterBottom variant="h3">
-                        {`${company.company.data.name || "New Company"}`}
+                        {`${company.document.data.name || "New Company"}`}
                     </Typography>
                     <Avatar
-                        src={company.company.data.avatarUrl}
+                        src={company.document.data.avatarUrl}
                         sx={{
                             height: 100,
                             width: 100,

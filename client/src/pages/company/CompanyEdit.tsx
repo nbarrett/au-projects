@@ -17,7 +17,7 @@ export default function CompanyEdit() {
     useEffect(() => {
         if (uid === "new") {
             log.debug("Creating new company:");
-            company.setCompany({uid: "", data: {}} as WithUid<Company>);
+            company.setDocument({uid: "", data: {}} as WithUid<Company>);
         } else if (uid) {
             log.debug("finding company:", uid);
             company.findCompany(uid)

@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useState } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Box,
   Card,
@@ -44,10 +43,7 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
     let newSelectedUserIds: any[] | ((prevState: string[]) => string[]) = [];
 
     if (selectedIndex === -1) {
-      newSelectedUserIds = newSelectedUserIds.concat(
-          selectedUserIds,
-          id
-      );
+      newSelectedUserIds = newSelectedUserIds.concat(selectedUserIds).concat(id);
     } else if (selectedIndex === 0) {
       newSelectedUserIds = newSelectedUserIds.concat(
           selectedUserIds.slice(1)
@@ -92,9 +88,8 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
 
   return (
       <Card {...props.rest}>
-        <PerfectScrollbar>
           <Box sx={{minWidth: 1050}}>
-            <Table>
+            <Table size={"small"}>
               <TableHead>
                 <TableRow>
                   <TableCell padding="checkbox">
@@ -135,6 +130,7 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
                         <div>
                           <TextField
                               select
+                              fullWidth
                               label="Works for"
                               value={user.data.companyId || ""}
                               onChange={(event) => userChange(event, user)}>
@@ -154,7 +150,6 @@ export default function UserListResults(props: { userRecords: any[], rest?: any[
               </TableBody>
             </Table>
           </Box>
-        </PerfectScrollbar>
         <Grid spacing={2}
               container
               direction="row"

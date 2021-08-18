@@ -23,6 +23,11 @@ export interface HasAuditTimestamps {
     createdAt?: number;
 }
 
+export interface HasAuditUsers {
+    updatedBy?: string;
+    createdBy?: string;
+}
+
 export interface TabPanelProps {
     children?: React.ReactNode;
     index: number;

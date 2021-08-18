@@ -11,12 +11,12 @@ import { log } from "../../util/logging-config";
 export default function CompanySelector() {
 
   const companyData = useCompanyData()
-  const singleCompany = useSingleCompany();
+  const company = useSingleCompany();
 
   useEffect(() => {
-    if (isNewDocument(singleCompany.company) && companyData.documents.length > 0) {
+    if (isNewDocument(company.document) && companyData.documents.length > 0) {
       log.debug("companyData", companyData.documents)
-      singleCompany.setCompany(companyData.documents.find(company => company?.data?.availableProducts?.length > 0))
+      company.setDocument(companyData.documents.find(company => company?.data?.availableProducts?.length > 0))
     }
   }, [companyData.documents])
 
@@ -24,9 +24,9 @@ export default function CompanySelector() {
                     fullWidth
                     select
                     label="Show prices for"
-                    value={singleCompany.company?.uid || ""}
+                    value={company.document?.uid || ""}
                     onChange={(event) => {
-                      return singleCompany.setCompany(companyData.documents.find(company => company.uid === event.target.value) as WithUid<Company>);
+                      return company.setDocument(companyData.documents.find(company => company.uid === event.target.value) as WithUid<Company>);
                     }}>
     {companyData.documents.filter(item => item.data.availableProducts?.length > 0).map((option) => (
         <MenuItem key={option.uid} value={option.uid}>

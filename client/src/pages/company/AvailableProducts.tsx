@@ -16,15 +16,19 @@ import useProductCoding from "../../hooks/use-product-coding";
 
 export default function AvailableProducts() {
     const company = useSingleCompany();
-    const products = useProducts()
-    const productCoding = useProductCoding()
-    const selectedItems = useSelectedItems(company.company.data.availableProducts || []);
+    const products = useProducts();
+    const productCoding = useProductCoding();
+    const selectedItems = useSelectedItems(company.document.data.availableProducts || []);
     const pricingTierMarkupData = usePricingTierMarkupData(true);
+    const validProductIds = products.documents.map(item => item.uid);
 
     useEffect(() => {
-        log.debug("itemsSelected:", selectedItems.itemsSelected);
-        company.changeField("data.availableProducts", selectedItems.itemsSelected)
-    }, [selectedItems.itemsSelected])
+        const validAvailableProducts = selectedItems.itemsSelected.filter(item => validProductIds.includes(item));
+        if (validProductIds.length > 0) {
+            log.info("itemsSelected:", selectedItems.itemsSelected, "validProductIds:", validProductIds, "validAvailableProducts:", validAvailableProducts);
+            company.changeField("data.availableProducts", validAvailableProducts);
+        }
+    }, [selectedItems.itemsSelected]);
 
     return (
         <Grid container spacing={3}>
@@ -34,7 +38,7 @@ export default function AvailableProducts() {
                     fullWidth
                     name="data.pricingTier"
                     label="Pricing Tier"
-                    value={company.company?.data?.pricingTier || ""}
+                    value={company.document?.data?.pricingTier || ""}
                     onChange={company.companyChange}>
                     {pricingTierMarkupData.mutablePricingTiers().sort(sortBy("data.name")).map((option) => (
                         <MenuItem key={option.uid} value={option.uid}>
@@ -45,7 +49,7 @@ export default function AvailableProducts() {
             </Grid>
             <Grid item md={6} xs={12}>
                 <Typography color="textPrimary" gutterBottom>
-                    Select items below by checking checkboxes to make products available to {company.company.data.name}.
+                    Select items below by checking checkboxes to make products available to {company.document.data.name}.
                 </Typography>
                 <Typography color="textSecondary" variant="body1">
                     {selectedItems.itemsSelected.length} of {products.documents.length} selected

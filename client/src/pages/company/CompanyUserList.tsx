@@ -20,7 +20,7 @@ export default function CompanyUserList() {
     const allUsers = useAllUsers()
     const company = useSingleCompany();
 
-    const usersForCompany = allUsers.users.filter(user => user.data.companyId === company.company.uid);
+    const usersForCompany = allUsers.users.filter(user => user.data.companyId === company.document.uid);
     return (
         <Grid item xs>
             <Typography color="textPrimary" gutterBottom variant="h4">
@@ -35,7 +35,7 @@ export default function CompanyUserList() {
                     </ListItemAvatar>
                     <ListItemText
                         primary={fullNameForUser(user.data)}
-                        secondary={company.company.data.primaryContact === user.uid ? "(Primary Contact)" : ""}
+                        secondary={company.document.data.primaryContact === user.uid ? "(Primary Contact)" : ""}
                     />
                     <ListItemSecondaryAction>
                         <Tooltip title={`Make ${fullNameForUser(user.data)} the primary contact`}>

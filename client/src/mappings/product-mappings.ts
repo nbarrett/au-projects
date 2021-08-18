@@ -10,15 +10,19 @@ export function productRoute(type: ProductCodingType): string {
     return `${AppRoute.PRODUCTS}/${kebabCase(type)}`;
 }
 
-export function pricePerKgFromRow(params: GridValueGetterParams): string {
+export function pricePerKgFromGrid(params: GridValueGetterParams): string {
     const product = params.row as Product;
     const number = pricePerKgFunction(product.costPerKg, product.markup);
     return number ? "R " + number.toFixed(2) : undefined;
 }
 
-export function asCurrency(params: GridValueGetterParams): string {
-    log.debug("asCurrency:", params.value);
-    return params.value ? "R " + asNumber(params.value).toFixed(2) : undefined;
+export function asCurrency(value: any) {
+    log.debug("asCurrency:", value);
+    return value ? "R " + asNumber(value).toFixed(2) : undefined;
+}
+
+export function asCurrencyFromGrid(params: GridValueGetterParams): string {
+    return asCurrency(params.value);
 }
 
 export function asPercent(params: GridValueGetterParams): string {
@@ -32,11 +36,11 @@ function pricePerKgFunction(costPerKg: number, markup: number): number {
 }
 
 export function pricePerKg(product: WithUid<Product>): number {
-    return pricePerKgFunction(product?.data?.costPerKg, product?.data?.markup);
+    return product ? pricePerKgFunction(product?.data?.costPerKg, product?.data?.markup) : null;
 }
 
 export function salePricePerKg(product: WithUid<Product>, pricingTier: PricingTier): number {
-    return asNumber(asNumber(pricePerKg(product)) * (pricingTier?.pricingFactor / 100), 2);
+    return product ? asNumber(asNumber(pricePerKg(product)) * (pricingTier?.pricingFactor / 100), 2) : null;
 }
 
 export function priceWithLosses(product: WithUid<Product>, percentLosses: number) {

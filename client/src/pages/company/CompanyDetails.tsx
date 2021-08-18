@@ -1,13 +1,13 @@
 import { Grid, TextareaAutosize, TextField, } from "@material-ui/core";
 import * as React from "react";
+import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
+import useUniqueValues from "../../hooks/use-unique-values";
+import useSingleCompany from "../../hooks/use-single-company";
 import { Company } from "../../models/company-models";
 import useCompanyData from "../../hooks/use-company-data";
-import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
-import useSingleCompany from "../../hooks/use-single-company";
-import useUniqueValues from "../../hooks/use-unique-values";
 
 export default function CompanyDetails() {
-    const company = useSingleCompany();
+    const document = useSingleCompany();
     const companyData = useCompanyData();
     const uniqueValues = useUniqueValues(companyData.documents);
     return (
@@ -18,8 +18,8 @@ export default function CompanyDetails() {
                     autoComplete="off"
                     label="Company Name"
                     name="data.name"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.name || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.name || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -29,8 +29,8 @@ export default function CompanyDetails() {
                     autoComplete="off"
                     label="Code"
                     name="data.code"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.code || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.code || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -41,8 +41,8 @@ export default function CompanyDetails() {
                     label="Company Registration Number"
                     name="data.registrationNumber"
                     type="text"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.registrationNumber || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.registrationNumber || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -53,8 +53,8 @@ export default function CompanyDetails() {
                     label="VAT Number"
                     name="data.vatNumber"
                     type="text"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.vatNumber || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.vatNumber || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -65,8 +65,8 @@ export default function CompanyDetails() {
                     label="Building"
                     name="data.address.building"
                     type="text"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.address?.building || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.address?.building || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -77,38 +77,38 @@ export default function CompanyDetails() {
                     label="Street"
                     name="data.address.street"
                     type="text"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.address?.street || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.address?.street || ""}
                     variant="outlined"
                 />
             </Grid>
             <Grid item md={6} xs={12}>
                 <DataBoundAutoComplete<Company> field={"data.address.suburb"} size={"medium"} label={"Suburb"}
                                                 type={"text"}
-                                                onChange={company.changeField} document={company.company}
+                                                onChange={document.changeField} document={document.document}
                                                 options={uniqueValues.field("address.suburb")}/>
             </Grid>
             <Grid item md={6} xs={12}>
                 <DataBoundAutoComplete<Company> field={"data.address.province"} size={"medium"} label={"Province"}
                                                 type={"text"}
-                                                onChange={company.changeField} document={company.company}
+                                                onChange={document.changeField} document={document.document}
                                                 options={uniqueValues.field("address.province")}/>
             </Grid>
             <Grid item md={6} xs={12}>
                 <DataBoundAutoComplete<Company> field={"data.address.postcode"} size={"medium"} label={"Postcode"}
                                                 type={"text"}
-                                                onChange={company.changeField} document={company.company}
+                                                onChange={document.changeField} document={document.document}
                                                 options={uniqueValues.field("address.postcode")}/>
             </Grid>
             <Grid item md={6} xs={12}>
                 <DataBoundAutoComplete<Company> field={"data.address.city"} size={"medium"} label={"City"} type={"text"}
-                                                onChange={company.changeField} document={company.company}
+                                                onChange={document.changeField} document={document.document}
                                                 options={uniqueValues.field("address.city")}/>
             </Grid>
             <Grid item md={6} xs={12}>
                 <DataBoundAutoComplete<Company> field={"data.address.country"} size={"medium"} label={"Country"}
                                                 type={"text"}
-                                                onChange={company.changeField} document={company.company}
+                                                onChange={document.changeField} document={document.document}
                                                 options={uniqueValues.field("address.country")}/>
             </Grid>
             <Grid item md={6} xs={12}>
@@ -117,8 +117,8 @@ export default function CompanyDetails() {
                     size={"medium"}
                     label="Media"
                     name="data.avatarUrl"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.avatarUrl || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.avatarUrl || ""}
                     variant="outlined"
                 />
             </Grid>
@@ -131,8 +131,8 @@ export default function CompanyDetails() {
                     fullWidth
                     label="Notes"
                     name="data.notes"
-                    onChange={company.companyChange}
-                    value={company.company?.data?.notes || ""}
+                    onChange={document.companyChange}
+                    value={document.document?.data?.notes || ""}
                     variant="outlined"
                 />
             </Grid>
