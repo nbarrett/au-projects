@@ -122,8 +122,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
             companyData.companyForUid(product.compoundOwner)?.data?.name,
             productCodingForUid(product.curingMethod)?.data?.name,
             productCodingForUid(product.hardness)?.data?.name,
-            productCodingForUid(product.type)?.data?.name,
-            productCodingForUid(product.grade)?.data?.name,
+            productCodingForUid(product.type)?.data?.name + productCodingForUid(product.grade)?.data?.name,
             productCodingForUid(product.colour)?.data?.name
         ) : "-";
     }

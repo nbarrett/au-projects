@@ -21,6 +21,11 @@ export function asCurrency(value: any) {
     return value ? "R " + asNumber(value).toFixed(2) : undefined;
 }
 
+export function asKg(value: any) {
+    log.debug("asKg:", value);
+    return value ? asNumber(value).toFixed(0) +" Kg" : undefined;
+}
+
 export function asCurrencyFromGrid(params: GridValueGetterParams): string {
     return asCurrency(params.value);
 }

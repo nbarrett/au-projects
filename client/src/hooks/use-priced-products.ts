@@ -1,12 +1,14 @@
 import { Company } from "../models/company-models";
 import { fullTextSearch } from "../util/strings";
-import { PricedProduct, PricingTier } from "../models/product-models";
+import { PricedProduct, PricingTier, Product } from "../models/product-models";
 import useProducts from "./use-products";
-import { toPricedProduct } from "../mappings/product-mappings";
+import { pricePerKg, toPricedProduct } from "../mappings/product-mappings";
 import { WithUid } from "../models/common-models";
 import { log } from "../util/logging-config";
 import { useEffect, useState } from "react";
 import usePricingTierMarkupData from "./use-product-markup-data";
+import { kgPerRoll, pricePerRoll, totalPerLine } from "../mappings/order-mappings";
+import { OrderItem } from "../models/order-models";
 
 export default function UsePricedProducts(company: WithUid<Company>, search?: string) {
   const productData = useProducts();
@@ -28,6 +30,20 @@ export default function UsePricedProducts(company: WithUid<Company>, search?: st
     return pricedProducts;
   }
 
-  return {documents};
+  function lineItemPricing(orderItem: OrderItem) {
+    const product: WithUid<Product> = productData.findProduct(orderItem.productId);
+    const perRollKg = kgPerRoll(orderItem, product?.data);
+    const perKg = pricePerKg(product);
+    const perRollPrice = pricePerRoll(perRollKg, perKg);
+    return {
+      kgPerRoll: perRollKg,
+      pricePerKg: perKg,
+      pricePerRoll: perRollPrice,
+      lineItemTotal: totalPerLine(orderItem.quantity, perRollPrice),
+      product
+    };
+  }
+
+  return {documents, lineItemPricing};
 
 }

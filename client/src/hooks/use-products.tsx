@@ -68,7 +68,7 @@ export default function useProducts() {
 
     function findProduct(id): WithUid<Product> {
         const document = cloneDeep(documents.find(item => (item.uid || "") === (id || "")));
-        log.info("finding product with id", id, "returning:", document);
+        log.debug("finding product with id", id, "returning:", document);
         return document;
     }
 

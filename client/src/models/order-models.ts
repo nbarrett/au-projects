@@ -8,6 +8,7 @@ export interface Order extends HasAuditTimestamps, HasAuditUsers {
 }
 
 export enum OrderStatus {
+    NEW = -1,
     DRAFT,
     CANCELLED,
     SUBMITTED,
@@ -21,6 +22,7 @@ export interface OrderStatusDescription {
 }
 
 export const OrderStatusDescriptions: OrderStatusDescription = {
+    [OrderStatus.NEW]: "New",
     [OrderStatus.DRAFT]: "Draft",
     [OrderStatus.CANCELLED]: "Cancelled",
     [OrderStatus.SUBMITTED]: "Submitted",

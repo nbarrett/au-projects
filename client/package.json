@@ -9,6 +9,7 @@
     "@material-ui/core": "5.0.0-beta.2",
     "@material-ui/data-grid": "4.0.0-alpha.35",
     "@material-ui/icons": "5.0.0-beta.1",
+    "@material-ui/lab": "^4.0.0-alpha.60",
     "@material-ui/styles": "5.0.0-beta.2",
     "@material-ui/system": "5.0.0-beta.2",
     "@material-ui/types": "6.0.1",

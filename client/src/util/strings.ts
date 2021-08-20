@@ -85,6 +85,10 @@ export function pluralise(count: number, singularText: string, pluralText?: stri
   return `${count === 1 ? singularText : pluralText || (singularText + "s")}`;
 }
 
+export function withCommas(number: number): string {
+  return new Intl.NumberFormat().format(number);
+}
+
 export function fullTextSearch<T>(itemsToSearch: T[], searchText: string): T[] {
   if (!itemsToSearch) {
     return [];

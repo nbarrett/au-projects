@@ -8,7 +8,7 @@ import { InputProps as StandardInputProps } from "@material-ui/core/Input/Input"
 import isNumber from "lodash/isNumber";
 
 export function EditableTableCell(props: { inputProps?: Partial<StandardInputProps>, value: string | number, address: CellAddress, onChange: (event: any, address: CellAddress) => void }) {
-    const useStyles = makeStyles((theme: Theme) => ({
+    const classes = makeStyles((theme: Theme) => ({
         tableCell: {
             height: 5
         },
@@ -18,8 +18,7 @@ export function EditableTableCell(props: { inputProps?: Partial<StandardInputPro
         propertiesTable: {
             maxHeight: 400,
         },
-    }));
-    const classes = useStyles({});
+    }))({});
     const type = isNumber(props.value) ? "number" : "text";
 
     useEffect(() => {

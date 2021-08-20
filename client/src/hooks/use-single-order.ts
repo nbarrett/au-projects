@@ -25,8 +25,15 @@ export default function useSingleOrder() {
     }, [document]);
 
 
-    function saveOrder(): Promise<any> {
-        return save<Order>(collection, document);
+    function saveOrder(orderStatus?: OrderStatus): Promise<any> {
+        if (orderStatus) {
+            const document = mutableOrder();
+            document.data.status = orderStatus;
+            return save<Order>(collection, document);
+        } else {
+            return save<Order>(collection, document);
+        }
+
     }
 
     async function newOrderNumber(): Promise<number> {
@@ -59,6 +66,16 @@ export default function useSingleOrder() {
         setDocument(mutable);
     }
 
+    function deleteOrderItem(index: number) {
+        log.info("deleteOrderItem:index:", index);
+        const mutable: WithUid<Order> = mutableOrder();
+        mutable.data.items = mutable.data.items.filter((item, itemIndex) => {
+            log.info("deleteOrderItem:itemIndex:", itemIndex, "index", index);
+            return itemIndex !== index;
+        });
+        setDocument(mutable);
+    }
+
     function change(event?: any) {
         const field = event.target.name;
         const value = event.target.value;
@@ -72,23 +89,37 @@ export default function useSingleOrder() {
         mutable.data.companyId = userData.companyId;
         mutable.data.createdAt = nowAsValue();
         mutable.data.createdBy = user.uid;
-        mutable.data.status = OrderStatus.DRAFT;
+        mutable.data.status = OrderStatus.NEW;
         mutable.data.items = [];
+        addLineItem(mutable);
         setDocument(mutable);
     }
 
-    async function addLineItem() {
+    function addLineItem(existingOrder?: WithUid<Order>) {
         const orderItem: OrderItem = {};
-        const order = mutableOrder();
+        const order = existingOrder || mutableOrder();
         orderItem.createdAt = nowAsValue();
         orderItem.createdBy = user.uid;
+        orderItem.quantity = 1;
         order.data.updatedAt = nowAsValue();
+        order.data.updatedBy = user.uid;
         order.data.updatedBy = user.uid;
         order.data.items.push(orderItem);
         log.info("addLineItem:order:", order);
         setDocument(order);
     }
 
-    return {addLineItem, addOrder, findOrder, saveOrder, document, setDocument, change, changeField, changeOrderItemField};
+    return {
+        addLineItem,
+        addOrder,
+        findOrder,
+        saveOrder,
+        document,
+        setDocument,
+        change,
+        changeField,
+        changeOrderItemField,
+        deleteOrderItem
+    };
 
 }
