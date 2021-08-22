@@ -24,7 +24,7 @@ import { asDateTime } from "../../util/dates";
 import React, { useEffect, useState } from "react";
 import { WithUid } from "../../models/common-models";
 import { Order, OrderItem, OrderStatus, OrderStatusDescriptions } from "../../models/order-models";
-import AddchartIcon from "@material-ui/icons/Addchart";
+import AddIcon from "@material-ui/icons/Add";
 import SaveIcon from "@material-ui/icons/Save";
 import useSingleOrder from "../../hooks/use-single-order";
 import { log } from "../../util/logging-config";
@@ -51,77 +51,122 @@ import { useSnackbarNotification } from "../../snackbarNotification";
 import MenuItem from "@material-ui/core/MenuItem";
 import OrderTabs from "./OrderTabs";
 import DeleteIcon from "@material-ui/icons/Delete";
-import { editable, totalPerLine } from "../../mappings/order-mappings";
+import {
+    applyDocumentToOrderHistory,
+    cancellable,
+    deletable,
+    documentExistsIn,
+    editable,
+    totalPerLine
+} from "../../mappings/order-mappings";
 import { orderTabState } from "../../atoms/order-atoms";
 import TableContainer from "@material-ui/core/TableContainer";
 import CancelIcon from "@material-ui/icons/Cancel";
+import { makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
+import UndoIcon from "@material-ui/icons/Undo";
 
 export function Orders(props) {
     const allUsers = useAllUsers();
     const order = useSingleOrder();
     const orders = useOrders();
-    const [orderHistory, setOrderHistory] = useState<WithUid<Order>[]>([]);
+    const [filteredOrderHistory, setFilteredOrderHistory] = useState<WithUid<Order>[]>([]);
     const [allOrderHistory, setAllOrderHistory] = useState<WithUid<Order>[]>([]);
     const companies = useCompanyData();
     const userData = useRecoilValue<UserData>(currentUserDataState);
     const productCodings = useProductCoding(false);
-    const company: WithUid<Company> = companies.companyForUid(order.document?.data?.companyId);
-    const pricedProducts = usePricedProducts(company);
     const notification = useSnackbarNotification();
     const orderTabValue = useRecoilValue<OrderStatus>(orderTabState);
+    const classes = makeStyles((theme: Theme) => ({
+        orderItemsHeading: {
+            fontWeight: 400,
+            fontSize: "1rem",
+            lineHeight: "1.5",
+        },
+    }))({});
+
+    function refreshOrderView(): Promise<void> {
+        if (userData.companyId) {
+            log.info("refreshing order view");
+            return orders.findOrdersForCompany(userData.companyId).then(setAllOrderHistory);
+        } else {
+            return Promise.resolve();
+        }
+    }
 
     useEffect(() => {
-        if (userData.companyId) {
-            orders.findOrdersForCompany(userData.companyId).then(setAllOrderHistory);
-        }
+        refreshOrderView();
     }, [userData.companyId]);
 
     useEffect(() => {
-        log.info("document:", order.document, "orderTabValue", orderTabValue);
-        if (orderTabValue === OrderStatus.NEW) {
-            log.info("setting order history to single document:", order.document);
-            setOrderHistory([order.document]);
-        } else {
-            const history = allOrderHistory.filter(order => order.data.status === orderTabValue);
-            log.info("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", history);
-            setOrderHistory(history);
+        const filtered = applyDocumentToOrderHistory(allOrderHistory, order.document).filter(order => order.data.status === orderTabValue);
+        log.info("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", filtered.length, "of", allOrderHistory.length, "shown");
+        setFilteredOrderHistory(filtered);
+        if ((order.document.data.status === OrderStatus.NEW && !documentExistsIn(allOrderHistory, order.document)) || order.document.markedForDelete) {
+            setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document));
+            if (order.document.markedForDelete) {
+                order.reset();
+            }
         }
+    }, [order.document, allOrderHistory, orderTabValue]);
 
-    }, [order.document, allOrderHistory]);
-
-    function DeleteButton(props: { index: number }) {
-        const isEditable = editable(order.document?.data?.status);
-        return <IconButton disabled={!isEditable}
+    function DeleteButton(props: { index: number, isEditable: boolean, order: WithUid<Order> }) {
+        return <IconButton disabled={!props.isEditable}
                            onClick={() => {
-                               order.deleteOrderItem(props.index);
+                               order.deleteOrderItem(props.order, props.index);
                            }}>
             <Tooltip title={`Delete line item`}><DeleteIcon
-                color={isEditable ? "secondary" : "disabled"}/></Tooltip>
+                color={props.isEditable ? "secondary" : "disabled"}/></Tooltip>
         </IconButton>;
     }
 
-    function lineItemCost(orderItem: OrderItem) {
+    function lineItemCost(pricedProducts, orderItem: OrderItem) {
         return pricedProducts.lineItemPricing(orderItem).lineItemTotal;
     }
 
-    function OrderRow(props: { company: WithUid<Company>, order: WithUid<Order>, open: boolean, toggleOpen: () => void }) {
-        return <TableRow sx={{"& > *": {borderBottom: "unset"}}} onClick={() => {
-            log.debug("clicked order:", props.order, "persisted order:", order.document);
-            if (order.document.data.orderNumber !== props.order.data.orderNumber) {
-                log.debug("selecting order:", props.order, "persisted order:", order.document);
-                order.setDocument(props.order);
-            } else {
-                log.debug("already selected order:", props.order, "persisted order:", order.document);
-            }
-        }}>
+    function saveOrder(currentOrder: WithUid<Order>) {
+        const orderNumber = currentOrder.data.orderNumber;
+        order.saveOrder(currentOrder, OrderStatus.DRAFT).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was saved`));
+    }
+
+    function undoOrderChanges(currentOrder: WithUid<Order>) {
+        if (currentOrder.uid) {
+            order.findOrder(currentOrder.uid);
+        } else {
+            order.resetAndMarkForDelete();
+        }
+    }
+
+    function cancelOrder(currentOrder: WithUid<Order>) {
+        const orderNumber = currentOrder.data.orderNumber;
+        order.saveOrder(currentOrder, OrderStatus.CANCELLED).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was cancelled`));
+    }
+
+    function deleteOrder(currentOrder: WithUid<Order>) {
+        const orderNumber = currentOrder.data.orderNumber;
+        order.deleteOrder(currentOrder).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was deleted`));
+    }
+
+    function addLineItem(currentOrder: WithUid<Order>) {
+        order.addLineItem(currentOrder);
+    }
+
+    function OrderRow(props: { company: WithUid<Company>, order: WithUid<Order>, open: boolean, toggleOpen: () => void, pricedProducts:any }) {
+        const isEditable = editable(props.order?.data?.status);
+        const isCancellable = cancellable(props.order?.data?.status);
+        const isDeletable = deletable(props.order?.data?.status);
+
+        return <TableRow sx={{"& > *": {borderBottom: "none"}}}>
             <TableCell>
-                <IconButton
-                    aria-label="expand row"
-                    size="small"
-                    onClick={props.toggleOpen}
-                >
-                    {props.open ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                </IconButton>
+                <Tooltip
+                    title={props.open ? "Hide Line Items" : "Show Line Items"}>
+                    <IconButton aria-label="expand row"
+                                size="small"
+                                onClick={props.toggleOpen}>{props.open ?
+                        <KeyboardArrowUpIcon/> :
+                        <KeyboardArrowDownIcon/>}
+                    </IconButton>
+                </Tooltip>
             </TableCell>
             <TableCell>{props.order.data.orderNumber}</TableCell>
             <TableCell>
@@ -139,31 +184,38 @@ export function Orders(props) {
                 {props.order?.data?.items?.length}
             </TableCell>
             <TableCell>
-                {asCurrency(sum(props.order?.data?.items?.map(item => lineItemCost(item))))}
+                {asCurrency(sum(props.order?.data?.items?.map(item => lineItemCost(props.pricedProducts, item))))}
             </TableCell>
             <TableCell>
-                <IconButton onClick={() => {
-                    const orderNumber = order.document.data.orderNumber;
-                    order.saveOrder(OrderStatus.DRAFT).then(() => notification.success(`Saved Order ${orderNumber}`));
-                }}>
-                    <Tooltip title={`Save changes to order`}>
-                        <SaveIcon color="primary"/>
+                <IconButton disabled={!isEditable} onClick={() => addLineItem(props.order)}>
+                    <Tooltip title={`Add Line Item`}>
+                        <AddIcon color={isEditable ? "primary" : "disabled"}/>
                     </Tooltip>
                 </IconButton>
-                <IconButton onClick={() => {
-                    order.saveOrder(OrderStatus.CANCELLED).then(() => notification.success(`Cancelled Order ${order.document.data.orderNumber}`));
-                }}>
+                <IconButton disabled={!isCancellable} onClick={() => saveOrder(props.order)}>
+                    <Tooltip title={`Save changes to order`}>
+                        <SaveIcon color={isEditable ? "primary" : "disabled"}/>
+                    </Tooltip>
+                </IconButton>
+                <IconButton disabled={!isEditable} onClick={() => undoOrderChanges(props.order)}>
+                    <Tooltip title={`Undo changes to order`}>
+                        <UndoIcon color={isEditable ? "primary" : "disabled"}/></Tooltip>
+                </IconButton>
+                <IconButton disabled={!isCancellable} onClick={() => cancelOrder(props.order)}>
                     <Tooltip title={`Cancel order`}>
-                        <CancelIcon color="secondary"/>
+                        <CancelIcon color={isCancellable ? "secondary" : "disabled"}/>
+                    </Tooltip>
+                </IconButton>
+                <IconButton disabled={!isDeletable} onClick={() => deleteOrder(props.order)}>
+                    <Tooltip title={`Delete order`}>
+                        <DeleteIcon color={isDeletable ? "secondary" : "disabled"}/>
                     </Tooltip>
                 </IconButton>
             </TableCell>
         </TableRow>;
     }
 
-    function ProductLookup(props: { index: number, value: WithUid<Product>, company: WithUid<Company>, toggleProductLookup: () => void }) {
-
-        const [open, setOpen] = useState(true);
+    function ProductLookup(props: { order: WithUid<Order>, options: WithUid<PricedProduct>[], index: number, value: WithUid<Product>, company: WithUid<Company>, toggleProductLookup: () => void }) {
 
         function onDismiss(reason: string) {
             log.info("onDismiss:", reason, "product", props.value);
@@ -176,7 +228,7 @@ export function Orders(props) {
         return <ClickAwayListener onClickAway={() => onDismiss("click away")}>
             <Autocomplete
                 fullWidth
-                open={true}
+                open
                 disableClearable
                 onClose={() => onDismiss("onClose")}
                 size={"small"}
@@ -187,7 +239,7 @@ export function Orders(props) {
                 }}
                 onChange={(event, value: WithUid<PricedProduct>) => {
                     log.debug("Autocomplete changed:", value);
-                    order.changeOrderItemField(props.index, "productId", value.uid);
+                    order.changeOrderItemField(props.order, props.index, "productId", value.uid);
                 }}
                 getOptionLabel={(product: WithUid<PricedProduct>) => {
                     const label = productCodings.productCode(product?.data);
@@ -200,7 +252,7 @@ export function Orders(props) {
                                                         secondary={productCodings.productDescription(product?.data) + ", Specific Gravity: " + product.data.specificGravity}/>
                     </li>;
                 }}
-                options={pricedProducts.documents() || []}
+                options={props.options}
                 renderInput={(params: AutocompleteRenderInputParams) =>
                     <TextField  {...params} inputProps={{
                         ...params.inputProps,
@@ -217,19 +269,14 @@ export function Orders(props) {
             /></ClickAwayListener>;
     }
 
-    function OrderLineItems(props: { company: WithUid<Company>, order: WithUid<Order>, open: boolean }) {
+    function OrderLineItems(props: { company: WithUid<Company>, order: WithUid<Order>, open: boolean, pricedProducts:any }) {
         log.debug("company", props.company);
-        return <TableRow>
+        return <TableRow sx={{"& > *": {borderTop: "none"}}}>
             <TableCell style={{paddingBottom: 0, paddingTop: 0}} colSpan={12}>
                 <Collapse in={props.open} timeout="auto" unmountOnExit>
-                    <Box sx={{margin: 1}}>
-                        <Typography variant="h4" gutterBottom component="div">
-                            Order {props.order?.data?.orderNumber} Details {<IconButton
-                            onClick={() => order.addLineItem()}>
-                            <Tooltip title={`Add Line Item`}>
-                                <AddchartIcon color="action"/>
-                            </Tooltip>
-                        </IconButton>}
+                    <Box sx={{marginTop: 2, marginBottom: 8}}>
+                        <Typography variant="h5" className={classes.orderItemsHeading} gutterBottom component="div">
+                            Order {props.order?.data?.orderNumber} Line Items
                         </Typography>
                         <Table size="small" aria-label="order details">
                             <TableHead>
@@ -250,7 +297,9 @@ export function Orders(props) {
                             </TableHead>
                             <TableBody>
                                 {props.order?.data?.items?.map((orderItem: OrderItem, index) => <OrderLineItem
+                                    pricedProducts={props.pricedProducts}
                                     key={index}
+                                    order={props.order}
                                     company={props.company}
                                     orderItem={orderItem}
                                     index={index}/>)}
@@ -262,13 +311,14 @@ export function Orders(props) {
         </TableRow>;
     }
 
-    function NumericSelect(props: { value: number; index: number, field: string, values: number[], units: string }) {
+    function NumericSelect(props: { value: number; index: number, field: string, values: number[], units: string, disabled: boolean, order: WithUid<Order> }) {
         return <TextField
             select
+            disabled={props.disabled}
             size={"small"}
             fullWidth
             value={props.value || ""}
-            onChange={(event) => order.changeOrderItemField(props.index, props.field, +event.target.value)}>
+            onChange={(event) => order.changeOrderItemField(props.order, props.index, props.field, +event.target.value)}>
             {props.values.map((option) => (
                 <MenuItem key={option} value={option}>
                     {option} {props.units}
@@ -277,33 +327,40 @@ export function Orders(props) {
         </TextField>;
     }
 
-    function Thickness(props: { value: number, index: number }) {
-        return <NumericSelect value={props.value}
+    function Thickness(props: { value: number, index: number, disabled: boolean, order: WithUid<Order> }) {
+        return <NumericSelect order={props.order}
+                              disabled={props.disabled}
+                              value={props.value}
                               field={"thickness"}
                               values={[3, 4, 5, 6, 8, 9, 10, 12]}
                               units={"mm"}
                               index={props.index}/>;
     }
 
-    function Widths(props: { value: number, index: number }) {
-        return <NumericSelect value={props.value}
+    function Widths(props: { value: number, index: number, disabled: boolean, order: WithUid<Order> }) {
+        return <NumericSelect order={props.order}
+                              disabled={props.disabled}
+                              value={props.value}
                               field={"width"}
                               values={range(600, 1550, 50).concat(1570)}
                               units={"mm"}
                               index={props.index}/>;
     }
 
-    function Lengths(props: { value: number, index: number }) {
-        return <NumericSelect value={props.value}
+    function Lengths(props: { value: number, index: number, disabled: boolean, order: WithUid<Order> }) {
+        return <NumericSelect order={props.order}
+                              disabled={props.disabled}
+                              value={props.value}
                               field={"length"}
                               values={range(6, 15, 0.5)}
                               units={"m"}
                               index={props.index}/>;
     }
 
-    function OrderLineItem(props: { company: WithUid<Company>, orderItem: OrderItem, index: number }) {
+    function OrderLineItem(props: { company: WithUid<Company>, orderItem: OrderItem, index: number, order: WithUid<Order>, pricedProducts: any }) {
         const [showProductLookup, setShowProductLookup] = useState<boolean>(!props.orderItem.productId);
-        const {kgPerRoll, pricePerKg, pricePerRoll, product} = pricedProducts.lineItemPricing(props.orderItem);
+        const {kgPerRoll, pricePerKg, pricePerRoll, product} = props.pricedProducts.lineItemPricing(props.orderItem);
+        const isEditable = editable(props.order?.data?.status);
 
         function toggleProductLookup() {
             setShowProductLookup(!showProductLookup);
@@ -312,35 +369,40 @@ export function Orders(props) {
         return (
             <TableRow key={props.index}>
                 <TableCell>{props.index + 1}</TableCell>
-                {showProductLookup ? <TableCell colSpan={2}><ProductLookup index={props.index}
-                                                                           value={product}
-                                                                           toggleProductLookup={toggleProductLookup}
-                                                                           company={props.company}/></TableCell> : <>
-                    <TableCell sx={{cursor: "pointer"}} onClick={toggleProductLookup}>
-                        <ListItemText sx={{minWidth: 270}} key={product?.uid}
-                                      primary={productCodings.productCode(product?.data)}
-                                      secondary={productCodings.productDescription(product?.data)}/>
-                    </TableCell>
-                    <TableCell sx={{cursor: "pointer"}} onClick={toggleProductLookup}
-                               align="right">{product?.data?.specificGravity}</TableCell>
-                </>}
+                {isEditable && showProductLookup ?
+                    <TableCell sx={{minWidth: 300}} colSpan={2}><ProductLookup options={props.pricedProducts.documents()} order={props.order}
+                                                          index={props.index}
+                                                          value={product}
+                                                          toggleProductLookup={toggleProductLookup}
+                                                          company={props.company}/></TableCell> : <>
+                        <TableCell sx={{cursor: "pointer"}} onClick={toggleProductLookup}>
+                            <ListItemText sx={{minWidth: 300}} key={product?.uid}
+                                          primary={productCodings.productCode(product?.data)}
+                                          secondary={productCodings.productDescription(product?.data)}/>
+                        </TableCell>
+                        <TableCell sx={{cursor: "pointer"}} onClick={toggleProductLookup}
+                                   align="right">{product?.data?.specificGravity}</TableCell>
+                    </>}
                 <TableCell align="right">
-                    <Thickness value={props.orderItem.thickness} index={props.index}/>
+                    <Thickness order={props.order} value={props.orderItem.thickness} disabled={!isEditable}
+                               index={props.index}/>
                 </TableCell>
                 <TableCell align="right">
-                    <Widths value={props.orderItem.width} index={props.index}/>
+                    <Widths order={props.order} value={props.orderItem.width} disabled={!isEditable}
+                            index={props.index}/>
                 </TableCell>
                 <TableCell align="right">
-                    <Lengths value={props.orderItem.length} index={props.index}/>
+                    <Lengths order={props.order} value={props.orderItem.length} disabled={!isEditable}
+                             index={props.index}/>
                 </TableCell>
                 <TableCell align="right"><Typography noWrap>{asKg(kgPerRoll)}</Typography></TableCell>
                 <TableCell align="right"><Typography noWrap>{asCurrency(pricePerKg)}</Typography></TableCell>
                 <TableCell align="right">
-                    <TextField sx={{width: 70}} size={"small"}
+                    <TextField disabled={!isEditable} sx={{width: 70}} size={"small"}
                                type={"number"}
                                onChange={(event: any) => {
                                    log.debug("input changed:", event.target.value);
-                                   order.changeOrderItemField(props.index, "quantity", max([+event.target.value, 1]));
+                                   order.changeOrderItemField(props.order, props.index, "quantity", max([+event.target.value, 1]));
                                }}
                                value={props.orderItem.quantity || ""}
                                name={"quantity"}
@@ -353,7 +415,7 @@ export function Orders(props) {
                     <Typography noWrap>{asCurrency(totalPerLine(props.orderItem.quantity, pricePerRoll))}</Typography>
                 </TableCell>
                 <TableCell>
-                    <DeleteButton index={props.index}/>
+                    <DeleteButton order={props.order} index={props.index} isEditable={isEditable}/>
                 </TableCell>
             </TableRow>
         );
@@ -361,6 +423,8 @@ export function Orders(props) {
 
   function ExpandableOrderRow(props: { order: WithUid<Order> }) {
       const [open, setOpen] = useState(props.order?.data?.orderNumber === order.document.data.orderNumber);
+      const company: WithUid<Company> = companies.companyForUid(props.order?.data?.companyId);
+      const pricedProducts = usePricedProducts(company);
       const toggleOpen = () => setOpen(!open);
       useEffect(() => {
           log.debug("ExpandableOrderRow:initial render:open", open);
@@ -368,8 +432,9 @@ export function Orders(props) {
 
       return (
           <>
-              <OrderRow open={open} order={props.order} company={company} toggleOpen={toggleOpen}/>
-              <OrderLineItems open={open} order={props.order} company={company}/>
+              <OrderRow open={open} order={props.order} company={company} pricedProducts={pricedProducts}
+                        toggleOpen={toggleOpen}/>
+              <OrderLineItems open={open} order={props.order} company={company} pricedProducts={pricedProducts}/>
           </>
       );
   }
@@ -407,8 +472,8 @@ export function Orders(props) {
                                   </TableRow>
                               </TableHead>
                               <TableBody>
-                                  {orderHistory.map((order: WithUid<Order>, index) => {
-                                      const orderKey = `order-${index}-${order.data.orderNumber}`;
+                                  {filteredOrderHistory.map((order: WithUid<Order>, index) => {
+                                      const orderKey = `index-${index}-order-${order.data.orderNumber}`;
                                       log.debug("orderKey:", orderKey);
                                       return <ExpandableOrderRow
                                           key={orderKey} order={order}/>;

@@ -89,6 +89,10 @@ export function withCommas(number: number): string {
   return new Intl.NumberFormat().format(number);
 }
 
+export function booleanOf(value: any): boolean {
+  return typeof value === "string" ? value === "true" : Boolean(value);
+}
+
 export function fullTextSearch<T>(itemsToSearch: T[], searchText: string): T[] {
   if (!itemsToSearch) {
     return [];

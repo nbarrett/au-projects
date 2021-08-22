@@ -14,9 +14,13 @@ import { orderTabState } from "../../atoms/order-atoms";
 import { useRecoilState } from "recoil";
 import max from "lodash/max";
 
+export function reportedStatus(): OrderStatus[] {
+    return [OrderStatus.NEW, OrderStatus.DRAFT, OrderStatus.SUBMITTED, OrderStatus.CANCELLED, OrderStatus.MANUFACTURING, OrderStatus.DELIVERING, OrderStatus.COMPLETE];
+}
+
 export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     const order = useSingleOrder();
-    const tabValues = [OrderStatus.NEW, OrderStatus.DRAFT, OrderStatus.SUBMITTED, OrderStatus.COMPLETE];
+    const tabValues = reportedStatus();
     const [orderTabValue, setOrderTabValue] = useRecoilState<OrderStatus>(orderTabState);
     const classes = makeStyles((theme: Theme) => ({
         tabHeading: {
@@ -47,19 +51,20 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     }
 
     function NewOrderTab() {
-        return <Tab value={0}
+        const count = props.orderHistory.filter(item => item.data.status === OrderStatus.NEW).length;
+        const selected = orderTabValue === OrderStatus.NEW;
+        return <Tab value={count}
                     onClick={() => {
-                        changeTabToStatus(-1);
-                        order.addOrder();
+                        changeTabToStatus(OrderStatus.NEW);
+                        order.addOrder(OrderStatus.NEW);
                     }}
                     className={classes.tabHeading}
-                    label={<BadgeHeading selected={tabIndex() === 0} title={"Create New Order"}
-                                         count={0}/>}/>;
+                    label={<BadgeHeading selected={selected} title={"Create New Order"}
+                                         count={count}/>}/>;
     }
 
     function BadgedTab(props: { orderHistory: WithUid<Order>[], status: OrderStatus }) {
         const count = props.orderHistory.filter(item => item.data.status === props.status).length;
-        const tabValue = tabValues.indexOf(props.status);
         return <Tab disabled={count === 0}
                     onClick={() => changeTabToStatus(props.status)}
                     value={props.status}
@@ -71,11 +76,8 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
 
     return (
         <Tabs value={tabIndex()} indicatorColor="secondary" variant="fullWidth">
-            <NewOrderTab/>
-            <BadgedTab orderHistory={props.orderHistory} status={OrderStatus.DRAFT}/>
-            <BadgedTab orderHistory={props.orderHistory} status={OrderStatus.SUBMITTED}/>
-            <BadgedTab orderHistory={props.orderHistory} status={OrderStatus.CANCELLED}/>
-            <BadgedTab orderHistory={props.orderHistory} status={OrderStatus.COMPLETE}/>
+            {reportedStatus().map(status => status === OrderStatus.NEW ? <NewOrderTab key={status}/> :
+                <BadgedTab key={status} orderHistory={props.orderHistory} status={status}/>)}
         </Tabs>
     );
 }

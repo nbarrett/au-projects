@@ -18,13 +18,13 @@ export default function UsePricedProducts(company: WithUid<Company>, search?: st
   useEffect(() => {
     if (company) {
       const pricingTier = pricingTierMarkupData.pricingTierForIUid(company?.data?.pricingTier);
-      log.debug("company:", company.data.name, "has pricing tier:", pricingTier);
+      log.debug("company:", company?.data?.name, "has pricing tier:", pricingTier);
       setCompanyPricingTier(pricingTier);
     }
   }, [company, pricingTierMarkupData.pricingTiers]);
 
   function documents(): WithUid<PricedProduct>[] {
-    const filteredProducts = fullTextSearch(productData.documents, search).filter(item => company.data?.availableProducts?.includes(item.uid));
+    const filteredProducts = fullTextSearch(productData.documents, search).filter(item => company?.data?.availableProducts?.includes(item.uid));
     const pricedProducts: WithUid<PricedProduct>[] = filteredProducts.map(product => toPricedProduct(product, companyPricingTier));
     log.debug("filtering:", search, "availableProducts:", company?.data?.availableProducts, filteredProducts.length, "of", productData.documents.length, "documents:", pricedProducts);
     return pricedProducts;

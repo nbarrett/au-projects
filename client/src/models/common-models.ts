@@ -1,4 +1,5 @@
 import * as React from "react";
+import { StoredValue } from "../util/ui-stored-values";
 
 export function hasUid<T>(document: any): document is WithUid<T> {
     return (document as WithUid<T>).uid !== undefined;
@@ -66,4 +67,18 @@ export interface GridColumnVisibilityChangeParams {
      * The visibility state of the column.
      */
     isVisible: boolean;
+}
+
+export interface UrlChange {
+    name: StoredValue;
+    value: any;
+    parameters?: NamedParameter[];
+    path?: string;
+    push?: boolean;
+    save?: boolean;
+}
+
+export interface NamedParameter {
+    name: StoredValue | string;
+    value: any;
 }
