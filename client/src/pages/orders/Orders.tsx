@@ -65,6 +65,7 @@ import CancelIcon from "@material-ui/icons/Cancel";
 import { makeStyles } from "@material-ui/styles";
 import { Theme } from "@material-ui/core/styles";
 import UndoIcon from "@material-ui/icons/Undo";
+import { sortBy } from "../../util/arrays";
 
 export function Orders(props) {
     const allUsers = useAllUsers();
@@ -77,6 +78,7 @@ export function Orders(props) {
     const productCodings = useProductCoding(false);
     const notification = useSnackbarNotification();
     const orderTabValue = useRecoilValue<OrderStatus>(orderTabState);
+    const sortByColumn = "-data.orderNumber";
     const classes = makeStyles((theme: Theme) => ({
         orderItemsHeading: {
             fontWeight: 400,
@@ -101,9 +103,9 @@ export function Orders(props) {
     useEffect(() => {
         const filtered = applyDocumentToOrderHistory(allOrderHistory, order.document).filter(order => order.data.status === orderTabValue);
         log.info("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", filtered.length, "of", allOrderHistory.length, "shown");
-        setFilteredOrderHistory(filtered);
+        setFilteredOrderHistory(filtered.sort(sortBy(sortByColumn)));
         if ((order.document.data.status === OrderStatus.NEW && !documentExistsIn(allOrderHistory, order.document)) || order.document.markedForDelete) {
-            setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document));
+            setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document).sort(sortBy(sortByColumn)));
             if (order.document.markedForDelete) {
                 order.reset();
             }
@@ -454,14 +456,12 @@ export function Orders(props) {
                               <TableHead>
                                   <TableRow>
                                       <TableCell/>
-                                      <TableCell>Order Number</TableCell>
-                                      <TableCell sortDirection="desc">
-                                          <Tooltip enterDelay={300} title="Sort">
-                                              <TableSortLabel active direction="desc">
-                                                  Created
-                                              </TableSortLabel>
-                                          </Tooltip>
-                                      </TableCell>
+                                      <TableCell><Tooltip enterDelay={300} title="Sort">
+                                          <TableSortLabel active direction="desc">
+                                              Order Number
+                                          </TableSortLabel>
+                                      </Tooltip></TableCell>
+                                      <TableCell>Created</TableCell>
                                       <TableCell>Updated</TableCell>
                                       <TableCell>Company</TableCell>
                                       <TableCell>Created By</TableCell>
