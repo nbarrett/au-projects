@@ -1,8 +1,8 @@
 import * as React from "react";
+import { useEffect } from "react";
 import Tab from "@material-ui/core/Tab";
 import Tabs from "@material-ui/core/Tabs";
 import { WithUid } from "../../models/common-models";
-import { Order, OrderStatus, OrderStatusDescriptions } from "../../models/order-models";
 import Badge from "@material-ui/core/Badge";
 import { ShoppingCart } from "react-feather";
 import Typography from "@material-ui/core/Typography";
@@ -13,13 +13,15 @@ import useSingleOrder from "../../hooks/use-single-order";
 import { orderTabState } from "../../atoms/order-atoms";
 import { useRecoilState } from "recoil";
 import max from "lodash/max";
-
-export function reportedStatus(): OrderStatus[] {
-    return [OrderStatus.NEW, OrderStatus.DRAFT, OrderStatus.SUBMITTED, OrderStatus.CANCELLED, OrderStatus.MANUFACTURING, OrderStatus.DELIVERING, OrderStatus.COMPLETE];
-}
+import { useUpdateUrl } from "../../hooks/use-url-updating";
+import { StoredValue } from "../../util/ui-stored-values";
+import { useUrls } from "../../hooks/use-urls";
+import { Order, OrderStatus, OrderStatusDescriptions, reportedStatus } from "../../models/order-models";
 
 export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     const order = useSingleOrder();
+    const updateUrl = useUpdateUrl();
+    const urls = useUrls();
     const tabValues = reportedStatus();
     const [orderTabValue, setOrderTabValue] = useRecoilState<OrderStatus>(orderTabState);
     const classes = makeStyles((theme: Theme) => ({
@@ -30,6 +32,18 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
             marginLeft: 15
         },
     }))({});
+
+    useEffect(() => {
+        const initialValue: number = +urls.initialStateFor(StoredValue.TAB);
+        log.info("initialValue:", initialValue);
+        if (!Number.isNaN(initialValue)) {
+            setOrderTabValue(initialValue);
+        }
+    }, []);
+
+    useEffect(() => {
+        updateUrl({value: orderTabValue, name: StoredValue.TAB});
+    }, [orderTabValue]);
 
     function changeTabToStatus(newValue: number) {
         log.info("tab selected:", newValue);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Box, Button, Card, CardContent, CardHeader, Divider, TextField, } from "@material-ui/core";
 
-export function SettingsPassword(props: any) {
+export function AccountSettingsChangePassword(props: any) {
 
   const [values, setValues] = useState({
     password: "",
@@ -21,6 +21,10 @@ export function SettingsPassword(props: any) {
           <Divider/>
           <CardContent>
             <TextField
+                inputProps={{
+                    ...props.inputProps,
+                    autoComplete: "new-password",
+                }}
                 fullWidth
                 label="Password"
                 margin="normal"
@@ -31,6 +35,10 @@ export function SettingsPassword(props: any) {
                 variant="outlined"
             />
             <TextField
+                inputProps={{
+                    ...props.inputProps,
+                    autoComplete: "new-password",
+                }}
                 fullWidth
                 label="Confirm password"
                 margin="normal"

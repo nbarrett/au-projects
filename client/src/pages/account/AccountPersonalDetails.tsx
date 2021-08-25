@@ -7,7 +7,7 @@ import { log } from "../../util/logging-config";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import { UserData } from "../../models/user-models";
 
-export default function AccountProfileDetails(props: any) {
+export default function AccountPersonalDetails(props: any) {
     const notification = useSnackbarNotification();
     const [user, setUser] = useRecoilState<FirebaseUser>(currentUserState);
     const [userEdit, setUserEdit] = useState<FirebaseUser>(user);

@@ -39,3 +39,6 @@ export interface OrderItem extends HasAuditTimestamps, HasAuditUsers {
     quantity?: number
 }
 
+export function reportedStatus(): OrderStatus[] {
+    return [OrderStatus.NEW, OrderStatus.DRAFT, OrderStatus.SUBMITTED, OrderStatus.CANCELLED, OrderStatus.MANUFACTURING, OrderStatus.DELIVERING, OrderStatus.COMPLETE];
+}

@@ -29,10 +29,14 @@ export class SearchParamsBuilder {
     set(name: string, value?: any): SearchParamsBuilder {
         if (![undefined, null].includes(value)) {
             this.searchParams.set(name, value?.toString());
-            this.saveSettings && saveValueFor(name, value);
+            if (this.saveSettings) {
+                saveValueFor(name, value);
+            }
         } else if (name || value === "undefined") {
             this.searchParams.delete(name);
-            this.saveSettings && removeItemFor(name);
+            if (this.saveSettings) {
+                removeItemFor(name);
+            }
         }
         return this;
     }

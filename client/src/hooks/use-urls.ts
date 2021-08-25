@@ -10,7 +10,7 @@ export function useUrls() {
     const location = useLocation();
 
     function searchParams(): URLSearchParams {
-        return new URLSearchParams();
+        return new URLSearchParams(location.search);
     }
 
     function urlFrom(href?: string): URL {
@@ -36,7 +36,7 @@ export function useUrls() {
         return url.pathname + url.search;
     }
 
-    function updateQueryStringParameters(object: object): URLSearchParams {
+    function updateQueryStringParameters(object: Record<string, unknown>): URLSearchParams {
         const params = searchParams();
         map(object, (value, key) => {
             params.set(key, stringify(value));
@@ -60,7 +60,7 @@ export function useUrls() {
 
     function queryStringParameter(parameter: string) {
         const value = searchParams().get(parameter);
-        log.debug("parameter", parameter, "in search", location.search, "is", value);
+        log.debug("location.search:", location.search, "parameter", parameter, "is", value);
         return value;
     }
 

@@ -5,7 +5,7 @@ import { newDocument } from "../mappings/document-mappings";
 import { Order, OrderStatus } from "../models/order-models";
 
 export const orderTabState = atom<OrderStatus>({
-  key: StoredValue.ORDER_TAB,
+  key: StoredValue.TAB,
   default: OrderStatus.DRAFT
 });
 

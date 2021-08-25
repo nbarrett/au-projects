@@ -85,11 +85,6 @@ const navItems: MenuItem[] = [
         href: AppRoute.ACCOUNT,
         icon: Layout,
         title: "Account",
-        subItems: [{
-            href: AppRoute.SETTINGS,
-            icon: Settings,
-            title: "Settings",
-        }]
     },
     {
         href: AppRoute.EXAMPLE_DASHBOARD,

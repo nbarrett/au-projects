@@ -1,9 +1,61 @@
 import { Helmet } from "react-helmet";
 import { Box, Container, Grid } from "@material-ui/core";
-import AccountProfile from "./AccountProfile";
-import AccountProfileDetails from "./AccountProfileDetails";
+import AccountUploadImage from "./AccountUploadImage";
+import AccountPersonalDetails from "./AccountPersonalDetails";
+import Tabs from "@material-ui/core/Tabs";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import Tab from "@material-ui/core/Tab";
+import { makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
+import { StoredValue } from "../../util/ui-stored-values";
+import { log } from "../../util/logging-config";
+import max from "lodash/max";
+import { useUpdateUrl } from "../../hooks/use-url-updating";
+import { useUrls } from "../../hooks/use-urls";
+import { AccountTab, AccountTabDescriptions, allTabs } from "../../models/account-models";
+import Typography from "@material-ui/core/Typography";
+import { AccountSettingsChangePassword } from "./AccountSettingsChangePassword";
+import { AccountSettings } from "./AccountSettings";
 
 export default function Account() {
+    const updateUrl = useUpdateUrl();
+    const urls = useUrls();
+    const tabValues = allTabs();
+    const [tabValue, setTabValue] = useState<AccountTab>();
+    const classes = makeStyles((theme: Theme) => ({
+        tabHeading: {
+            textTransform: "none",
+        },
+        badge: {
+            marginLeft: 15
+        },
+        tabs: {
+            marginBottom: 20
+        },
+    }))({});
+
+    useEffect(() => {
+        const initialValue: number = +urls.initialStateFor(StoredValue.TAB, AccountTab.PERSONAL_DETAILS);
+        log.debug("initialValue:", initialValue);
+        if (!Number.isNaN(initialValue)) {
+            setTabValue(initialValue);
+        }
+    }, []);
+
+    useEffect(() => {
+        updateUrl({value: tabValue, name: StoredValue.TAB});
+    }, [tabValue]);
+
+    function changeTabTo(newValue: number) {
+        log.debug("tab selected:", newValue);
+        setTabValue(newValue);
+    }
+
+    function tabIndex(): number {
+        return max([tabValues.indexOf(tabValue), 0]);
+    }
+
     return (
         <>
             <Helmet>
@@ -17,13 +69,28 @@ export default function Account() {
                 }}
             >
                 <Container maxWidth="lg">
-                    <Grid container spacing={3}>
-                        <Grid item lg={4} md={6} xs={12}>
-                            <AccountProfile/>
-                        </Grid>
-                        <Grid item lg={8} md={6} xs={12}>
-                            <AccountProfileDetails/>
-                        </Grid>
+                    <Tabs className={classes.tabs} selectionFollowsFocus scrollButtons
+                          allowScrollButtonsMobile value={tabIndex()} indicatorColor="secondary" variant="scrollable">
+                        {allTabs().map(tab => <Tab key={tab} onClick={() => changeTabTo(tab)}
+                                                   value={tab}
+                                                   className={classes.tabHeading}
+                                                   label={
+                                                       <Typography
+                                                           className={classes.tabHeading}>{AccountTabDescriptions[tab]}</Typography>}/>)}
+                    </Tabs>
+                    <Grid container alignItems={"center"} spacing={3}>
+                        {tabValue === AccountTab.IMAGE && <Grid item lg={4} md={6} xs={12}>
+                            <AccountUploadImage/>
+                        </Grid>}
+                        {tabValue === AccountTab.PERSONAL_DETAILS && <Grid item lg={8} md={6} xs={12}>
+                            <AccountPersonalDetails/>
+                        </Grid>}
+                        {tabValue === AccountTab.SETTINGS && <Grid item lg={8} md={6} xs={12}>
+                            <AccountSettings/>
+                        </Grid>}
+                        {tabValue === AccountTab.CHANGE_PASSWORD && <Grid item lg={8} md={6} xs={12}>
+                            <AccountSettingsChangePassword/>
+                        </Grid>}
                     </Grid>
                 </Container>
             </Box>

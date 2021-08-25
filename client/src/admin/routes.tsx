@@ -10,7 +10,6 @@ import Register from "../pages/login/Register";
 import EmailVerification from "../pages/email-verification/EmailVerification";
 import { APP_DASHBOARD, APP_PATH, AppRoute, FULL_SCREEN, PUBLIC_PATH, PublicRoute } from "../constants";
 import Companies from "../pages/companies/Companies";
-import { Settings } from "../pages/settings/Settings";
 import CompanyEdit from "../pages/company/CompanyEdit";
 import ExampleDashboard from "../pages/example-dashboard/ExampleDashboard";
 import Prices from "../pages/prices/Prices";
@@ -60,7 +59,6 @@ export default function routes(isLoggedIn: boolean | undefined) {
           path: productRoute(ProductCodingType.COLOUR),
           element: <ProductCodings productCodingType={ProductCodingType.COLOUR}/>
         },
-        {path: AppRoute.SETTINGS, element: <Settings/>},
         {path: PublicRoute.ASTERISK, element: <Navigate to="/404"/>},
       ],
     },
