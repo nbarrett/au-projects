@@ -12,15 +12,14 @@ import {
     Typography,
 } from "@material-ui/core";
 import { fullNameForUser, initialsForUser } from "../../util/strings";
-import useAllUsers from "../../hooks/use-all-users";
+import useUsers from "../../hooks/use-users";
 import ContactMailIcon from "@material-ui/icons/ContactMail";
 import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyUserList() {
-    const allUsers = useAllUsers()
+    const users = useUsers()
     const company = useSingleCompany();
-
-    const usersForCompany = allUsers.users.filter(user => user.data.companyId === company.document.uid);
+    const usersForCompany = users.documents.filter(user => user.data.companyId === company.document.uid);
     return (
         <Grid item xs>
             <Typography color="textPrimary" gutterBottom variant="h4">

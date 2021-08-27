@@ -32,8 +32,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
     const dataGrid = useDataGrid();
     const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
     const codingTitle = titleCase(props.productCodingType);
-
-    const styles = makeStyles(
+    const classes = makeStyles(
         {
             root: {
                 display: "flex",
@@ -49,9 +48,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
                 backgroundColor: "white"
             },
         }
-    );
-
-    const classes = styles();
+    )();
 
     useEffect(() => {
         log.debug("ProductCodings:initial render");
@@ -112,7 +109,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
             log.debug("updatedProduct:", updatedProduct);
             productCoding.setDocument(updatedProduct);
         } else {
-            notification.error(`Cant update product curingMethod with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
+            notification.error(`Cant update ${codingTitle} with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
         }
     }
 

@@ -25,7 +25,7 @@ export default function AvailableProducts() {
     useEffect(() => {
         const validAvailableProducts = selectedItems.itemsSelected.filter(item => validProductIds.includes(item));
         if (validProductIds.length > 0) {
-            log.info("itemsSelected:", selectedItems.itemsSelected, "validProductIds:", validProductIds, "validAvailableProducts:", validAvailableProducts);
+            log.debug("itemsSelected:", selectedItems.itemsSelected, "validProductIds:", validProductIds, "validAvailableProducts:", validAvailableProducts);
             company.changeField("data.availableProducts", validAvailableProducts);
         }
     }, [selectedItems.itemsSelected]);

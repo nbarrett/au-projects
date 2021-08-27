@@ -26,9 +26,9 @@ import { productRoute } from "../../mappings/product-mappings";
 
 const navItems: MenuItem[] = [
     {
-        href: AppRoute.USERS,
+        href: AppRoute.USER_ADMIN,
         icon: UserIcon,
-        title: "Users",
+        title: "User Admin"
     },
     {
         href: AppRoute.COMPANIES,

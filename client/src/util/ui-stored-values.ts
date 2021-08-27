@@ -15,13 +15,14 @@ export enum StoredValue {
   ORDER = "order",
   ORDERS = "orders",
   PRICING_TIERS = "pricing-tiers",
-  PRODUCTS = "products",
-  PRODUCTS_IN_EDIT_MODE = "products-in-edit-mode",
   PRODUCT_CODING = "product-coding",
   PRODUCT_CODING_MAP = "product-coding-map",
+  PRODUCTS = "products",
+  PRODUCTS_IN_EDIT_MODE = "products-in-edit-mode",
   TAB = "tab",
   TOOLBAR_BUTTONS = "toolbar-buttons",
   USER = "user",
+  USER_ROLES = "user-roles",
   USERS = "users",
 }
 export function initialValueFor(parameter: string, defaultValue?: any): string {

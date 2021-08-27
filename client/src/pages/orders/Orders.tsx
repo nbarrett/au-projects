@@ -30,7 +30,7 @@ import useSingleOrder from "../../hooks/use-single-order";
 import { log } from "../../util/logging-config";
 import useCompanyData from "../../hooks/use-company-data";
 import { fullNameForUser } from "../../util/strings";
-import useAllUsers from "../../hooks/use-all-users";
+import useUsers from "../../hooks/use-users";
 import useOrders from "../../hooks/use-orders";
 import { useRecoilValue } from "recoil";
 import { UserData } from "../../models/user-models";
@@ -68,7 +68,7 @@ import UndoIcon from "@material-ui/icons/Undo";
 import { sortBy } from "../../util/arrays";
 
 export function Orders(props) {
-    const allUsers = useAllUsers();
+    const users = useUsers();
     const order = useSingleOrder();
     const orders = useOrders();
     const [filteredOrderHistory, setFilteredOrderHistory] = useState<WithUid<Order>[]>([]);
@@ -89,7 +89,7 @@ export function Orders(props) {
 
     function refreshOrderView(): Promise<void> {
         if (userData.companyId) {
-            log.info("refreshing order view");
+            log.debug("refreshing order view");
             return orders.findOrdersForCompany(userData.companyId).then(setAllOrderHistory);
         } else {
             return Promise.resolve();
@@ -102,7 +102,7 @@ export function Orders(props) {
 
     useEffect(() => {
         const filtered = applyDocumentToOrderHistory(allOrderHistory, order.document).filter(order => order.data.status === orderTabValue);
-        log.info("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", filtered.length, "of", allOrderHistory.length, "shown");
+        log.debug("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", filtered.length, "of", allOrderHistory.length, "shown");
         setFilteredOrderHistory(filtered.sort(sortBy(sortByColumn)));
         if ((order.document.data.status === OrderStatus.NEW && !documentExistsIn(allOrderHistory, order.document)) || order.document.markedForDelete) {
             setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document).sort(sortBy(sortByColumn)));
@@ -178,7 +178,7 @@ export function Orders(props) {
                 {props.order.data.updatedAt ? asDateTime(props.order.data.updatedAt).toFormat("dd-MMM-yyyy") : null}
             </TableCell>
             <TableCell>{props.company?.data?.name || ""}</TableCell>
-            <TableCell>{fullNameForUser(allUsers.userForUid(props.order.data?.createdBy))}</TableCell>
+            <TableCell>{fullNameForUser(users.userForUid(props.order.data?.createdBy)?.data)}</TableCell>
             <TableCell>
                 <Chip color="primary" label={OrderStatusDescriptions[props.order.data.status]} size="small"/>
             </TableCell>
@@ -220,7 +220,7 @@ export function Orders(props) {
     function ProductLookup(props: { order: WithUid<Order>, options: WithUid<PricedProduct>[], index: number, value: WithUid<Product>, company: WithUid<Company>, toggleProductLookup: () => void }) {
 
         function onDismiss(reason: string) {
-            log.info("onDismiss:", reason, "product", props.value);
+            log.debug("onDismiss:", reason, "product", props.value);
             if (props.value) {
                 // setOpen(false);
                 props.toggleProductLookup();

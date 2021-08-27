@@ -4,8 +4,9 @@ import { FirebaseUser } from "../models/authentication-models";
 import firebase from "firebase/app";
 import { currentUser, currentUserData } from "../data-services/user-services";
 import { log } from "../util/logging-config";
-import { UserData } from "../models/user-models";
+import { UserData, UserRoles } from "../models/user-models";
 import { WithUid } from "../models/common-models";
+import { newDocument } from "../mappings/document-mappings";
 
 export const currentUserState = atom<FirebaseUser>({
   key: StoredValue.CURRENT_USER,
@@ -63,6 +64,11 @@ export const currentUserDataState = atom<UserData>({
   ]
 });
 
+export const userRolesState = atom<WithUid<UserRoles>[]>({
+  key: StoredValue.USER_ROLES,
+  default: []
+});
+
 export const usersState = atom<WithUid<UserData>[]>({
   key: StoredValue.USERS,
   default: []
@@ -70,5 +76,5 @@ export const usersState = atom<WithUid<UserData>[]>({
 
 export const userState = atom<WithUid<UserData>>({
   key: StoredValue.USER,
-  default: {uid: "", data: {}}
+  default: newDocument<UserData>()
 });

@@ -38,14 +38,14 @@ export function applyDocumentToOrderHistory(allOrderHistory: WithUid<Order>[], d
         if (document.markedForDelete) {
             return allOrderHistory.filter(existingOrder => existingOrder.data?.orderNumber !== document.data?.orderNumber);
         } else if (replace) {
-            log.info("applying latest version of document:", document, "to order history", allOrderHistory);
+            log.debug("applying latest version of document:", document, "to order history", allOrderHistory);
             return allOrderHistory.map(existingOrder => existingOrder.data?.orderNumber === document.data?.orderNumber ? document : existingOrder);
         } else {
-            log.info("adding latest version of document:", document, "to order history", allOrderHistory);
+            log.debug("adding latest version of document:", document, "to order history", allOrderHistory);
             return allOrderHistory.concat(document);
         }
     } else {
-        log.info("not adding document:", document, "to order history", allOrderHistory);
+        log.debug("not adding document:", document, "to order history", allOrderHistory);
         return allOrderHistory;
     }
 }

@@ -17,7 +17,7 @@ export default function useOrders() {
                     });
                 });
             });
-        log.info("For companyId:", companyId, "found", collectionDocuments.length, `${collection}:`, collectionDocuments);
+        log.debug("For companyId:", companyId, "found", collectionDocuments.length, `${collection}:`, collectionDocuments);
         return collectionDocuments;
     }
 

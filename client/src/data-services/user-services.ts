@@ -19,7 +19,7 @@ export function currentUser(): FirebaseUser | undefined {
     }
 }
 
-// export function allUsers(): Promise<auth.UserRecord[]> {
+// export function users(): Promise<auth.UserRecord[]> {
 //     return admin.auth().listUsers().then((userRecords) => {
 //         return userRecords.users;
 //     });

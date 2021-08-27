@@ -17,6 +17,7 @@ export interface WithUid<T> {
     uid: string;
     data: T;
     markedForDelete?: boolean
+    createWithId?: boolean;
 }
 
 export interface HasAuditTimestamps {

@@ -35,7 +35,7 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
 
     useEffect(() => {
         const initialValue: number = +urls.initialStateFor(StoredValue.TAB);
-        log.info("initialValue:", initialValue);
+        log.debug("initialValue:", initialValue);
         if (!Number.isNaN(initialValue)) {
             setOrderTabValue(initialValue);
         }
@@ -46,7 +46,7 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     }, [orderTabValue]);
 
     function changeTabToStatus(newValue: number) {
-        log.info("tab selected:", newValue);
+        log.debug("tab selected:", newValue);
         setOrderTabValue(newValue);
     }
 

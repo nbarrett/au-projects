@@ -6,7 +6,7 @@ import { cloneDeep } from "lodash";
 import { asNumber } from "../util/numbers";
 
 export function firebaseFirestore() {
-    return firebase.app().firestore();
+return firebase.app().firestore();
 }
 
 function hasAuditTimestamps(data: any): data is HasAuditTimestamps {
@@ -15,7 +15,7 @@ function hasAuditTimestamps(data: any): data is HasAuditTimestamps {
 
 export async function document<T>(document: string, uid: string): Promise<T> {
     const firestore = firebaseFirestore();
-    const userDoc = await firestore.doc(`${document}/${uid}`).get()
+    const userDoc = await firestore.doc(`${document}/${uid}`).get();
     const userData = userDoc.data() as T;
     log.debug(`${document}:${uid}`, userData);
     return userData;
@@ -39,14 +39,16 @@ export async function renameField<T>(collection: string, fromName: string, toNam
                 log.debug(`${document.uid}:not deleting ${fromName} field`);
                 return null;
             }
-        })
-    })
+        });
+    });
 }
 
 export async function save<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<any> {
     if (hasUidWithValue<T>(document)) {
         if (document.markedForDelete) {
             return remove<T>(collection, document.uid, batch);
+        } else if (document.createWithId) {
+            return createWithId<T>(collection, document, batch);
         } else {
             return update<T>(collection, document, batch);
         }
@@ -57,7 +59,7 @@ export async function save<T>(collection: string, document: WithUid<T>, batch?: 
 
 export async function saveAll<T>(collection: string, documents: WithUid<T>[]): Promise<any> {
     const batch: firebase.firestore.WriteBatch = firebaseFirestore().batch();
-    return Promise.all(documents.map(document => save<T>(collection, document, batch))).then(()=> batch.commit());
+    return Promise.all(documents.map(document => save<T>(collection, document, batch))).then(() => batch.commit());
 }
 
 export async function saveAllWithId<T>(collection: string, documents: WithUid<T>[]): Promise<any[]> {
@@ -75,7 +77,7 @@ export async function update<T>(collection: string, document: WithUid<T>, batch?
     if (batch) {
         await batch.update(documentRef, mutableData.data as firebase.firestore.UpdateData);
     } else {
-        await documentRef.update(mutableData.data as firebase.firestore.UpdateData)
+        await documentRef.update(mutableData.data as firebase.firestore.UpdateData);
     }
     log.debug("updated:", documentPath);
     return true;
@@ -87,7 +89,7 @@ export async function remove<T>(collection: string, uid: string, batch?: firebas
     if (batch) {
         await batch.delete(documentReference);
     } else {
-        await documentReference.delete()
+        await documentReference.delete();
     }
     log.debug("removed:", documentPath);
     return uid;

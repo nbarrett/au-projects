@@ -2,7 +2,6 @@ import { Navigate } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import MainLayout from "./components/MainLayout";
 import Account from "../pages/account/Account";
-import UserList from "../pages/users/UserList";
 import Login from "../pages/login/Login";
 import NotFound from "../pages/NotFound";
 import Products from "../pages/products/Products";
@@ -19,6 +18,7 @@ import { ProductCodingType } from "../models/product-models";
 import { productRoute } from "../mappings/product-mappings";
 import { Orders } from "../pages/orders/Orders";
 import ProductsDataGrid from "../pages/products/ProductsDataGrid";
+import { UserAdmin } from "../pages/users/UserAdmin";
 
 export default function routes(isLoggedIn: boolean | undefined) {
   return [
@@ -27,7 +27,7 @@ export default function routes(isLoggedIn: boolean | undefined) {
       element: isLoggedIn ? <DashboardLayout/> : <Navigate to={`/${AppRoute.LOGIN}`}/>,
       children: [
         {path: AppRoute.ACCOUNT, element: <Account/>},
-        {path: AppRoute.USERS, element: <UserList/>},
+        {path: AppRoute.USER_ADMIN, element: <UserAdmin/>},
         {path: AppRoute.COMPANIES, element: <Companies/>},
         {path: AppRoute.COMPANIES_EDIT, element: <CompanyEdit/>, exact: true},
         {path: AppRoute.EXAMPLE_DASHBOARD, element: <ExampleDashboard/>},

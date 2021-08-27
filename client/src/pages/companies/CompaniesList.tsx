@@ -28,14 +28,14 @@ import { log } from "../../util/logging-config";
 import EditIcon from "@material-ui/icons/Edit";
 import { useNavigate } from "react-router-dom";
 import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import useAllUsers from "../../hooks/use-all-users";
+import useUsers from "../../hooks/use-users";
 import NamedAvatar from "../users/NamedAvatar";
 import useSelectedItems from "../../hooks/use-selected-items";
 import TableContainer from "@material-ui/core/TableContainer";
 
 export default function CompaniesList() {
   const navigate = useNavigate();
-  const allUsers = useAllUsers()
+  const users = useUsers()
   const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
@@ -55,7 +55,7 @@ export default function CompaniesList() {
   }
 
   function primaryContact(uid: string): WithUid<UserData> {
-    return allUsers.users.find(user => user.uid === uid) as WithUid<UserData>;
+    return users.documents.find(user => user.uid === uid) as WithUid<UserData>;
   }
 
   function primaryContactUser(uid: string): FirebaseUser {

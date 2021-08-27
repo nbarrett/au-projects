@@ -253,7 +253,7 @@ export default function ProductsDataGrid() {
             log.debug("updatedProduct:", updatedProduct);
             products.setDocument(updatedProduct);
         } else {
-            notification.error(`Cant update product based with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
+            notification.error(`Cant update product with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
         }
     }
 

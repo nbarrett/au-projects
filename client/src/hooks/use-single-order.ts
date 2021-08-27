@@ -29,10 +29,10 @@ export default function useSingleOrder() {
 
     function saveOrder(order: WithUid<Order>, orderStatus?: OrderStatus): Promise<any> {
         if (isUndefined(orderStatus)) {
-            log.info("saving order with existing status", OrderStatusDescriptions[order.data.status]);
+            log.debug("saving order with existing status", OrderStatusDescriptions[order.data.status]);
             return save<Order>(collection, order);
         } else {
-            log.info("saving order and changing status to", OrderStatusDescriptions[orderStatus]);
+            log.debug("saving order and changing status to", OrderStatusDescriptions[orderStatus]);
             const document = mutableOrder(order);
             document.data.status = orderStatus;
             return save<Order>(collection, document);
@@ -40,7 +40,7 @@ export default function useSingleOrder() {
     }
 
     function deleteOrder(order: WithUid<Order>): Promise<any> {
-        log.info("deleting order with existing status", OrderStatusDescriptions[order.data.status]);
+        log.debug("deleting order with existing status", OrderStatusDescriptions[order.data.status]);
         return remove<Order>(collection, order.uid);
     }
 
@@ -61,24 +61,24 @@ export default function useSingleOrder() {
     }
 
     function changeField(order: WithUid<Order>, field: string, value: any) {
-        log.info("change:field:", field, "value:", value, "typeof:", typeof value);
+        log.debug("change:field:", field, "value:", value, "typeof:", typeof value);
         const mutable = mutableOrder(order);
         set(mutable, field, value);
         setDocument(mutable);
     }
 
     function changeOrderItemField(order: WithUid<Order>, index: number, field: string, value: any) {
-        log.info("changeOrderItemField:index", index, "field:", field, "value:", value, "typeof:", typeof value);
+        log.debug("changeOrderItemField:index", index, "field:", field, "value:", value, "typeof:", typeof value);
         const mutable: WithUid<Order> = mutableOrder(order);
         mutable.data.items[index][field] = value;
         setDocument(mutable);
     }
 
     function deleteOrderItem(order: WithUid<Order>, index: number) {
-        log.info("deleteOrderItem:index:", index);
+        log.debug("deleteOrderItem:index:", index);
         const mutable: WithUid<Order> = mutableOrder(order);
         mutable.data.items = mutable.data.items.filter((item, itemIndex) => {
-            log.info("deleteOrderItem:itemIndex:", itemIndex, "index", index);
+            log.debug("deleteOrderItem:itemIndex:", itemIndex, "index", index);
             return itemIndex !== index;
         });
         setDocument(mutable);
@@ -112,7 +112,7 @@ export default function useSingleOrder() {
         mutable.data.updatedBy = user.uid;
         mutable.data.updatedBy = user.uid;
         mutable.data.items.push(orderItem);
-        log.info("addLineItem:mutable:", mutable);
+        log.debug("addLineItem:mutable:", mutable);
         setDocument(mutable);
     }
 
