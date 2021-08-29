@@ -11,9 +11,10 @@ import { GridValueGetterParams } from "@material-ui/data-grid";
 import NamedAvatar from "../pages/users/NamedAvatar";
 import cloneDeep from "lodash/cloneDeep";
 
+export const collection = "users";
+
 export default function useUsers() {
     const [documents, setDocuments] = useRecoilState<WithUid<UserData>[]>(usersState);
-    const collection = "users";
 
     useEffect(() => {
         log.debug("Users initial render:", documents);

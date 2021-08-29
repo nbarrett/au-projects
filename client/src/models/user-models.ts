@@ -1,3 +1,4 @@
+import firebase from "firebase/app";
 import { HasAuditTimestamps } from "./common-models";
 
 export interface UserData extends HasAuditTimestamps {
@@ -16,3 +17,9 @@ export interface UserRoles extends HasAuditTimestamps {
     orders?: boolean;
     accountSettings?: boolean;
 }
+
+export interface Session {
+    user?: firebase.User;
+    loading: boolean;
+}
+

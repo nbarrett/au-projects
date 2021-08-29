@@ -4,29 +4,21 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { log } from "../../util/logging-config";
 
-import {
-  Box,
-  Button,
-  Checkbox,
-  Container,
-  FormHelperText,
-  Link,
-  TextField,
-  Typography,
-} from "@material-ui/core";
-import { useSession } from "../../auth/useSession";
-import { useSignupWithEmail } from "../../auth/signinProviders";
-import { APP_DASHBOARD } from "../../constants";
+import { Box, Button, Checkbox, Container, FormHelperText, Link, TextField, Typography, } from "@material-ui/core";
+import { useFirebaseUser } from "../../hooks/use-firebase-user";
+import { useSignupWithEmail } from "../../auth/signInProviders";
+import { AppRoute } from "../../constants";
+import { toAppRoute } from "../../admin/routes";
 
 const Register = () => {
-  const navigate = useNavigate();
-  const { user } = useSession();
-  const signupWithEmail = useSignupWithEmail();
-  const subHeading = user?.emailVerified
-    ? "Register new account for customer"
-    : "Use your email to create new account";
-  return (
-    <>
+    const navigate = useNavigate();
+    const {user} = useFirebaseUser();
+    const signupWithEmail = useSignupWithEmail();
+    const subHeading = user?.emailVerified
+        ? "Register new account for customer"
+        : "Use your email to create new account";
+    return (
+        <>
       <Helmet>
         <title>Register | AU Projects</title>
       </Helmet>
@@ -67,8 +59,8 @@ const Register = () => {
                 firstName: values.firstName,
                 lastName: values.lastName,
               }).then((response) => {
-                log.debug("response:", response);
-                navigate(APP_DASHBOARD, { replace: true });
+                  log.debug("response:", response);
+                  navigate(toAppRoute(AppRoute.HOME), {replace: true});
               });
             }}
           >
@@ -84,7 +76,7 @@ const Register = () => {
               <form onSubmit={handleSubmit}>
                 <Box sx={{ mb: 3 }}>
                   <Typography color="textPrimary" variant="h2">
-                    Create new account
+                    AU Projects
                   </Typography>
                   <Typography
                     color="textSecondary"

@@ -10,9 +10,9 @@ export const useLogout = () => {
     const notification = useSnackbarNotification();
     const navigate = useNavigate();
     const location = useLocation();
-    return () => {
+    return (): Promise<void> => {
         if (currentUser()?.email)
-            firebase
+        return firebase
                 .auth()
                 .signOut()
                 .then(() => {

@@ -7,7 +7,6 @@ import startCase from "lodash/startCase";
 import toLower from "lodash/toLower";
 import { log } from "./logging-config";
 import { UserData } from "../models/user-models";
-import { v4 as uuidv4 } from "uuid";
 import { asNumber } from "./numbers";
 
 export function replaceAll(find: any, replace: any, str: any): string | number {
@@ -122,6 +121,6 @@ export function fullNameForUser(user: UserData): string {
   return `${user?.firstName} ${user?.lastName}`;
 }
 
-export function generateUid() {
-    return uuidv4();
+export function firstNameForUser(user: UserData): string {
+  return user?.firstName;
 }

@@ -5,9 +5,15 @@ import { log } from "../util/logging-config";
 import { GridValueGetterParams } from "@material-ui/data-grid";
 import { AppRoute } from "../constants";
 import kebabCase from "lodash/kebabCase";
+import { stringifyObject } from "../util/strings";
+import { omit } from "lodash";
 
 export function productRoute(type: ProductCodingType): string {
     return `${AppRoute.PRODUCTS}/${kebabCase(type)}`;
+}
+
+export function productDetails(product: WithUid<Product>): string {
+    return stringifyObject(omit(product.data, ["title", "updatedAt", "media"]), null, true);
 }
 
 export function pricePerKgFromGrid(params: GridValueGetterParams): string {

@@ -1,52 +1,36 @@
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField, } from "@material-ui/core";
-import { useRecoilState } from "recoil";
-import { currentUserDataState, currentUserState } from "../../atoms/user-atoms";
-import { FirebaseUser} from "../../models/authentication-models";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { log } from "../../util/logging-config";
 import { useSnackbarNotification } from "../../snackbarNotification";
-import { UserData } from "../../models/user-models";
+import useCurrentUser from "../../hooks/use-current-user";
+import { useFirebaseUser } from "../../hooks/use-firebase-user";
+import { useLogout } from "../../auth/logout";
 
 export default function AccountPersonalDetails(props: any) {
     const notification = useSnackbarNotification();
-    const [user, setUser] = useRecoilState<FirebaseUser>(currentUserState);
-    const [userEdit, setUserEdit] = useState<FirebaseUser>(user);
-    const [userData, setUserData] = useRecoilState<UserData>(currentUserDataState);
-    const [userDataEdit, setUserDataEdit] = useState<UserData>(userData);
+    const currentUser = useCurrentUser();
+    const firebaseUser = useFirebaseUser();
+    const logout = useLogout();
 
     useEffect(() => {
-        log.debug("useEffect:user:", user);
-        if (user) {
-            setUserEdit(user)
+        log.debug("useEffect:currentUser.document:", currentUser.document);
+    }, [currentUser.document]);
+
+    function userDataChange(event?: any) {
+        currentUser.changeField(event.target.name, event.target.value);
+    }
+
+    function userChange(event?: any) {
+        firebaseUser.changeField(event.target.name, event.target.value);
+    }
+
+    function handleLogoutIfRequired(logoutAfterChange: boolean) {
+        if (logoutAfterChange) {
+            return logout();
+        } else {
+            return Promise.resolve();
         }
-    }, [user])
-
-    useEffect(() => {
-        log.debug("useEffect:userData:", userData);
-        if (userData) {
-            setUserDataEdit(userData)
-        }
-    }, [userData])
-
-    const userDataChange = (event?: any) => {
-        const field = event.target.name;
-        const value = event.target.value;
-        log.debug("userDataChange:   field:", field, "value:", value);
-        setUserDataEdit({
-            ...userDataEdit,
-            [field]: value,
-        });
-    };
-
-    const userChange = (event?: any) => {
-        const field = event.target.name;
-        const value = event.target.value;
-        log.debug("userChange:field:", field, "value:", value);
-        setUserEdit({
-            ...userEdit,
-            [field]: value,
-        });
-    };
+    }
 
     return (
         <form autoComplete="off" noValidate {...props}>
@@ -58,69 +42,76 @@ export default function AccountPersonalDetails(props: any) {
                         <Grid item md={6} xs={12}>
                             <TextField
                                 fullWidth
-                                helperText="Please specify the first name"
+                                helperText="Please specify a first name"
                                 label="First name"
-                                name="firstName"
+                                name="data.firstName"
                                 onChange={userDataChange}
-                                value={userDataEdit?.firstName || ""}
+                                value={currentUser.document?.data?.firstName || ""}
                                 required
                                 variant="outlined"
                             />
                         </Grid>
                         <Grid item md={6} xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Last name"
-                                name="lastName"
-                                onChange={userDataChange}
-                                required
-                                value={userDataEdit?.lastName || ""}
-                                variant="outlined"
+                            <TextField {...props}
+                                       inputProps={{
+                                           ...props.inputProps,
+                                           autoComplete: "new-password",
+                                       }}
+                                       fullWidth
+                                       helperText="Please specify a last name"
+                                       label="Last name"
+                                       name="data.lastName"
+                                       onChange={userDataChange}
+                                       required
+                                       value={currentUser.document?.data?.lastName || ""}
+                                       variant="outlined"
                             />
                         </Grid>
                         <Grid item md={6} xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Email Address"
-                                name="email"
-                                onChange={userChange}
-                                required
-                                value={userEdit?.email || ""}
-                                variant="outlined"
+                            <TextField {...props}
+                                       inputProps={{
+                                           ...props.inputProps,
+                                           autoComplete: "new-password",
+                                       }}
+                                       fullWidth
+                                       label="Phone Number"
+                                       name="data.phone"
+                                       onChange={userDataChange}
+                                       value={currentUser.document?.data?.phone || ""}
+                                       variant="outlined"
                             />
                         </Grid>
                         <Grid item md={6} xs={12}>
-                            <TextField
-                                fullWidth
-                                label="Phone Number"
-                                name="phone"
-                                onChange={userDataChange}
-                                type="number"
-                                value={userDataEdit?.phone || ""}
-                                variant="outlined"
+                            <TextField {...props}
+                                       inputProps={{
+                                           ...props.inputProps,
+                                           autoComplete: "new-password",
+                                       }}
+                                       fullWidth
+                                       label="Email Address"
+                                       name="email"
+                                       onChange={userChange}
+                                       required
+                                       value={firebaseUser.document?.email || ""}
+                                       variant="outlined"
                             />
                         </Grid>
                     </Grid>
                 </CardContent>
                 <Divider/>
-                <Box
-                    sx={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        p: 2,
-                    }}
-                >
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    p: 2,
+                }}>
                     <Button color="primary" variant="contained" onClick={() => {
-                        log.debug("saving ", userEdit, "and", userDataEdit)
-                        if (user.email !== userEdit.email) {
-                            setUser(userEdit)
-                            const message = `${userEdit.email} will need to be verified before your next login, so please respond to an email in your inbox`;
-                            log.debug("showing message:", message);
-                            notification.success(message);
-                        } else {
-                            log.debug("no change to user's email")
-                        }
-                        setUserData(userDataEdit)
+                        log.debug("saving firebase user:", firebaseUser.document, " and user document:", currentUser.document?.data);
+                        const logoutAfterChange = firebaseUser.logoutAfterChange();
+                        Promise.all([firebaseUser.saveUser(), currentUser.saveUser("Personal details")])
+                            .then((responses: any[]) => {
+                                return handleLogoutIfRequired(logoutAfterChange)
+                                    .then(() => notification.success(responses.filter(item => item).join(".\n\n")));
+                            }).catch((error => notification.error(error.toString())));
                     }}>
                         Save details
                     </Button>

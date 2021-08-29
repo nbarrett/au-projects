@@ -1,35 +1,48 @@
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Box, Button, Container, Grid, Link, TextField, Typography, } from "@material-ui/core";
-import { useSigninWithEmail } from "../../auth/signinProviders";
 import { log } from "../../util/logging-config";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import { useEffect, useState } from "react";
 import { useLogout } from "../../auth/logout";
-import { useSession } from "../../auth/useSession";
+import { useFirebaseUser } from "../../hooks/use-firebase-user";
+import { useSignInWithEmail } from "../../auth/signInProviders";
+import { AppRoute } from "../../constants";
+import { toAppRoute } from "../../admin/routes";
 
 export default function Login() {
-    const {user, loading} = useSession();
+    const {user, loading} = useFirebaseUser();
     const notification = useSnackbarNotification();
-    const signinWithEmail = useSigninWithEmail();
+    const signInWithEmail = useSignInWithEmail();
     const logout = useLogout();
+    const navigate = useNavigate();
     const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
+    const [submitted, setSubmitted] = useState<boolean>(false);
+
+    function showVerificationNotification(user) {
+        setShowVerifyEmail(true);
+        const message = `${user.email} has not yet been verified so please respond to an email in your inbox`;
+        log.debug("showing message:", message);
+        notification.warning(message);
+    }
 
     useEffect(() => {
-        log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
-        if (!loading && user?.uid && !user?.emailVerified) {
-            setShowVerifyEmail(true);
-            const message = `${user.email} has not yet been verified so please respond to an email in your inbox`;
-            log.debug("showing message:", message);
-            notification.error(message);
+        log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "submitted:", submitted);
+        if (!submitted && user?.uid && !user?.emailVerified) {
+            logout();
+        } else if (submitted && !loading && user?.uid && !user?.emailVerified) {
+            showVerificationNotification(user);
+        } else {
+            log.debug("Login:useEffect no action: user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "submitted:", submitted);
         }
-    }, [user, loading])
+    }, [user, loading]);
 
     function resendVerification() {
         log.debug("Login:resendVerification user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
         if (user) {
+            setSubmitted(true);
             user.sendEmailVerification();
             logout();
         }
@@ -50,38 +63,43 @@ export default function Login() {
                 }}
             >
                 <Container maxWidth="sm">
-                    <Formik
-                        initialValues={{
-                            email: "",
-                            password: "",
-                            rememberMe: true,
-                        }}
-                        validationSchema={Yup.object().shape({
-                            email: Yup.string()
-                                .email("Must be a valid email")
-                                .max(255)
-                                .required("Email is required"),
-                            password: Yup.string().max(255).required("Password is required"),
-                        })}
-                        onSubmit={(values, actions) => {
-                            const signinData = {
-                                email: values.email,
-                                password: values.password,
-                                rememberMe: values.rememberMe,
-                            };
-                            log.debug("Login:signinData", signinData);
-                            signinWithEmail(signinData).then(response => {
-                                log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
-                                if (!loading) {
-                                    actions.setSubmitting(false);
-                                }
-                            }).catch(error => {
+                    <Formik initialValues={{
+                        email: "",
+                        password: "",
+                        rememberMe: true,
+                    }} validationSchema={Yup.object().shape({
+                        email: Yup.string()
+                            .email("Must be a valid email")
+                            .max(255)
+                            .required("Email is required"),
+                        password: Yup.string().max(255).required("Password is required"),
+                    })} onSubmit={(values, actions) => {
+                        setSubmitted(true);
+                        const signInData = {
+                            email: values.email,
+                            password: values.password,
+                            rememberMe: values.rememberMe,
+                        };
+                        log.debug("Login:signInData", signInData);
+                        signInWithEmail(signInData).then(response => {
+                            log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "response:", response);
+                            if (!loading) {
                                 actions.setSubmitting(false);
-                                log.error("Login:error:", error);
-                            });
+                            }
+                            if (response.user?.uid) {
+                                if (!response.user?.emailVerified) {
+                                    showVerificationNotification(response.user);
+                                } else {
+                                    log.debug("navigate off login screen");
+                                    navigate(toAppRoute(AppRoute.HOME));
+                                }
 
-                        }}
-                    >
+                            }
+                        }).catch(error => {
+                            actions.setSubmitting(false);
+                            log.error("Login:error:", error);
+                        });
+                    }}>
                         {({
                               errors,
                               handleBlur,
@@ -133,7 +151,6 @@ export default function Login() {
                                         value={values.password}
                                         variant="outlined"
                                     />
-
                                     <Box sx={{py: 2}}>
                                         <Grid container spacing={3}>
                                             {showVerifyEmail ? <><Grid item lg={6} md={6} xs={12}>

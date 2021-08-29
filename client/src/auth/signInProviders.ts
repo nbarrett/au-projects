@@ -2,12 +2,13 @@ import firebase from "firebase";
 import { useSnackbarNotification } from "../snackbarNotification";
 import { SignupWithEmailProps, UseSigninWithEmailProps, } from "../models/authentication-models";
 import { log } from "../util/logging-config";
-import { UserData } from "../models/user-models";
+import useCurrentUser from "../hooks/use-current-user";
 
-export const useSigninWithEmail = () => {
+export const useSignInWithEmail = () => {
+
   const notification = useSnackbarNotification();
 
-  return async function signinWithEmail({
+  return async function signInWithEmail({
     email,
     password,
     rememberMe,
@@ -40,36 +41,17 @@ export const useSigninWithEmail = () => {
 
 export function useSignupWithEmail() {
   const notification = useSnackbarNotification();
-
+  const currentUser = useCurrentUser();
   return async function signupWithEmail({
     email,
     password,
     firstName,
     lastName,
   }: SignupWithEmailProps): Promise<any> {
-    const emailNoSpaces = email.replace(/ /g, "");
     try {
-      log.debug("SignupWithEmail:email", emailNoSpaces, "password:", password);
-      firebase.auth().setPersistence(firebase.auth.Auth.Persistence.SESSION);
-      const userCredential: firebase.auth.UserCredential = await firebase
-        .auth()
-        .createUserWithEmailAndPassword(emailNoSpaces, password);
-      const uid = userCredential.user?.uid;
-      const user: UserData = { firstName, lastName };
-      const newUser = await firebase
-        .firestore()
-        .collection("users")
-        .doc(uid)
-        .set(user);
-      log.debug("created new user with email:", emailNoSpaces, "uid:", newUser);
-      const verificationResult = await userCredential.user
-        ?.sendEmailVerification()
-        .catch(function (error) {
-          log.error("sendEmailVerification failed with error:", error);
-          return Promise.reject(notification.error(error));
-        });
+      const verificationResult = currentUser.signup(email, password, firstName, lastName);
       log.debug("sendEmailVerification result:", verificationResult);
-      return newUser;
+      return verificationResult;
     } catch (error) {
       let registrationError = "Error registering account";
       if (error.code === "auth/email-already-in-use") {

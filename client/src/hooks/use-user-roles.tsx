@@ -8,10 +8,12 @@ import { log } from "../util/logging-config";
 import { userRolesState } from "../atoms/user-atoms";
 import { UserRoles } from "../models/user-models";
 import { newDocument } from "../mappings/document-mappings";
+import { useFirebaseUser } from "./use-firebase-user";
 
 export default function useUserRoles() {
     const collection = "userRoles";
     const [documents, setDocuments] = useRecoilState<WithUid<UserRoles>[]>(userRolesState);
+    const {user, loading} = useFirebaseUser();
 
     useEffect(() => {
         log.debug(collection, "initial render:", documents);
@@ -24,6 +26,10 @@ export default function useUserRoles() {
     useEffect(() => {
         log.debug(collection, "change:", documents);
     }, [documents]);
+
+    function forCurrentUser(): WithUid<UserRoles> {
+        return userRoleForUid(user?.uid);
+    }
 
     function refresh(): Promise<any> {
         return findAll<UserRoles>(collection).then(setDocuments);
@@ -56,6 +62,6 @@ export default function useUserRoles() {
         return cloneDeep(documents?.find(userRole => userRole?.uid === uid) || newDocumentFor(uid));
     }
 
-    return {saveAllUserRoles, refresh, documents, setDocument, setDocuments, userRoleForUid};
+    return {saveAllUserRoles, refresh, documents, setDocument, setDocuments, userRoleForUid, forCurrentUser};
 
 }

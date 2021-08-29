@@ -23,8 +23,9 @@ import { contentContainer } from "../../admin/components/GlobalStyles";
 import ProductCards from "./ProductCards";
 import ProductsDataGrid from "./ProductsDataGrid";
 import Typography from "@material-ui/core/Typography";
-import { AppRoute, FULL_SCREEN } from "../../constants";
+import { AppRoute } from "../../constants";
 import { useNavigate } from "react-router-dom";
+import { toFullScreenRoute } from "../../admin/routes";
 
 export default function Products() {
     const navigate = useNavigate();
@@ -62,7 +63,7 @@ export default function Products() {
 
     useEffect(() => {
         if (viewAs === "full-screen") {
-            navigate(`/${FULL_SCREEN}/${AppRoute.PRODUCTS}`);
+            navigate(toFullScreenRoute(AppRoute.PRODUCTS));
         }
     }, [viewAs]);
 

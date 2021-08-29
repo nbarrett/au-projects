@@ -11,10 +11,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useNavigate } from "react-router-dom";
-import { APP_PATH, AppRoute } from "../../constants";
+import { AppRoute } from "../../constants";
 import { TabPanelProps } from "../../models/common-models";
 import useSingleCompany from "../../hooks/use-single-company";
 import { Company } from "../../models/company-models";
+import { toAppRoute } from "../../admin/routes";
 
 function TabPanel(props: TabPanelProps) {
     const {children, value, index, ...other} = props;
@@ -46,7 +47,7 @@ export default function CompanyTabs() {
     const document = useSingleCompany();
 
     function backToCompanies() {
-        navigate(`/${APP_PATH}/${AppRoute.COMPANIES}`);
+        navigate(toAppRoute(AppRoute.COMPANIES));
     }
 
     const [value, setValue] = React.useState(0);

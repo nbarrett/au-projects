@@ -1,16 +1,12 @@
-import { WithUid } from "./models/common-models";
-import { Product } from "./models/product-models";
-import { stringifyObject } from "./util/strings";
-import { omit } from "lodash";
-
 export const APP_NAME = "AU Projects";
 
 export enum AppRoute {
-  ACCOUNT = "account",
+  ACCOUNT_SETTINGS = "account-settings",
   COMPANIES = "companies",
   COMPANIES_EDIT = "companies/:uid",
   DASHBOARD = "dashboard",
   EXAMPLE_DASHBOARD = "example-dashboard",
+  HOME = "home",
   LOGIN = "login",
   ORDERS = "orders",
   PRICES = "prices",
@@ -33,7 +29,6 @@ export enum PublicRoute {
 export const APP_PATH = "app";
 export const FULL_SCREEN = "full-screen";
 export const PUBLIC_PATH = "//*";
-export const APP_DASHBOARD = `/${APP_PATH}/${AppRoute.EXAMPLE_DASHBOARD}`;
 
 export const FIREBASE_CONFIG = {
   apiKey: "AIzaSyAi_2ndipc1AOGbwc3j4xMTqicD2_y4RK4",
@@ -44,7 +39,3 @@ export const FIREBASE_CONFIG = {
   appId: "1:866932995375:web:43307e7412f28d46051dda",
   measurementId: "G-P0X1XKCY49",
 };
-
-export function productDetails(product: WithUid<Product>): string {
-  return stringifyObject(omit(product.data, ["title", "updatedAt", "media"]), null, true);
-}

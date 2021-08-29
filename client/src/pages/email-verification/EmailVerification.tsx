@@ -6,7 +6,7 @@ import Typography from "@material-ui/core/Typography";
 import { useBooleanState } from "react-use-object-state";
 import { useSnackbarNotification } from "../../snackbarNotification";
 import { Theme } from "@material-ui/core/styles";
-import { useSession } from "../../auth/useSession";
+import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import { Helmet } from "react-helmet";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 export default function EmailVerification() {
   const classes = useStyles({});
   const notification = useSnackbarNotification();
-  const {user} = useSession();
+  const {user} = useFirebaseUser();
 
   const loading = useBooleanState(false);
 

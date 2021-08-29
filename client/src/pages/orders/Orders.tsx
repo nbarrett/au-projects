@@ -33,8 +33,6 @@ import { fullNameForUser } from "../../util/strings";
 import useUsers from "../../hooks/use-users";
 import useOrders from "../../hooks/use-orders";
 import { useRecoilValue } from "recoil";
-import { UserData } from "../../models/user-models";
-import { currentUserDataState } from "../../atoms/user-atoms";
 import sum from "lodash/sum";
 import max from "lodash/max";
 import range from "lodash/range";
@@ -66,15 +64,16 @@ import { makeStyles } from "@material-ui/styles";
 import { Theme } from "@material-ui/core/styles";
 import UndoIcon from "@material-ui/icons/Undo";
 import { sortBy } from "../../util/arrays";
+import useCurrentUser from "../../hooks/use-current-user";
 
 export function Orders(props) {
     const users = useUsers();
+    const currentUser = useCurrentUser();
     const order = useSingleOrder();
     const orders = useOrders();
     const [filteredOrderHistory, setFilteredOrderHistory] = useState<WithUid<Order>[]>([]);
     const [allOrderHistory, setAllOrderHistory] = useState<WithUid<Order>[]>([]);
     const companies = useCompanyData();
-    const userData = useRecoilValue<UserData>(currentUserDataState);
     const productCodings = useProductCoding(false);
     const notification = useSnackbarNotification();
     const orderTabValue = useRecoilValue<OrderStatus>(orderTabState);
@@ -88,9 +87,9 @@ export function Orders(props) {
     }))({});
 
     function refreshOrderView(): Promise<void> {
-        if (userData.companyId) {
+        if (currentUser.document.data?.companyId) {
             log.debug("refreshing order view");
-            return orders.findOrdersForCompany(userData.companyId).then(setAllOrderHistory);
+            return orders.findOrdersForCompany(currentUser.document.data?.companyId).then(setAllOrderHistory);
         } else {
             return Promise.resolve();
         }
@@ -98,7 +97,7 @@ export function Orders(props) {
 
     useEffect(() => {
         refreshOrderView();
-    }, [userData.companyId]);
+    }, [currentUser.document.data?.companyId]);
 
     useEffect(() => {
         const filtered = applyDocumentToOrderHistory(allOrderHistory, order.document).filter(order => order.data.status === orderTabValue);

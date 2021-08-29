@@ -1,7 +1,7 @@
 import { WithUid } from "../models/common-models";
 import { find, findAll, remove, save } from "../data-services/firebase-services";
 import { useEffect } from "react";
-import { useRecoilState, useRecoilValue, useResetRecoilState } from "recoil";
+import { useRecoilState, useResetRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 import { Order, OrderItem, OrderStatus, OrderStatusDescriptions } from "../models/order-models";
 import { orderState } from "../atoms/order-atoms";
@@ -9,23 +9,19 @@ import cloneDeep from "lodash/cloneDeep";
 import max from "lodash/max";
 import set from "lodash/set";
 import isUndefined from "lodash/isUndefined";
-import { UserData } from "../models/user-models";
-import { currentUserDataState, currentUserState } from "../atoms/user-atoms";
 import { nowAsValue } from "../util/dates";
-import { FirebaseUser } from "../models/authentication-models";
 import { collection } from "./use-orders";
 import { newDocument } from "../mappings/document-mappings";
+import useCurrentUser from "./use-current-user";
 
 export default function useSingleOrder() {
+    const currentUser = useCurrentUser();
     const [document, setDocument] = useRecoilState<WithUid<Order>>(orderState);
-    const userData = useRecoilValue<UserData>(currentUserDataState);
-    const user = useRecoilValue<FirebaseUser>(currentUserState);
     const reset = useResetRecoilState(orderState);
 
     useEffect(() => {
         log.debug("Order change:", document);
     }, [document]);
-
 
     function saveOrder(order: WithUid<Order>, orderStatus?: OrderStatus): Promise<any> {
         if (isUndefined(orderStatus)) {
@@ -87,9 +83,9 @@ export default function useSingleOrder() {
     async function addOrder(status?: OrderStatus) {
         const order = mutableOrder(newDocument<Order>());
         order.data.orderNumber = await newOrderNumber();
-        order.data.companyId = userData.companyId;
+        order.data.companyId = currentUser.document.data.companyId;
+        order.data.createdBy = currentUser.document.uid;
         order.data.createdAt = nowAsValue();
-        order.data.createdBy = user.uid;
         order.data.status = status || OrderStatus.NEW;
         order.data.items = [];
         addLineItem(order);
@@ -106,11 +102,11 @@ export default function useSingleOrder() {
         const orderItem: OrderItem = {};
         const mutable = mutableOrder(order);
         orderItem.createdAt = nowAsValue();
-        orderItem.createdBy = user.uid;
+        orderItem.createdBy = currentUser.document.uid;
         orderItem.quantity = 1;
         mutable.data.updatedAt = nowAsValue();
-        mutable.data.updatedBy = user.uid;
-        mutable.data.updatedBy = user.uid;
+        mutable.data.updatedBy = currentUser.document.uid;
+        mutable.data.updatedBy = currentUser.document.uid;
         mutable.data.items.push(orderItem);
         log.debug("addLineItem:mutable:", mutable);
         setDocument(mutable);

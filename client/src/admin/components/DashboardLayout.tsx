@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { experimentalStyled } from "@material-ui/core";
-import DashboardSidebar from "./DashboardSidebar";
+import DashboardSidebar from "../../pages/sidebar/DashboardSidebar";
 import DashboardNavBar from "./DashboardNavBar";
 import { useSetRecoilState } from "recoil";
 import { useEffect } from "react";
