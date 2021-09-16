@@ -29,9 +29,9 @@ import useDataGrid from "../../hooks/use-data-grid";
 import Loading from "../common/Loading";
 import DeleteManyIcon from "../common/DeleteManyIcon";
 import AddchartIcon from "@material-ui/icons/Addchart";
-import { APP_PATH, AppRoute, FULL_SCREEN } from "../../constants";
 import { useLocation, useNavigate } from "react-router-dom";
 import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
+import { AppRoute, FULL_SCREEN } from "../../models/route-models";
 
 export default function ProductsDataGrid() {
     const products = useProducts();
@@ -374,7 +374,7 @@ export default function ProductsDataGrid() {
                 </IconButton>
                 <GridToolbar/>
                 {location.pathname.includes(FULL_SCREEN) && <IconButton onClick={() => {
-                    navigate(`/${APP_PATH}/${AppRoute.PRODUCTS}`);
+                    navigate(`/${AppRoute.PRODUCTS}`);
                 }}>
                     <Tooltip title={`Exit full screen`}>
                         <FullscreenExitIcon color="secondary"/></Tooltip>

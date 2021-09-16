@@ -20,6 +20,7 @@ export default function useUsers() {
         log.debug("Users initial render:", documents);
         const unsub = subscribe<UserData>(collection, setAndSort);
         return (() => {
+            log.debug("unsub");
             unsub();
         });
     }, []);
@@ -61,9 +62,6 @@ export default function useUsers() {
     }
 
 
-    return {
-        refresh, saveAllUsers, documents, setDocuments, setDocument, userForUid,
-        NamedAvatarFromGrid
-    };
+    return {refresh, saveAllUsers, documents, setDocuments, setDocument, userForUid, NamedAvatarFromGrid};
 
 }

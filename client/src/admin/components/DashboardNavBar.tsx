@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useState } from "react";
 import { alpha, experimentalStyled as styled } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -11,18 +12,24 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import MenuIcon from "@material-ui/icons/Menu";
 import SearchIcon from "@material-ui/icons/Search";
-import MailIcon from "@material-ui/icons/Mail";
-import NotificationsIcon from "@material-ui/icons/Notifications";
 import MoreIcon from "@material-ui/icons/MoreVert";
 import Logo from "./Logo";
 import { Link as RouterLink } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { useLogout } from "../../auth/logout";
 import InputIcon from "@material-ui/icons/Input";
 import { Tooltip } from "@material-ui/core";
 import ToolbarButtons from "./toolbar/ToolbarButtons";
-import { useNavbarSearch } from "../../use-navbar-search";
+import { useNavbarSearch } from "../../hooks/use-navbar-search";
+import { WithUid } from "../../models/common-models";
+import { Order, OrderStatus } from "../../models/order-models";
+import { ordersState } from "../../atoms/order-atoms";
+import { pluralise, pluraliseWithCount } from "../../util/strings";
+import { useUpdateUrl } from "../../hooks/use-url-updating";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
+import { ShoppingCart } from "react-feather";
 
 export const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -67,13 +74,13 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 }));
 
 export default function DashboardNavBar() {
+    const updateUrl = useUpdateUrl();
     const navbarSearch = useNavbarSearch();
     const setMobileNavOpen = useSetRecoilState<boolean>(mobileNavOpenState);
     const logout = useLogout();
-    const [
-        mobileMoreAnchorEl,
-        setMobileMoreAnchorEl,
-    ] = React.useState<null | HTMLElement>(null);
+    const orderHistory = useRecoilValue<WithUid<Order>[]>(ordersState);
+    const unsubmittedOrderCount = orderHistory.filter(item => item.data.status < OrderStatus.CANCELLED).length;
+    const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
 
     const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -87,39 +94,31 @@ export default function DashboardNavBar() {
 
     const mobileMenuId = "primary-search-account-menu-mobile";
     const renderMobileMenu = (
-        <Menu
-            anchorEl={mobileMoreAnchorEl}
-            anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            id={mobileMenuId}
-            keepMounted
-            transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-            }}
-            open={isMobileMenuOpen}
-            onClose={handleMobileMenuClose}
-        >
-            <MenuItem>
-                <IconButton aria-label="show 4 new mails" color="inherit">
-                    <Badge badgeContent={4} color="secondary">
-                        <MailIcon/>
+        <Menu anchorEl={mobileMoreAnchorEl}
+              anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+              }}
+              id={mobileMenuId}
+              keepMounted
+              transformOrigin={{
+                  vertical: "top",
+                  horizontal: "right",
+              }}
+              open={isMobileMenuOpen}
+              onClose={handleMobileMenuClose}>
+            <MenuItem onClick={() => updateUrl({path: toAppRoute(AppRoute.ORDERS)})}>
+                <IconButton
+                    aria-label={`Show ${pluraliseWithCount(unsubmittedOrderCount, "unsubmitted order")}`}
+                    color="inherit">
+                    <Badge badgeContent={unsubmittedOrderCount} color="secondary">
+                        <ShoppingCart/>
                     </Badge>
                 </IconButton>
-                <p>Messages</p>
+                <p>{`${pluralise(unsubmittedOrderCount, "Unsubmitted order")}`}</p>
             </MenuItem>
-            <MenuItem>
-                <IconButton aria-label="show 11 new notifications" color="inherit">
-                    <Badge badgeContent={11} color="secondary">
-                        <NotificationsIcon/>
-                    </Badge>
-                </IconButton>
-                <p>Notifications</p>
-            </MenuItem>
-            <MenuItem>
-                <IconButton color="inherit" onClick={logout}>
+            <MenuItem onClick={() => logout("DashboardNavBar")}>
+                <IconButton color="inherit">
                     <InputIcon/>
                 </IconButton>
                 <p>Logout</p>
@@ -152,22 +151,16 @@ export default function DashboardNavBar() {
                     <Box sx={{flexGrow: 1}}/>
                     <ToolbarButtons/>
                     <Box sx={{display: {xs: "none", md: "flex"}}}>
-                        <Tooltip title={"Show new emails (doesn't do anything yet)"}>
-                            <IconButton aria-label="show 4 new mails" color="inherit">
-                                <Badge badgeContent={4} color="secondary">
-                                    <MailIcon/>
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={"Show new notifications (doesn't do anything yet)"}>
-                            <IconButton aria-label="show 17 new notifications" color="inherit">
-                                <Badge badgeContent={17} color="secondary">
-                                    <NotificationsIcon/>
+                        <Tooltip title={`Show ${pluraliseWithCount(unsubmittedOrderCount, "unsubmitted order")}`}
+                                 color="inherit">
+                            <IconButton color="inherit" onClick={() => updateUrl({path: toAppRoute(AppRoute.ORDERS)})}>
+                                <Badge badgeContent={unsubmittedOrderCount} color="secondary">
+                                    <ShoppingCart/>
                                 </Badge>
                             </IconButton>
                         </Tooltip>
                         <Tooltip title={"Logout from portal"}>
-                            <IconButton color="inherit" onClick={logout}>
+                            <IconButton color="inherit" onClick={() => logout("DashboardNavBar")}>
                                 <InputIcon/>
                             </IconButton>
                         </Tooltip>

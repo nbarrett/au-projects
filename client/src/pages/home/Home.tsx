@@ -7,16 +7,13 @@ import { contentContainer } from "../../admin/components/GlobalStyles";
 import useCurrentUser from "../../hooks/use-current-user";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
-import { AppRoute } from "../../constants";
 import { useNavigate } from "react-router-dom";
-import { toAppRoute } from "../../admin/routes";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
 
 export function Home() {
     const currentUser = useCurrentUser();
     const navigate = useNavigate();
-    const classes = makeStyles(
-        {}
-    )();
 
     return <>
         <Helmet>

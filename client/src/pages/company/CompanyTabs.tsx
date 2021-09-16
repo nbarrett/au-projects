@@ -11,11 +11,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { useNavigate } from "react-router-dom";
-import { AppRoute } from "../../constants";
 import { TabPanelProps } from "../../models/common-models";
 import useSingleCompany from "../../hooks/use-single-company";
 import { Company } from "../../models/company-models";
-import { toAppRoute } from "../../admin/routes";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
 
 function TabPanel(props: TabPanelProps) {
     const {children, value, index, ...other} = props;

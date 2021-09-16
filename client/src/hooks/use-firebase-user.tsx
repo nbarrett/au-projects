@@ -27,6 +27,14 @@ export function useFirebaseUser() {
     });
   }
 
+  function debugCurrentUser() {
+    return debugUser(user);
+  }
+
+  function debugUser(user:firebase.User) {
+    return user ? `email:${user.email}, emailVerified:${user.emailVerified}, uid:${user.uid}` : "<none>";
+  }
+
   function updateEmail(email: string): Promise<void> {
     log.debug("currentUserState:onSet:", user);
     if (user && email) {
@@ -56,5 +64,5 @@ export function useFirebaseUser() {
     }
   }
 
-  return {user, changeField, updateEmail, loading, saveUser, document, logoutAfterChange};
+  return {debugUser, debugCurrentUser, user, changeField, updateEmail, loading, saveUser, document, logoutAfterChange};
 }

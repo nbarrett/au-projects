@@ -16,12 +16,14 @@ export default function useUserRoles() {
     const {user, loading} = useFirebaseUser();
 
     useEffect(() => {
-        log.debug(collection, "initial render:", documents);
-        const unsub = subscribe<UserRoles>(collection, setDocuments);
-        return (() => {
-            unsub();
-        });
-    }, []);
+        if (user && !loading) {
+            log.debug(collection, "initial render:", documents);
+            const unsub = subscribe<UserRoles>(collection, setDocuments);
+            return (() => {
+                unsub();
+            });
+        }
+    }, [user, loading]);
 
     useEffect(() => {
         log.debug(collection, "change:", documents);
@@ -59,7 +61,9 @@ export default function useUserRoles() {
     }
 
     function userRoleForUid(uid: string): WithUid<UserRoles> {
-        return cloneDeep(documents?.find(userRole => userRole?.uid === uid) || newDocumentFor(uid));
+        const returnValue = cloneDeep(documents?.find(userRole => userRole?.uid === uid) || newDocumentFor(uid));
+        log.debug("userRoleForUid:", returnValue);
+        return returnValue;
     }
 
     return {saveAllUserRoles, refresh, documents, setDocument, setDocuments, userRoleForUid, forCurrentUser};

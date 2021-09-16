@@ -1,5 +1,4 @@
 import { MenuItem } from "../models/menu-models";
-import { AppRoute } from "../constants";
 import {
     BarChart,
     DollarSign,
@@ -16,8 +15,10 @@ import { ProductCodingType } from "../models/product-models";
 import { WithUid } from "../models/common-models";
 import { UserRoles } from "../models/user-models";
 import useUserRoles from "./use-user-roles";
+import { AppRoute } from "../models/route-models";
 
 export default function useMenuOptions() {
+
     const userRoles = useUserRoles();
     const userRolesForId: WithUid<UserRoles> = userRoles.forCurrentUser();
 

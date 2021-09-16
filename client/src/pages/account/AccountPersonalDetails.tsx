@@ -26,7 +26,7 @@ export default function AccountPersonalDetails(props: any) {
 
     function handleLogoutIfRequired(logoutAfterChange: boolean) {
         if (logoutAfterChange) {
-            return logout();
+            return logout("AccountPersonalDetails:logoutAfterChange");
         } else {
             return Promise.resolve();
         }

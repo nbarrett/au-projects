@@ -9,7 +9,7 @@ export type SnackbarNotificationContextState = {
 export type SnackbarNotificationContext = SnackbarNotificationContextState & {
   info: (message: string) => void;
   success: (message: string) => void;
-  warning: (message: string) => void;
+  warning: (message: any) => void;
   error: (message: string) => void;
   closeNotification: VoidFunction;
 };

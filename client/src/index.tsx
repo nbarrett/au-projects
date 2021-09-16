@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import AppContainer from "./admin/AppContainer";
+import AppContainer from "./pages/global/AppContainer";
 
 import firebase from "firebase";
 import { FIREBASE_CONFIG } from "./constants";

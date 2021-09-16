@@ -32,7 +32,7 @@ import useCompanyData from "../../hooks/use-company-data";
 import { fullNameForUser } from "../../util/strings";
 import useUsers from "../../hooks/use-users";
 import useOrders from "../../hooks/use-orders";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import sum from "lodash/sum";
 import max from "lodash/max";
 import range from "lodash/range";
@@ -57,7 +57,7 @@ import {
     editable,
     totalPerLine
 } from "../../mappings/order-mappings";
-import { orderTabState } from "../../atoms/order-atoms";
+import { ordersState, orderTabState } from "../../atoms/order-atoms";
 import TableContainer from "@material-ui/core/TableContainer";
 import CancelIcon from "@material-ui/icons/Cancel";
 import { makeStyles } from "@material-ui/styles";
@@ -65,6 +65,8 @@ import { Theme } from "@material-ui/core/styles";
 import UndoIcon from "@material-ui/icons/Undo";
 import { sortBy } from "../../util/arrays";
 import useCurrentUser from "../../hooks/use-current-user";
+import useUserRoles from "../../hooks/use-user-roles";
+import { UserRoles } from "../../models/user-models";
 
 export function Orders(props) {
     const users = useUsers();
@@ -72,12 +74,13 @@ export function Orders(props) {
     const order = useSingleOrder();
     const orders = useOrders();
     const [filteredOrderHistory, setFilteredOrderHistory] = useState<WithUid<Order>[]>([]);
-    const [allOrderHistory, setAllOrderHistory] = useState<WithUid<Order>[]>([]);
+    const [allOrderHistory, setAllOrderHistory] = useRecoilState<WithUid<Order>[]>(ordersState);
     const companies = useCompanyData();
     const productCodings = useProductCoding(false);
     const notification = useSnackbarNotification();
     const orderTabValue = useRecoilValue<OrderStatus>(orderTabState);
     const sortByColumn = "-data.orderNumber";
+    const currentUserRoles: WithUid<UserRoles> = useUserRoles().forCurrentUser();
     const classes = makeStyles((theme: Theme) => ({
         orderItemsHeading: {
             fontWeight: 400,
@@ -89,7 +92,7 @@ export function Orders(props) {
     function refreshOrderView(): Promise<void> {
         if (currentUser.document.data?.companyId) {
             log.debug("refreshing order view");
-            return orders.findOrdersForCompany(currentUser.document.data?.companyId).then(setAllOrderHistory);
+            return orders.findOrdersForCompany(currentUserRoles, currentUser.document.data?.companyId).then(setAllOrderHistory);
         } else {
             return Promise.resolve();
         }
@@ -221,7 +224,6 @@ export function Orders(props) {
         function onDismiss(reason: string) {
             log.debug("onDismiss:", reason, "product", props.value);
             if (props.value) {
-                // setOpen(false);
                 props.toggleProductLookup();
             }
         }
@@ -449,7 +451,7 @@ export function Orders(props) {
               <Grid item xs={12}>
                   <Card {...props}>
                       <CardHeader title={
-                          <OrderTabs orderHistory={allOrderHistory}/>}/>
+                          <OrderTabs/>}/>
                       <TableContainer>
                           <Table size={"small"}>
                               <TableHead>

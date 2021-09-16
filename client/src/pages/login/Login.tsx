@@ -9,42 +9,79 @@ import { useEffect, useState } from "react";
 import { useLogout } from "../../auth/logout";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import { useSignInWithEmail } from "../../auth/signInProviders";
-import { AppRoute } from "../../constants";
-import { toAppRoute } from "../../admin/routes";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
+import useUserRoles from "../../hooks/use-user-roles";
+import { makeStyles } from "@material-ui/styles";
+import { Theme } from "@material-ui/core/styles";
+import { PRIMARY_LIGHT } from "../../theme/theme";
+import isEmpty from "lodash/isEmpty";
+
+export function ContactUs() {
+    const classes = makeStyles((theme: Theme) => ({
+        root: {
+            color: "white",
+            fontWeight: "bold"
+        },
+    }))({});
+    return <Link color={PRIMARY_LIGHT} className={classes.root}
+                 href={"mailto:support@auind.co.za?subject=System Access"}>Contact us</Link>;
+}
 
 export default function Login() {
-    const {user, loading} = useFirebaseUser();
+    const {user, loading, debugUser, debugCurrentUser} = useFirebaseUser();
     const notification = useSnackbarNotification();
     const signInWithEmail = useSignInWithEmail();
     const logout = useLogout();
+    const userRoles = useUserRoles();
     const navigate = useNavigate();
     const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
-    const [submitted, setSubmitted] = useState<boolean>(false);
+    const [submittedCount, setSubmittedCount] = useState<number>(0);
+
+    useEffect(() => {
+        if (!loading && user?.uid) {
+            const currentUserRoles = userRoles.forCurrentUser();
+            log.info("Login:useEffect for user:", debugCurrentUser(), "loading:", loading, "currentUserRoles:", currentUserRoles, "submittedCount:", submittedCount);
+            if (!user?.emailVerified) {
+                showVerificationNotification(user);
+            } else if (!isEmpty(currentUserRoles.data)) {
+                if (!currentUserRoles.data.systemAccess) {
+                    showNoSystemAccessNotification(user);
+                    logout("showNoSystemAccessNotification");
+                } else {
+                    log.info("navigate off login screen");
+                    navigate(toAppRoute(AppRoute.HOME));
+                }
+            }
+        } else {
+            log.info("Login:useEffect no action for user:", debugCurrentUser(), "loading:", loading);
+        }
+    }, [user, loading, submittedCount]);
 
     function showVerificationNotification(user) {
         setShowVerifyEmail(true);
-        const message = `${user.email} has not yet been verified so please respond to an email in your inbox`;
-        log.debug("showing message:", message);
-        notification.warning(message);
+        const message = `${user?.email} has not yet been verified so please respond to an email in your inbox`;
+        log.info("showing message:", message);
+        notification.warning(<>{message}. <ContactUs/></>);
     }
 
-    useEffect(() => {
-        log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "submitted:", submitted);
-        if (!submitted && user?.uid && !user?.emailVerified) {
-            logout();
-        } else if (submitted && !loading && user?.uid && !user?.emailVerified) {
-            showVerificationNotification(user);
-        } else {
-            log.debug("Login:useEffect no action: user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "submitted:", submitted);
-        }
-    }, [user, loading]);
+    function showNoSystemAccessNotification(user) {
+        setShowVerifyEmail(false);
+        const message = `${user?.email} has not yet been granted system access. You will receive an email when this is complete`;
+        log.info("showing message:", message);
+        notification.warning(<>{message}. <ContactUs/></>);
+    }
 
     function resendVerification() {
-        log.debug("Login:resendVerification user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading);
+        log.info("Login:resendVerification user:", debugCurrentUser(), "loading:", loading);
         if (user) {
-            setSubmitted(true);
             user.sendEmailVerification();
-            logout();
+            logout("resendVerification");
+            const message = `Verification email has been sent to ${user.email} so please respond to an email in your inbox, then try logging in again`;
+            log.info("showing message:", message);
+            notification.warning(message);
+        } else {
+            notification.error("cant resend verification email. Refresh your browser and try again");
         }
     }
 
@@ -74,26 +111,22 @@ export default function Login() {
                             .required("Email is required"),
                         password: Yup.string().max(255).required("Password is required"),
                     })} onSubmit={(values, actions) => {
-                        setSubmitted(true);
                         const signInData = {
                             email: values.email,
                             password: values.password,
                             rememberMe: values.rememberMe,
                         };
-                        log.debug("Login:signInData", signInData);
+                        log.info("Login:signInData", signInData);
+                        setSubmittedCount(submittedCount + 1);
                         signInWithEmail(signInData).then(response => {
-                            log.debug("Login:useEffect user.uid:", user?.uid, "emailVerified", user?.emailVerified, "loading:", loading, "response:", response);
+                            log.info("Login:signInWithEmail:signInData", signInData, "user:", debugUser(response.user), "loading:", loading, "response:", response);
                             if (!loading) {
                                 actions.setSubmitting(false);
                             }
                             if (response.user?.uid) {
                                 if (!response.user?.emailVerified) {
                                     showVerificationNotification(response.user);
-                                } else {
-                                    log.debug("navigate off login screen");
-                                    navigate(toAppRoute(AppRoute.HOME));
                                 }
-
                             }
                         }).catch(error => {
                             actions.setSubmitting(false);
@@ -123,33 +156,33 @@ export default function Login() {
                                             Sign in to the portal
                                         </Typography>
                                     </Box>
-                                    <TextField InputLabelProps={{ shrink: true }}
-                                        error={Boolean(touched.email && errors.email)}
-                                        fullWidth
-                                        helperText={touched.email && errors.email}
-                                        label="Email Address"
-                                        margin="normal"
-                                        size={"small"}
-                                        name="email"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        type="email"
-                                        value={values.email}
-                                        variant="outlined"
+                                    <TextField InputLabelProps={{shrink: true}}
+                                               error={Boolean(touched.email && errors.email)}
+                                               fullWidth
+                                               helperText={touched.email && errors.email}
+                                               label="Email Address"
+                                               margin="normal"
+                                               size={"small"}
+                                               name="email"
+                                               onBlur={handleBlur}
+                                               onChange={handleChange}
+                                               type="email"
+                                               value={values.email}
+                                               variant="outlined"
                                     />
-                                    <TextField InputLabelProps={{ shrink: true }}
-                                        error={Boolean(touched.password && errors.password)}
-                                        fullWidth
-                                        size={"small"}
-                                        helperText={touched.password && errors.password}
-                                        label="Password"
-                                        margin="normal"
-                                        name="password"
-                                        onBlur={handleBlur}
-                                        onChange={handleChange}
-                                        type="password"
-                                        value={values.password}
-                                        variant="outlined"
+                                    <TextField InputLabelProps={{shrink: true}}
+                                               error={Boolean(touched.password && errors.password)}
+                                               fullWidth
+                                               size={"small"}
+                                               helperText={touched.password && errors.password}
+                                               label="Password"
+                                               margin="normal"
+                                               name="password"
+                                               onBlur={handleBlur}
+                                               onChange={handleChange}
+                                               type="password"
+                                               value={values.password}
+                                               variant="outlined"
                                     />
                                     <Box sx={{py: 2}}>
                                         <Grid container spacing={3}>
@@ -201,6 +234,5 @@ export default function Login() {
                     </Formik>
                 </Container>
             </Box>
-        </>
-    );
+        </>);
 }

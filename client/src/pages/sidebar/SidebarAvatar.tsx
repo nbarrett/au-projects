@@ -9,7 +9,7 @@ export function SidebarAvatar() {
     const currentUser = useCurrentUser();
     const firebaseUser = useFirebaseUser();
 
-    return <Box sx={{
+    return firebaseUser.user ? <Box sx={{
         alignItems: "center",
         display: "flex",
         flexDirection: "column",
@@ -28,5 +28,5 @@ export function SidebarAvatar() {
         <Typography color="textSecondary" variant="body2">
             {`${currentUser.document?.data?.firstName} ${currentUser.document?.data?.lastName}`}
         </Typography>
-    </Box>;
+    </Box> : null;
 }

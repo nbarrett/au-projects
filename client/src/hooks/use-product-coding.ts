@@ -30,8 +30,6 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
             });
         } else {
             refresh();
-            return (() => {
-            })
         }
     }, [])
 

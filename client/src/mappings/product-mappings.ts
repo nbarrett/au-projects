@@ -3,10 +3,10 @@ import { PricedProduct, PricingTier, Product, ProductCodingType } from "../model
 import { asNumber } from "../util/numbers";
 import { log } from "../util/logging-config";
 import { GridValueGetterParams } from "@material-ui/data-grid";
-import { AppRoute } from "../constants";
 import kebabCase from "lodash/kebabCase";
 import { stringifyObject } from "../util/strings";
 import { omit } from "lodash";
+import { AppRoute } from "../models/route-models";
 
 export function productRoute(type: ProductCodingType): string {
     return `${AppRoute.PRODUCTS}/${kebabCase(type)}`;

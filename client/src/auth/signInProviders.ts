@@ -43,24 +43,30 @@ export function useSignupWithEmail() {
   const notification = useSnackbarNotification();
   const currentUser = useCurrentUser();
   return async function signupWithEmail({
-    email,
-    password,
-    firstName,
-    lastName,
-  }: SignupWithEmailProps): Promise<any> {
+                                          email,
+                                          password,
+                                          firstName,
+                                          lastName
+                                        }: SignupWithEmailProps): Promise<any> {
     try {
-      const verificationResult = currentUser.signup(email, password, firstName, lastName);
+      const verificationResult = currentUser.signup(email, password, firstName, lastName)
+          .catch((error) => errorHandler(error));
       log.debug("sendEmailVerification result:", verificationResult);
       return verificationResult;
     } catch (error) {
-      let registrationError = "Error registering account";
-      if (error.code === "auth/email-already-in-use") {
-        registrationError =
-          "There is already an account associated with this email address. Please login to continue.";
-      }
-      return Promise.reject(notification.error(registrationError));
+      return errorHandler(error);
     }
   };
+
+  function errorHandler(error) {
+    let registrationError = "Error registering account";
+    if (error.code === "auth/email-already-in-use") {
+      registrationError =
+          "There is already an account associated with this email address. Please login to continue.";
+    }
+    return Promise.reject(notification.error(registrationError));
+  }
+
 }
 
 export const signinWithGoogle = () => {

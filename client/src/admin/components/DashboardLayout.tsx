@@ -2,10 +2,6 @@ import { Outlet } from "react-router-dom";
 import { experimentalStyled } from "@material-ui/core";
 import DashboardSidebar from "../../pages/sidebar/DashboardSidebar";
 import DashboardNavBar from "./DashboardNavBar";
-import { useSetRecoilState } from "recoil";
-import { useEffect } from "react";
-import { ToolbarButton } from "../../models/toolbar-models";
-import { toolbarButtonState } from "../../atoms/navbar-atoms";
 
 const DashboardLayoutRoot = experimentalStyled("div")(({theme}) => ({
   backgroundColor: theme.palette.background.default,
@@ -38,11 +34,6 @@ const DashboardLayoutContent = experimentalStyled("div")({
 });
 
 export default function DashboardLayout() {
-
-  const setToolbarButtons = useSetRecoilState<ToolbarButton[]>(toolbarButtonState);
-  useEffect(() => {
-    setToolbarButtons([])
-  }, [])
 
   return (
       <DashboardLayoutRoot>

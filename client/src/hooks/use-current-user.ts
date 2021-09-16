@@ -38,9 +38,10 @@ export default function useCurrentUser() {
         }).then(() => `${changeType} changes were saved successfully.`);
     }
 
-    function createUser(firstName: string, lastName: string) {
+    function createUser(uid: string, firstName: string, lastName: string) {
         const newUser = newDocument<UserData>();
-        newUser.uid = user.uid;
+        log.info("createUser:", newUser, "associated with firebase user uid:", uid);
+        newUser.uid = uid;
         newUser.createWithId = true;
         newUser.data.firstName = firstName;
         newUser.data.lastName = lastName;
@@ -64,8 +65,9 @@ export default function useCurrentUser() {
         const emailNoSpaces = email.replace(/ /g, "");
         log.debug("SignupWithEmail:email", emailNoSpaces, "password:", password);
         auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
-        createUser(firstName, lastName);
         const verificationResult = await (auth.createUserWithEmailAndPassword(emailNoSpaces, password));
+        log.info("verificationResult:", verificationResult);
+        createUser(verificationResult.user.uid, firstName, lastName);
         verificationResult.user?.sendEmailVerification();
         log.debug("sendEmailVerification result:", verificationResult);
         return verificationResult;

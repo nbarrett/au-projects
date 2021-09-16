@@ -13,6 +13,7 @@ export default function useCompanyData() {
         log.debug("Companies initial render:", documents);
         const unsub = subscribe<Company>(collection, setDocuments)
         return (() => {
+            log.debug("unsub");
             unsub()
         })
     }, [])

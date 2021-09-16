@@ -29,7 +29,7 @@ const MainLayoutContent = experimentalStyled("div")({
   overflow: "auto",
 });
 
-export default function MainLayout() {
+export default function EmptyContainer() {
   return (
       <MainLayoutRoot>
         <MainNavbar/>

@@ -144,6 +144,14 @@ export function UserAdmin() {
 
     const userAdminColumns: GridColDef[] = [
         {
+            field: "Id",
+            headerName: "uid",
+            flex: 3,
+            minWidth: 180,
+            renderCell: UidRenderer,
+            hide:true
+        },
+        {
             field: "name",
             headerName: "Name",
             flex: 2,
@@ -219,6 +227,10 @@ export function UserAdmin() {
 
     function UserRolesRenderer(params: GridValueGetterParams): JSX.Element {
         return <UserRoleCheckbox field={params.field} id={params.id as string}/>;
+    }
+
+    function UidRenderer(params: GridValueGetterParams): string {
+        return params.id  as string;
     }
 
     function UserRoleCheckbox(props: { id: string, field: string }): JSX.Element {

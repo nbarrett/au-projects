@@ -5,7 +5,7 @@ import useProducts from "../../hooks/use-products";
 import { Product } from "../../models/product-models";
 import { isNumber } from "lodash";
 import { log } from "../../util/logging-config";
-import { useNavbarSearch } from "../../use-navbar-search";
+import { useNavbarSearch } from "../../hooks/use-navbar-search";
 import useSingleCompany from "../../hooks/use-single-company";
 import { asCurrencyFromGrid, asPercent, pricePerKgFromGrid } from "../../mappings/product-mappings";
 import { DataGrid, GridColDef } from "@material-ui/data-grid";

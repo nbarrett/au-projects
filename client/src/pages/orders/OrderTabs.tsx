@@ -10,15 +10,16 @@ import { makeStyles } from "@material-ui/styles";
 import { Theme } from "@material-ui/core/styles";
 import { log } from "../../util/logging-config";
 import useSingleOrder from "../../hooks/use-single-order";
-import { orderTabState } from "../../atoms/order-atoms";
-import { useRecoilState } from "recoil";
+import { ordersState, orderTabState } from "../../atoms/order-atoms";
+import { useRecoilState, useRecoilValue } from "recoil";
 import max from "lodash/max";
 import { useUpdateUrl } from "../../hooks/use-url-updating";
 import { StoredValue } from "../../util/ui-stored-values";
 import { useUrls } from "../../hooks/use-urls";
 import { Order, OrderStatus, OrderStatusDescriptions, reportedStatus } from "../../models/order-models";
 
-export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
+export default function OrderTabs() {
+    const orderHistory = useRecoilValue<WithUid<Order>[]>(ordersState);
     const order = useSingleOrder();
     const updateUrl = useUpdateUrl();
     const urls = useUrls();
@@ -65,7 +66,7 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     }
 
     function NewOrderTab() {
-        const count = props.orderHistory.filter(item => item.data.status === OrderStatus.NEW).length;
+        const count = orderHistory.filter(item => item.data.status === OrderStatus.NEW).length;
         const selected = orderTabValue === OrderStatus.NEW;
         return <Tab value={count}
                     onClick={() => {
@@ -91,7 +92,7 @@ export default function OrderTabs(props: { orderHistory: WithUid<Order>[] }) {
     return (
         <Tabs value={tabIndex()} indicatorColor="secondary" variant="fullWidth">
             {reportedStatus().map(status => status === OrderStatus.NEW ? <NewOrderTab key={status}/> :
-                <BadgedTab key={status} orderHistory={props.orderHistory} status={status}/>)}
+                <BadgedTab key={status} orderHistory={orderHistory} status={status}/>)}
         </Tabs>
     );
 }

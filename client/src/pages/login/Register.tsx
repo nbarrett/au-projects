@@ -7,8 +7,8 @@ import { log } from "../../util/logging-config";
 import { Box, Button, Checkbox, Container, FormHelperText, Link, TextField, Typography, } from "@material-ui/core";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import { useSignupWithEmail } from "../../auth/signInProviders";
-import { AppRoute } from "../../constants";
-import { toAppRoute } from "../../admin/routes";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
 
 const Register = () => {
     const navigate = useNavigate();

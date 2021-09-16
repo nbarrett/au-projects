@@ -1,5 +1,5 @@
 import { Link as RouterLink } from "react-router-dom";
-import { AppBar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Toolbar } from "@material-ui/core";
 import Logo from "./Logo";
 
 export default function MainNavbar(props: any) {

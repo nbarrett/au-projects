@@ -22,8 +22,6 @@ export default function usePricingTierMarkupData(subscribeToUpdates: boolean) {
             })
         } else {
             refresh()
-            return (() => {
-            })
         }
     }, [])
 

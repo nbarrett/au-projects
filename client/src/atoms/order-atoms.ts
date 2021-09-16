@@ -14,7 +14,7 @@ export const orderState = atom<WithUid<Order>>({
   default: newDocument<Order>()
 });
 
-export const companiesState = atom<WithUid<Order>[]>({
+export const ordersState = atom<WithUid<Order>[]>({
   key: StoredValue.ORDERS,
   default: []
 });

@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { log } from "../../util/logging-config";
 import { Product } from "../../models/product-models";
 import { fullTextSearch } from "../../util/strings";
-import { useNavbarSearch } from "../../use-navbar-search";
+import { useNavbarSearch } from "../../hooks/use-navbar-search";
 import { chunk, range } from "lodash";
 import { WithUid } from "../../models/common-models";
 import useProducts from "../../hooks/use-products";
@@ -23,9 +23,9 @@ import { contentContainer } from "../../admin/components/GlobalStyles";
 import ProductCards from "./ProductCards";
 import ProductsDataGrid from "./ProductsDataGrid";
 import Typography from "@material-ui/core/Typography";
-import { AppRoute } from "../../constants";
 import { useNavigate } from "react-router-dom";
-import { toFullScreenRoute } from "../../admin/routes";
+import { toFullScreenRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
 
 export default function Products() {
     const navigate = useNavigate();
