@@ -1,13 +1,13 @@
 import { Box, Button, Card, CardContent, CardHeader, Divider, Grid, TextField, } from "@material-ui/core";
 import { useEffect } from "react";
 import { log } from "../../util/logging-config";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import useCurrentUser from "../../hooks/use-current-user";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
-import { useLogout } from "../../auth/logout";
+import { useLogout } from "../../hooks/use-logout";
+import useSnackbar from "../../hooks/use-snackbar";
 
 export default function AccountPersonalDetails(props: any) {
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const currentUser = useCurrentUser();
     const firebaseUser = useFirebaseUser();
     const logout = useLogout();
@@ -110,8 +110,8 @@ export default function AccountPersonalDetails(props: any) {
                         Promise.all([firebaseUser.saveUser(), currentUser.saveUser("Personal details")])
                             .then((responses: any[]) => {
                                 return handleLogoutIfRequired(logoutAfterChange)
-                                    .then(() => notification.success(responses.filter(item => item).join(".\n\n")));
-                            }).catch((error => notification.error(error.toString())));
+                                    .then(() => snackbar.success(responses.filter(item => item).join(".\n\n")));
+                            }).catch((error => snackbar.error(error.toString())));
                     }}>
                         Save details
                     </Button>

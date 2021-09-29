@@ -16,7 +16,6 @@ import { log } from "../../util/logging-config";
 import { IconButton, Select, Tooltip } from "@material-ui/core";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import map from "lodash/map";
 import { asCurrencyFromGrid, asPercent, pricePerKgFromGrid } from "../../mappings/product-mappings";
 import { isNumber } from "lodash";
@@ -32,6 +31,7 @@ import AddchartIcon from "@material-ui/icons/Addchart";
 import { useLocation, useNavigate } from "react-router-dom";
 import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
 import { AppRoute, FULL_SCREEN } from "../../models/route-models";
+import useSnackbar from "../../hooks/use-snackbar";
 
 export default function ProductsDataGrid() {
     const products = useProducts();
@@ -41,7 +41,7 @@ export default function ProductsDataGrid() {
     const dataGrid = useDataGrid();
     const productCodings = useProductCoding(false);
     const inputRows = products.documents.filter(item => !item.markedForDelete).map(item => dataGrid.toRow<Product>(item));
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
     const sortComparator = (v1, v2, cellParams1, cellParams2) => {
         const value1 = productCodings.cellFieldValue(cellParams1.field, cellParams1.value, productColumns);
@@ -253,7 +253,7 @@ export default function ProductsDataGrid() {
             log.debug("updatedProduct:", updatedProduct);
             products.setDocument(updatedProduct);
         } else {
-            notification.error(`Cant update product with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
+            snackbar.error(`Cant update product with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
         }
     }
 

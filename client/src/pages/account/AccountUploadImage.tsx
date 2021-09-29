@@ -1,11 +1,11 @@
 import { Avatar, Button, Card, CardActions, CardContent, Divider, Grid, Typography, } from "@material-ui/core";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import useCurrentUser from "../../hooks/use-current-user";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
+import useSnackbar from "../../hooks/use-snackbar";
 
 export default function AccountUploadImage() {
 
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const currentUser = useCurrentUser();
     const firebaseUser = useFirebaseUser();
 
@@ -38,7 +38,7 @@ export default function AccountUploadImage() {
             <Divider/>
             <CardActions>
                 <Button color="primary"
-                        onClick={() => notification.warning("Ah. That's not done yet but will be coming soon once we move to a nodejs based server....")}
+                        onClick={() => snackbar.warning("Ah. That's not done yet but will be coming soon once we move to a nodejs based server....")}
                         fullWidth variant="text">
                     Upload Image
                 </Button>

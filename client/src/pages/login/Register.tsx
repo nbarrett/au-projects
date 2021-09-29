@@ -1,4 +1,4 @@
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
@@ -6,70 +6,72 @@ import { log } from "../../util/logging-config";
 
 import { Box, Button, Checkbox, Container, FormHelperText, Link, TextField, Typography, } from "@material-ui/core";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
-import { useSignupWithEmail } from "../../auth/signInProviders";
+import { useSignupWithEmail } from "../../hooks/use-login";
 import { toAppRoute } from "../../mappings/route-mappings";
 import { AppRoute } from "../../models/route-models";
 
-const Register = () => {
-    const navigate = useNavigate();
+export default function Register() {
     const {user} = useFirebaseUser();
     const signupWithEmail = useSignupWithEmail();
     const subHeading = user?.emailVerified
         ? "Register new account for customer"
         : "Use your email to create new account";
+
     return (
         <>
-      <Helmet>
-        <title>Register | AU Projects</title>
-      </Helmet>
-      <Box
-        sx={{
-          backgroundColor: "background.default",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          justifyContent: "center",
-        }}
-      >
-        <Container maxWidth="sm">
-          <Formik
-            initialValues={{
-              email: "",
-              firstName: "",
-              lastName: "",
-              password: "",
-              policy: false,
-            }}
-            validationSchema={Yup.object().shape({
-              email: Yup.string()
-                .email("Must be a valid email")
-                .max(255)
-                .required("Email is required"),
-              firstName: Yup.string()
-                .max(255)
-                .required("First name is required"),
-              lastName: Yup.string().max(255).required("Last name is required"),
-              password: Yup.string().max(255).required("password is required"),
-              policy: Yup.boolean().oneOf([true], "This field must be checked"),
-            })}
-            onSubmit={(values) => {
-              signupWithEmail({
-                email: values.email,
-                password: values.password,
-                firstName: values.firstName,
-                lastName: values.lastName,
-              }).then((response) => {
-                  log.debug("response:", response);
-                  navigate(toAppRoute(AppRoute.HOME), {replace: true});
-              });
-            }}
-          >
-            {({
-              errors,
-              handleBlur,
-              handleChange,
-              handleSubmit,
-              isSubmitting,
+            <Helmet>
+                <title>Register | AU Projects</title>
+            </Helmet>
+            <Box
+                sx={{
+                    backgroundColor: "background.default",
+                    display: "flex",
+                    flexDirection: "column",
+                    height: "100%",
+                    justifyContent: "center",
+                }}
+            >
+                <Container maxWidth="sm">
+                    <Formik
+                        initialValues={{
+                            email: "",
+                            firstName: "",
+                            lastName: "",
+                            password: "",
+                            policy: false,
+                        }}
+                        validationSchema={Yup.object().shape({
+                            email: Yup.string()
+                                .email("Must be a valid email")
+                                .max(255)
+                                .required("Email is required"),
+                            firstName: Yup.string()
+                                .max(255)
+                                .required("First name is required"),
+                            lastName: Yup.string().max(255).required("Last name is required"),
+                            password: Yup.string().max(255).required("password is required"),
+                            policy: Yup.boolean().oneOf([true], "This field must be checked"),
+                        })}
+                        onSubmit={(values, actions) => {
+                            signupWithEmail({
+                                email: values.email,
+                                password: values.password,
+                                firstName: values.firstName,
+                                lastName: values.lastName,
+                            }).then((response) => {
+                                log.debug("response:", response);
+                            }).catch((error) => {
+                                log.error("error:", error);
+                                actions.setSubmitting(false);
+                            });
+                        }}
+                    >
+                        {({
+                              errors,
+                              handleBlur,
+                              handleChange,
+                              handleSubmit,
+                              isSubmitting,
               touched,
               values,
             }) => (
@@ -181,10 +183,7 @@ const Register = () => {
                   </Button>
                 </Box>
                 <Typography color="textSecondary" variant="body1">
-                  Have an account?{" "}
-                  <Link component={RouterLink} to="/login" variant="h6">
-                    Sign in
-                  </Link>
+                  Have an account? <Link component={RouterLink} to={toAppRoute(AppRoute.LOGIN)} variant="h6">Log in</Link>
                 </Typography>
               </form>
             )}
@@ -193,6 +192,4 @@ const Register = () => {
       </Box>
     </>
   );
-};
-
-export default Register;
+}

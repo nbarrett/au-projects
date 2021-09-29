@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { alpha, experimentalStyled as styled } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Box from "@material-ui/core/Box";
@@ -17,7 +17,7 @@ import Logo from "./Logo";
 import { Link as RouterLink } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
-import { useLogout } from "../../auth/logout";
+import { useLogout } from "../../hooks/use-logout";
 import InputIcon from "@material-ui/icons/Input";
 import { Tooltip } from "@material-ui/core";
 import ToolbarButtons from "./toolbar/ToolbarButtons";
@@ -30,6 +30,8 @@ import { useUpdateUrl } from "../../hooks/use-url-updating";
 import { toAppRoute } from "../../mappings/route-mappings";
 import { AppRoute } from "../../models/route-models";
 import { ShoppingCart } from "react-feather";
+import useOrders from "../../hooks/use-orders";
+import useCurrentUser from "../../hooks/use-current-user";
 
 export const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -75,9 +77,11 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 
 export default function DashboardNavBar() {
     const updateUrl = useUpdateUrl();
+    const currentUser = useCurrentUser();
     const navbarSearch = useNavbarSearch();
     const setMobileNavOpen = useSetRecoilState<boolean>(mobileNavOpenState);
     const logout = useLogout();
+    const orders = useOrders();
     const orderHistory = useRecoilValue<WithUid<Order>[]>(ordersState);
     const unsubmittedOrderCount = orderHistory.filter(item => item.data.status < OrderStatus.CANCELLED).length;
     const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState<null | HTMLElement>(null);
@@ -125,6 +129,10 @@ export default function DashboardNavBar() {
             </MenuItem>
         </Menu>
     );
+
+    useEffect(() => {
+        orders.refreshOrders();
+    }, [currentUser.document.data?.companyId]);
 
     return (
         <Box sx={{flexGrow: 1}}>

@@ -11,6 +11,10 @@ export function useFirebaseUser() {
   const user: firebase.User = untypedUser as firebase.User;
   const [document, setDocument] = useState<FirebaseUser>({uid: user?.uid, email: user?.email});
 
+  firebase.auth().onAuthStateChanged((user) => {
+    log.debug("onAuthStateChanged:", user);
+  }, log.error);
+
   useEffect(() => {
     log.debug("user:", user, "loading:", loading);
   }, [user]);
@@ -31,7 +35,7 @@ export function useFirebaseUser() {
     return debugUser(user);
   }
 
-  function debugUser(user:firebase.User) {
+  function debugUser(user: firebase.User) {
     return user ? `email:${user.email}, emailVerified:${user.emailVerified}, uid:${user.uid}` : "<none>";
   }
 
@@ -44,7 +48,6 @@ export function useFirebaseUser() {
       log.debug("setUser:cant update as user:", user, "email:", email);
       return Promise.resolve();
     }
-
   }
 
   function logoutAfterChange(): boolean {

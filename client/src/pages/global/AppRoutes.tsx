@@ -15,25 +15,35 @@ import { productRoute } from "../../mappings/product-mappings";
 import { Orders } from "../orders/Orders";
 import ProductsDataGrid from "../products/ProductsDataGrid";
 import { UserAdmin } from "../users/UserAdmin";
-import { Navigate, RouteObject } from "react-router";
+import { RouteObject } from "react-router";
 import React, { ReactNode, useEffect } from "react";
 import LoadingDiv from "../../components/LoadingDiv";
 import { log } from "../../util/logging-config";
 import { Home } from "../home/Home";
 import EmptyContainer from "../../admin/components/EmptyContainer";
-import { useLocation, useNavigate, useRoutes } from "react-router-dom";
+import { useLocation, useRoutes } from "react-router-dom";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import useUserRoles from "../../hooks/use-user-roles";
 import { toAppRoute, toFullScreenRoute } from "../../mappings/route-mappings";
-import { AppRoute, PUBLIC_PATH, ROOT } from "../../models/route-models";
+import { AppRoute, ROOT } from "../../models/route-models";
 import isEmpty from "lodash/isEmpty";
+import useNotificationMessages from "../../hooks/use-notification-messages";
+import { useLogout } from "../../hooks/use-logout";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { loginSubmittedCountState, showVerifyEmailState } from "../../atoms/snackbar-atoms";
+import { useNavbarSearch } from "../../hooks/use-app-routes";
 
 export default function AppRoutes() {
   const location = useLocation();
   const {user, loading, debugCurrentUser} = useFirebaseUser();
-  const currentUserRoles = useUserRoles().forCurrentUser();
+  const {navigateIfRequiredTo} = useNavbarSearch();
+  const userRoles = useUserRoles();
+  const currentUserRoles = userRoles.forCurrentUser();
   const systemAccessAndEmailVerified = currentUserRoles?.data?.systemAccess && user?.emailVerified;
-  const navigate = useNavigate();
+  const notificationMessages = useNotificationMessages();
+  const logout = useLogout();
+  const [showVerifyEmail, setShowVerifyEmail] = useRecoilState<boolean>(showVerifyEmailState);
+  const submittedCount = useRecoilValue<number>(loginSubmittedCountState);
 
   const ORDERS: RouteObject[] = currentUserRoles?.data?.orders ? [{path: AppRoute.ORDERS, element: <Orders/>}] : [];
 
@@ -81,14 +91,11 @@ export default function AppRoutes() {
 
   const HOME = currentUserRoles?.data?.systemAccess ? [{path: AppRoute.HOME, element: <Home/>}] : [];
 
-  const PUBLIC_ROUTES: RouteObject[] = [
+  const PUBLIC_ROUTES: RouteObject[] = user?.emailVerified ? [] : [
     {path: AppRoute.EMAIL_VERIFICATION, element: <EmailVerification/>},
     {path: AppRoute.LOGIN, element: <Login/>},
     {path: AppRoute.REGISTER, element: <Register/>}
   ];
-
-  const REDIRECT_CHILDREN = [
-    {element: protectedRoute(<Navigate to={toAppRoute(AppRoute.HOME)}/>, <Navigate to={toAppRoute(AppRoute.LOGIN)}/>)}];
 
   const APP_ROUTES: RouteObject = {
     path: ROOT,
@@ -106,28 +113,43 @@ export default function AppRoutes() {
     element: <ProductsDataGrid/>,
   } : {};
 
-  const REDIRECT_ROUTES: RouteObject = {
-    path: PUBLIC_PATH,
-    element: protectedRoute(<DashboardLayout/>, <EmptyContainer/>),
-    children: REDIRECT_CHILDREN,
-  };
-
   const ROUTES: RouteObject[] = [
     APP_ROUTES,
     FULL_SCREEN_ROUTES,
   ].filter(route => !isEmpty(route));
 
+  const validRoutes = ROUTES.map(item => item?.children?.map(item => toAppRoute(item.path as AppRoute))).flat(2);
+
   useEffect(() => {
-    const validRoutes = ROUTES.map(item => item?.children?.map(item => toAppRoute(item.path as AppRoute))).flat(2);
-    log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "currentUserRoles:", currentUserRoles, "validRoutes:", validRoutes, "validRoutes", validRoutes);
-    if (!loading && !user && location.pathname !== toAppRoute(AppRoute.LOGIN)) {
-      log.debug("AppRoutes - redirecting non-logged in user at path", location.pathname, "to", toAppRoute(AppRoute.LOGIN));
-      navigate(toAppRoute(AppRoute.LOGIN));
-    } else if (user && !isEmpty(currentUserRoles.data) && !validRoutes.includes(location.pathname)) {
-      log.debug("AppRoutes - location.pathname", location.pathname, "is not valid");
-      navigate(toAppRoute(AppRoute.HOME));
+    log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles);
+    if (!loading) {
+      if (!user && !validRoutes.includes(location.pathname)) {
+        log.debug("AppRoutes - redirecting non-logged in user at path", location.pathname, "to", toAppRoute(AppRoute.LOGIN));
+        navigateIfRequiredTo(AppRoute.LOGIN);
+      } else if (user && !userRoles.pendingUserRoles) {
+        if (showVerifyEmail) {
+          log.debug("AppRoutes - no action - showVerifyEmail:", showVerifyEmail, "validRoutes:", validRoutes, "user:", debugCurrentUser());
+          navigateIfRequiredTo(AppRoute.LOGIN);
+        } else if (!user?.emailVerified) {
+          notificationMessages.showVerificationNotification(user, () => {
+            setShowVerifyEmail(true);
+            logout("email not verified", true);
+          });
+        } else if (!isEmpty(currentUserRoles.data) && !validRoutes.includes(location.pathname)) {
+          log.debug("AppRoutes - location.pathname", location.pathname, "is not valid");
+          navigateIfRequiredTo(AppRoute.HOME);
+        } else if (isEmpty(currentUserRoles.data) && currentUserRoles.uid) {
+          log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "no user roles:", currentUserRoles);
+          setShowVerifyEmail(false);
+          notificationMessages.showNoSystemAccessNotification(user, () => logout("No System Access", true));
+        } else {
+          log.debug("AppRoutes:useEffect no action path:", debugCurrentUser(), "user roles:", currentUserRoles, "userRoles.pendingUserRoles:", userRoles.pendingUserRoles, "submittedCount:", submittedCount);
+        }
+      }
+    } else {
+      log.debug("AppRoutes:useEffect no action path:loading:", loading, "pendingUserRoles:", userRoles.pendingUserRoles);
     }
-  }, [user, loading, currentUserRoles]);
+  }, [user, loading, currentUserRoles, userRoles.pendingUserRoles, showVerifyEmail, submittedCount]);
 
   function protectedRoute(loggedInComponent: ReactNode, notLoggedInComponent: ReactNode) {
     log.debug("protectedRoute:user:", debugCurrentUser(), "loading:", loading, "systemAccess:", currentUserRoles?.data?.systemAccess, "systemAccessAndEmailVerified", systemAccessAndEmailVerified);

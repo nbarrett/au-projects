@@ -8,6 +8,7 @@ export enum AppRoute {
     EXAMPLE_DASHBOARD = "example-dashboard",
     HOME = "home",
     LOGIN = "login",
+    // LOGOUT = "logout",
     NOT_FOUND = "404",
     ORDERS = "orders",
     PRICES = "prices",

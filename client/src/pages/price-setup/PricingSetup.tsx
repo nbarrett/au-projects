@@ -26,11 +26,12 @@ import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
 import { set } from "lodash";
 import { asNumber } from "../../util/numbers";
-import { useSnackbarNotification } from "../../snackbarNotification";
+import useSnackbar from "../../hooks/use-snackbar";
+
 
 export function PricingSetup() {
     const pricingTierMarkupData = usePricingTierMarkupData(false);
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     useEffect(() => {
         log.debug("PricingSetup:initial render")
     }, []);
@@ -124,14 +125,14 @@ export function PricingSetup() {
                                     </Tooltip>
                                     <Tooltip title={`Save all changes`}>
                                         <IconButton onClick={() => {
-                                            pricingTierMarkupData.saveAllPricingTiers().then(() => notification.success(`Saved ${pricingTierMarkupData.pricingTiers.length} pricing tiers`));
+                                            pricingTierMarkupData.saveAllPricingTiers().then(() => snackbar.success(`Saved ${pricingTierMarkupData.pricingTiers.length} pricing tiers`));
                                         }}>
                                             <SaveIcon color="primary"/>
                                         </IconButton>
                                     </Tooltip>
                                     <Tooltip title={`Undo all changes`}>
                                         <IconButton
-                                            onClick={() => pricingTierMarkupData.refresh().then(() => notification.success(`Any changes were reverted`))}>
+                                            onClick={() => pricingTierMarkupData.refresh().then(() => snackbar.success(`Any changes were reverted`))}>
                                             <UndoIcon
                                                 color="action"/>
                                         </IconButton>

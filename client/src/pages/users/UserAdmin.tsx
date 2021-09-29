@@ -5,7 +5,6 @@ import { WithUid } from "../../models/common-models";
 import { Helmet } from "react-helmet";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import {
     DataGrid,
     GridColDef,
@@ -26,10 +25,12 @@ import useCompanyData from "../../hooks/use-company-data";
 import useUsers from "../../hooks/use-users";
 import useUserRoles from "../../hooks/use-user-roles";
 import { UserData, UserRoles } from "../../models/user-models";
+import useSnackbar from "../../hooks/use-snackbar";
+import { asDateTime, DateFormats } from "../../util/dates";
 
 export function UserAdmin() {
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const dataGrid = useDataGrid();
     const companyData = useCompanyData();
     const users = useUsers();
@@ -37,15 +38,7 @@ export function UserAdmin() {
     const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
     const classes = makeStyles(
         {
-            root: {
-                display: "flex",
-                alignItems: "center",
-                paddingRight: 16,
-            },
-            title: {
-                fontWeight: "bold",
-            },
-            tableCell: {
+            grid: {
                 padding: 15,
                 height: window.innerHeight - 120,
                 backgroundColor: "white"
@@ -75,8 +68,8 @@ export function UserAdmin() {
             <IconButton onClick={() => {
                 users.saveAllUsers()
                     .then(() => userRoles.saveAllUserRoles())
-                    .then(() => notification.success(`Saved ${pluraliseWithCount(users.documents.length, "user")}`))
-                    .catch((error) => notification.error(`Failed to Save ${pluraliseWithCount(users.documents.length, "user")} due to ${error.toString()}`));
+                    .then(() => snackbar.success(`Saved ${pluraliseWithCount(users.documents.length, "user")}`))
+                    .catch((error) => snackbar.error(`Failed to Save ${pluraliseWithCount(users.documents.length, "user")} due to ${error.toString()}`));
             }}>
                 <Tooltip title={`Save all changes`}>
                     <SaveIcon color="primary"/>
@@ -87,7 +80,7 @@ export function UserAdmin() {
             <IconButton
                 onClick={() => users.refresh()
                     .then(() => userRoles.refresh())
-                    .then(() => notification.success(`Any changes were reverted`))}>
+                    .then(() => snackbar.success(`Any changes were reverted`))}>
                 <Tooltip title={`Undo all changes`}>
                     <UndoIcon color="action"/>
                 </Tooltip>
@@ -111,7 +104,7 @@ export function UserAdmin() {
             log.debug("updatedUser:", updatedUser);
             users.setDocument(updatedUser);
         } else {
-            notification.error(`Cant update user with id: ${uid}, ${field}, ${JSON.stringify(value)}. Try refreshing your browser and try agin`);
+            snackbar.error(`Cant update user with id: ${uid}, ${field}, ${JSON.stringify(value)}. Try refreshing your browser and try agin`);
         }
     }
 
@@ -123,7 +116,7 @@ export function UserAdmin() {
             log.debug("updatedUserRoles:", updatedUserRoles);
             userRoles.setDocument(updatedUserRoles);
         } else {
-            notification.error(`Cant update user roles with id: ${uid}, ${field}, ${JSON.stringify(value)}. Try refreshing your browser and try agin`);
+            snackbar.error(`Cant update user roles with id: ${uid}, ${field}, ${JSON.stringify(value)}. Try refreshing your browser and try agin`);
         }
     }
 
@@ -153,10 +146,24 @@ export function UserAdmin() {
         },
         {
             field: "name",
-            headerName: "Name",
-            flex: 2,
+            headerName: "Avatar",
+            flex: 3,
             minWidth: 180,
             renderCell: users.NamedAvatarFromGrid,
+        },
+        {
+            field: "firstName",
+            headerName: "First Name",
+            editable: true,
+            flex: 1,
+            minWidth: 180
+        },
+        {
+            field: "lastName",
+            headerName: "Last Name",
+            editable: true,
+            flex: 1,
+            minWidth: 180
         },
         {
             field: "company",
@@ -214,19 +221,25 @@ export function UserAdmin() {
             headerName: "Account Settings",
             flex: 1,
             minWidth: 180,
-            renderCell: UserRolesRenderer,
+            renderCell: UserRolesRenderer
         },
         {
-            field: "registered",
+            field: "createdAt",
             headerName: "Registered",
-            flex: 1,
+            flex: 2,
             minWidth: 180,
-            type: "string"
+            type: "number",
+            renderCell: CreatedAtRenderer,
         }
     ];
 
     function UserRolesRenderer(params: GridValueGetterParams): JSX.Element {
         return <UserRoleCheckbox field={params.field} id={params.id as string}/>;
+    }
+
+    function CreatedAtRenderer(params: GridValueGetterParams): string {
+        const user: UserData = params.row as UserData;
+        return asDateTime(user.createdAt).toFormat(DateFormats.compactDateAndTime);
     }
 
     function UidRenderer(params: GridValueGetterParams): string {
@@ -263,7 +276,7 @@ export function UserAdmin() {
         <Grid sx={contentContainer} container spacing={3}>
             <Grid item xs={12}>
                 <DataGrid density={"standard"}
-                          className={classes.tableCell}
+                          className={classes.grid}
                           components={{Toolbar: CustomToolbar}}
                           pageSize={itemsPerPage}
                           onCellClick={dataGrid.onCellClick}

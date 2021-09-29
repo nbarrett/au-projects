@@ -29,8 +29,8 @@ export interface FirebaseAdminUser extends HasUid {
   };
 }
 
-export interface UseSigninWithEmailProps {
-  email: string;
-  password: string;
+export interface UseLoginWithEmailProps {
+  email?: string;
+  password?: string;
   rememberMe?: boolean;
 }

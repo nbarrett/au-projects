@@ -14,7 +14,7 @@ export default function useUserRoles() {
     const collection = "userRoles";
     const [documents, setDocuments] = useRecoilState<WithUid<UserRoles>[]>(userRolesState);
     const {user, loading} = useFirebaseUser();
-
+    const pendingUserRoles = documents.length === 0;
     useEffect(() => {
         if (user && !loading) {
             log.debug(collection, "initial render:", documents);
@@ -66,6 +66,6 @@ export default function useUserRoles() {
         return returnValue;
     }
 
-    return {saveAllUserRoles, refresh, documents, setDocument, setDocuments, userRoleForUid, forCurrentUser};
+    return {saveAllUserRoles, refresh, documents, setDocument, setDocuments, userRoleForUid, forCurrentUser, pendingUserRoles};
 
 }

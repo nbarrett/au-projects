@@ -1,89 +1,49 @@
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { Box, Button, Container, Grid, Link, TextField, Typography, } from "@material-ui/core";
 import { log } from "../../util/logging-config";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import { useEffect, useState } from "react";
-import { useLogout } from "../../auth/logout";
+import { useLogout } from "../../hooks/use-logout";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
-import { useSignInWithEmail } from "../../auth/signInProviders";
+import { useLoginWithEmail } from "../../hooks/use-login";
 import { toAppRoute } from "../../mappings/route-mappings";
 import { AppRoute } from "../../models/route-models";
-import useUserRoles from "../../hooks/use-user-roles";
-import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
-import { PRIMARY_LIGHT } from "../../theme/theme";
-import isEmpty from "lodash/isEmpty";
-
-export function ContactUs() {
-    const classes = makeStyles((theme: Theme) => ({
-        root: {
-            color: "white",
-            fontWeight: "bold"
-        },
-    }))({});
-    return <Link color={PRIMARY_LIGHT} className={classes.root}
-                 href={"mailto:support@auind.co.za?subject=System Access"}>Contact us</Link>;
-}
+import { UseLoginWithEmailProps } from "../../models/authentication-models";
+import useNotificationMessages from "../../hooks/use-notification-messages";
+import { useRecoilState } from "recoil";
+import { loginSubmittedCountState, showVerifyEmailState } from "../../atoms/snackbar-atoms";
 
 export default function Login() {
-    const {user, loading, debugUser, debugCurrentUser} = useFirebaseUser();
-    const notification = useSnackbarNotification();
-    const signInWithEmail = useSignInWithEmail();
+    const {loading, debugUser, debugCurrentUser} = useFirebaseUser();
+    const loginWithEmail = useLoginWithEmail();
     const logout = useLogout();
-    const userRoles = useUserRoles();
-    const navigate = useNavigate();
-    const [showVerifyEmail, setShowVerifyEmail] = useState<boolean>(false);
-    const [submittedCount, setSubmittedCount] = useState<number>(0);
+    const [showVerifyEmail, setShowVerifyEmail] = useRecoilState<boolean>(showVerifyEmailState);
+    const [submittedCount, setSubmittedCount] = useRecoilState<number>(loginSubmittedCountState);
+    const [loginWithEmailProps, setLoginWithEmailProps] = useState<UseLoginWithEmailProps>({});
+    const notificationMessages = useNotificationMessages();
+
+    async function resendVerification() {
+        loginWithEmail(loginWithEmailProps).then(async response => {
+            const user = response.user;
+            log.debug("Login:resendVerification user:", debugCurrentUser(), "loading:", loading);
+            if (user) {
+                await user.sendEmailVerification();
+                notificationMessages.showVerificationSent(user, async () => {
+                    await logout("resendVerification");
+                    setLoginWithEmailProps({});
+                    setShowVerifyEmail(false);
+                });
+            } else {
+                notificationMessages.showCantSendVerificationEmail(() => logout("showCantSendVerificationEmail"));
+            }
+        });
+    }
 
     useEffect(() => {
-        if (!loading && user?.uid) {
-            const currentUserRoles = userRoles.forCurrentUser();
-            log.info("Login:useEffect for user:", debugCurrentUser(), "loading:", loading, "currentUserRoles:", currentUserRoles, "submittedCount:", submittedCount);
-            if (!user?.emailVerified) {
-                showVerificationNotification(user);
-            } else if (!isEmpty(currentUserRoles.data)) {
-                if (!currentUserRoles.data.systemAccess) {
-                    showNoSystemAccessNotification(user);
-                    logout("showNoSystemAccessNotification");
-                } else {
-                    log.info("navigate off login screen");
-                    navigate(toAppRoute(AppRoute.HOME));
-                }
-            }
-        } else {
-            log.info("Login:useEffect no action for user:", debugCurrentUser(), "loading:", loading);
-        }
-    }, [user, loading, submittedCount]);
-
-    function showVerificationNotification(user) {
-        setShowVerifyEmail(true);
-        const message = `${user?.email} has not yet been verified so please respond to an email in your inbox`;
-        log.info("showing message:", message);
-        notification.warning(<>{message}. <ContactUs/></>);
-    }
-
-    function showNoSystemAccessNotification(user) {
-        setShowVerifyEmail(false);
-        const message = `${user?.email} has not yet been granted system access. You will receive an email when this is complete`;
-        log.info("showing message:", message);
-        notification.warning(<>{message}. <ContactUs/></>);
-    }
-
-    function resendVerification() {
-        log.info("Login:resendVerification user:", debugCurrentUser(), "loading:", loading);
-        if (user) {
-            user.sendEmailVerification();
-            logout("resendVerification");
-            const message = `Verification email has been sent to ${user.email} so please respond to an email in your inbox, then try logging in again`;
-            log.info("showing message:", message);
-            notification.warning(message);
-        } else {
-            notification.error("cant resend verification email. Refresh your browser and try again");
-        }
-    }
+        logout("Login");
+    }, []);
 
     return (
         <>
@@ -111,21 +71,22 @@ export default function Login() {
                             .required("Email is required"),
                         password: Yup.string().max(255).required("Password is required"),
                     })} onSubmit={(values, actions) => {
-                        const signInData = {
+                        const loginData = {
                             email: values.email,
                             password: values.password,
                             rememberMe: values.rememberMe,
                         };
-                        log.info("Login:signInData", signInData);
+                        log.debug("Login:loginData", loginData);
                         setSubmittedCount(submittedCount + 1);
-                        signInWithEmail(signInData).then(response => {
-                            log.info("Login:signInWithEmail:signInData", signInData, "user:", debugUser(response.user), "loading:", loading, "response:", response);
+                        setLoginWithEmailProps(loginData);
+                        loginWithEmail(loginData).then(response => {
+                            log.debug("Login:loginWithEmail:loginData", loginData, "user:", debugUser(response.user), "loading:", loading, "response:", response);
                             if (!loading) {
                                 actions.setSubmitting(false);
                             }
                             if (response.user?.uid) {
                                 if (!response.user?.emailVerified) {
-                                    showVerificationNotification(response.user);
+                                    notificationMessages.showVerificationNotification(response.user, () => setShowVerifyEmail(true));
                                 }
                             }
                         }).catch(error => {
@@ -223,10 +184,9 @@ export default function Login() {
                                         </Grid>
                                     </Box>
                                     <Typography color="textSecondary" variant="body1">
-                                        Don&apos;t have an account?{" "}
-                                        <Link component={RouterLink} to="/register" variant="h6">
-                                            Sign up
-                                        </Link>
+                                        Don&apos;t have an account? <Link component={RouterLink}
+                                                                          to={toAppRoute(AppRoute.REGISTER)}
+                                                                          variant="h6">Register</Link>
                                     </Typography>
                                 </form>
                             );

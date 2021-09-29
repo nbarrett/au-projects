@@ -4,10 +4,10 @@ import Button from "@material-ui/core/Button";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import Typography from "@material-ui/core/Typography";
 import { useBooleanState } from "react-use-object-state";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import { Theme } from "@material-ui/core/styles";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import { Helmet } from "react-helmet";
+import useSnackbar from "../../hooks/use-snackbar";
 
 const useStyles = makeStyles((theme: Theme) => ({
   loading: {
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 export default function EmailVerification() {
   const classes = useStyles({});
-  const notification = useSnackbarNotification();
+  const snackbar = useSnackbar();
   const {user} = useFirebaseUser();
 
   const loading = useBooleanState(false);
@@ -39,7 +39,7 @@ export default function EmailVerification() {
     try {
       await user?.sendEmailVerification();
     } catch (error) {
-      notification.error(error.message);
+      snackbar.error(error.message);
     } finally {
       loading.setFalse();
     }

@@ -10,10 +10,11 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { useSnackbarNotification } from "../../snackbarNotification";
+import useSnackbar from "../../hooks/use-snackbar";
+
 
 export function AccountSettings(props: any) {
-  const notification = useSnackbarNotification();
+  const snackbar = useSnackbar();
   return <form {...props}>
     <Card>
       <CardHeader subheader="Manage the notifications" title="Notifications"/>
@@ -75,15 +76,16 @@ export function AccountSettings(props: any) {
           </Grid>
         </Grid>
       </CardContent>
-      <Divider />
+      <Divider/>
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          p: 2,
-        }}
+          sx={{
+            display: "flex",
+            justifyContent: "flex-end",
+            p: 2,
+          }}
       >
-        <Button color="primary" variant="contained" onClick={() => notification.warning("Ah. That's not done yet but will be coming soon once we work out what settings are required....")}>
+        <Button color="primary" variant="contained"
+                onClick={() => snackbar.warning("Ah. That's not done yet but will be coming soon once we work out what settings are required....")}>
           Save
         </Button>
       </Box>

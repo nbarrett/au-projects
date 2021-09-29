@@ -5,13 +5,13 @@ import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 import { productsState } from "../atoms/product-atoms";
 import { Product } from "../models/product-models";
-import { useSnackbarNotification } from "../snackbarNotification";
 import { newDocument } from "../mappings/document-mappings";
 import cloneDeep from "lodash/cloneDeep";
+import useSnackbar from "./use-snackbar";
 
 export default function useProducts() {
     const [documents, setDocuments] = useRecoilState<WithUid<Product>[]>(productsState);
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     useEffect(() => {
         log.debug("Products initial render:", documents);
         const unsub = subscribe<Product>("products", setDocuments);
@@ -37,20 +37,20 @@ export default function useProducts() {
 
     function saveAllProducts() {
         saveAll<Product>("products", documents)
-            .then((response) => notification.success(`${documents.length} products were saved`))
-            .catch(error => notification.error(error.toString()));
+            .then((response) => snackbar.success(`${documents.length} products were saved`))
+            .catch(error => snackbar.error(error.toString()));
     }
 
     function refresh(): void {
         subscribe<Product>("products", setDocuments);
-        notification.success("Products were refreshed to their previous values");
+        snackbar.success("Products were refreshed to their previous values");
     }
 
     function backupProducts() {
         const collection = "productsBackup";
         saveAllWithId<Product>(collection, documents)
-            .then((response) => notification.success(`${documents.length} products were backed up to the ${collection} collection`))
-            .catch(error => notification.error(error.toString()));
+            .then((response) => snackbar.success(`${documents.length} products were backed up to the ${collection} collection`))
+            .catch(error => snackbar.error(error.toString()));
     }
 
     function priceMigration() {
@@ -58,8 +58,8 @@ export default function useProducts() {
         const fromName = "price";
         const toName = "costPerKg";
         renameField<Product>(collection, fromName, toName, true, true)
-            .then((response) => notification.success(`${documents.length} products had field ${fromName} renamed to ${toName} in the ${collection} collection`))
-            .catch(error => notification.error(error.toString()));
+            .then((response) => snackbar.success(`${documents.length} products had field ${fromName} renamed to ${toName} in the ${collection} collection`))
+            .catch(error => snackbar.error(error.toString()));
     }
 
     function setDocument(product: WithUid<Product>): void {

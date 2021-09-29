@@ -7,7 +7,7 @@ import AddchartIcon from "@material-ui/icons/Addchart";
 import { Helmet } from "react-helmet";
 import SaveIcon from "@material-ui/icons/Save";
 import UndoIcon from "@material-ui/icons/Undo";
-import { useSnackbarNotification } from "../../snackbarNotification";
+
 import {
     DataGrid,
     GridEditRowsModel,
@@ -24,10 +24,11 @@ import { pluraliseWithCount, titleCase } from "../../util/strings";
 import { contentContainer } from "../../admin/components/GlobalStyles";
 import useDataGrid from "../../hooks/use-data-grid";
 import DeleteManyIcon from "../common/DeleteManyIcon";
+import useSnackbar from "../../hooks/use-snackbar";
 
 export function ProductCodings(props: { productCodingType: ProductCodingType }) {
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const productCoding = useProductCoding();
     const dataGrid = useDataGrid();
     const [selectionModel, setSelectionModel] = useState<GridSelectionModel>([]);
@@ -77,7 +78,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
                 </Tooltip>
             </IconButton>
             <IconButton onClick={() => {
-                productCoding.saveAllProductCodings().then(() => notification.success(`Saved ${pluraliseWithCount(productCoding.documents.length, "product code")} of type ${codingTitle}`));
+                productCoding.saveAllProductCodings().then(() => snackbar.success(`Saved ${pluraliseWithCount(productCoding.documents.length, "product code")} of type ${codingTitle}`));
             }}>
                 <Tooltip title={`Save all changes`}>
                     <SaveIcon color="primary"/>
@@ -85,7 +86,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
             </IconButton>
             <DeleteManyIcon singular={"product code"} selectionModel={selectionModel} markForDelete={markForDelete}/>
             <IconButton
-                onClick={() => productCoding.refresh().then(() => notification.success(`Any changes were reverted`))}>
+                onClick={() => productCoding.refresh().then(() => snackbar.success(`Any changes were reverted`))}>
                 <Tooltip title={`Undo all changes`}>
                     <UndoIcon color="action"/>
                 </Tooltip>
@@ -109,7 +110,7 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
             log.debug("updatedProduct:", updatedProduct);
             productCoding.setDocument(updatedProduct);
         } else {
-            notification.error(`Cant update ${codingTitle} with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
+            snackbar.error(`Cant update ${codingTitle} with id: ${uid}, ${field}, ${JSON.stringify(value)}`);
         }
     }
 

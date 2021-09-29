@@ -32,7 +32,7 @@ import useCompanyData from "../../hooks/use-company-data";
 import { fullNameForUser } from "../../util/strings";
 import useUsers from "../../hooks/use-users";
 import useOrders from "../../hooks/use-orders";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import sum from "lodash/sum";
 import max from "lodash/max";
 import range from "lodash/range";
@@ -45,7 +45,6 @@ import { Company } from "../../models/company-models";
 import usePricedProducts from "../../hooks/use-priced-products";
 import { Helmet } from "react-helmet";
 import { contentContainer } from "../../admin/components/GlobalStyles";
-import { useSnackbarNotification } from "../../snackbarNotification";
 import MenuItem from "@material-ui/core/MenuItem";
 import OrderTabs from "./OrderTabs";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -65,8 +64,7 @@ import { Theme } from "@material-ui/core/styles";
 import UndoIcon from "@material-ui/icons/Undo";
 import { sortBy } from "../../util/arrays";
 import useCurrentUser from "../../hooks/use-current-user";
-import useUserRoles from "../../hooks/use-user-roles";
-import { UserRoles } from "../../models/user-models";
+import useSnackbar from "../../hooks/use-snackbar";
 
 export function Orders(props) {
     const users = useUsers();
@@ -74,13 +72,12 @@ export function Orders(props) {
     const order = useSingleOrder();
     const orders = useOrders();
     const [filteredOrderHistory, setFilteredOrderHistory] = useState<WithUid<Order>[]>([]);
-    const [allOrderHistory, setAllOrderHistory] = useRecoilState<WithUid<Order>[]>(ordersState);
+    const allOrderHistory = useRecoilValue<WithUid<Order>[]>(ordersState);
     const companies = useCompanyData();
     const productCodings = useProductCoding(false);
-    const notification = useSnackbarNotification();
+    const snackbar = useSnackbar();
     const orderTabValue = useRecoilValue<OrderStatus>(orderTabState);
     const sortByColumn = "-data.orderNumber";
-    const currentUserRoles: WithUid<UserRoles> = useUserRoles().forCurrentUser();
     const classes = makeStyles((theme: Theme) => ({
         orderItemsHeading: {
             fontWeight: 400,
@@ -89,17 +86,8 @@ export function Orders(props) {
         },
     }))({});
 
-    function refreshOrderView(): Promise<void> {
-        if (currentUser.document.data?.companyId) {
-            log.debug("refreshing order view");
-            return orders.findOrdersForCompany(currentUserRoles, currentUser.document.data?.companyId).then(setAllOrderHistory);
-        } else {
-            return Promise.resolve();
-        }
-    }
-
     useEffect(() => {
-        refreshOrderView();
+        orders.refreshOrders();
     }, [currentUser.document.data?.companyId]);
 
     useEffect(() => {
@@ -107,7 +95,7 @@ export function Orders(props) {
         log.debug("setting order history to all", OrderStatusDescriptions[orderTabValue], "orders:", filtered.length, "of", allOrderHistory.length, "shown");
         setFilteredOrderHistory(filtered.sort(sortBy(sortByColumn)));
         if ((order.document.data.status === OrderStatus.NEW && !documentExistsIn(allOrderHistory, order.document)) || order.document.markedForDelete) {
-            setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document).sort(sortBy(sortByColumn)));
+            orders.setAllOrderHistory(applyDocumentToOrderHistory(allOrderHistory, order.document).sort(sortBy(sortByColumn)));
             if (order.document.markedForDelete) {
                 order.reset();
             }
@@ -130,7 +118,7 @@ export function Orders(props) {
 
     function saveOrder(currentOrder: WithUid<Order>) {
         const orderNumber = currentOrder.data.orderNumber;
-        order.saveOrder(currentOrder, OrderStatus.DRAFT).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was saved`));
+        order.saveOrder(currentOrder, OrderStatus.DRAFT).then(orders.refreshOrders).then(() => snackbar.success(`Order ${orderNumber} was saved`));
     }
 
     function undoOrderChanges(currentOrder: WithUid<Order>) {
@@ -143,12 +131,12 @@ export function Orders(props) {
 
     function cancelOrder(currentOrder: WithUid<Order>) {
         const orderNumber = currentOrder.data.orderNumber;
-        order.saveOrder(currentOrder, OrderStatus.CANCELLED).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was cancelled`));
+        order.saveOrder(currentOrder, OrderStatus.CANCELLED).then(orders.refreshOrders).then(() => snackbar.success(`Order ${orderNumber} was cancelled`));
     }
 
     function deleteOrder(currentOrder: WithUid<Order>) {
         const orderNumber = currentOrder.data.orderNumber;
-        order.deleteOrder(currentOrder).then(refreshOrderView).then(() => notification.success(`Order ${orderNumber} was deleted`));
+        order.deleteOrder(currentOrder).then(orders.refreshOrders).then(() => snackbar.success(`Order ${orderNumber} was deleted`));
     }
 
     function addLineItem(currentOrder: WithUid<Order>) {

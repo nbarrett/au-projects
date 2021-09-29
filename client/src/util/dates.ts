@@ -15,6 +15,7 @@ export interface Time {
 
 export const DateFormats = {
     displayDateAndTime: "DDD h:mm:ss a",
+    compactDateAndTime: "DD h:mm:ss a",
     displayDateTh: "MMMM Do YYYY",
     displayDate: "DDD",
     displayDay: "dddd MMMM D, YYYY",

@@ -4,9 +4,26 @@ import { log } from "../util/logging-config";
 import { Order } from "../models/order-models";
 import { companyId } from "../mappings/company-mappings";
 import { UserRoles } from "../models/user-models";
+import useCurrentUser from "./use-current-user";
+import useUserRoles from "./use-user-roles";
+import { useSetRecoilState } from "recoil";
+import { ordersState } from "../atoms/order-atoms";
 
 export const collection = "orders";
 export default function useOrders() {
+
+    const currentUser = useCurrentUser();
+    const currentUserRoles: WithUid<UserRoles> = useUserRoles().forCurrentUser();
+    const setAllOrderHistory = useSetRecoilState<WithUid<Order>[]>(ordersState);
+
+    function refreshOrders(): Promise<void> {
+        if (currentUser.document.data?.companyId) {
+            log.debug("refreshing order view");
+            return findOrdersForCompany(currentUserRoles, currentUser.document.data?.companyId).then(setAllOrderHistory);
+        } else {
+            return Promise.resolve();
+        }
+    }
 
     async function findOrdersForCompany(currentUserRoles: WithUid<UserRoles>, companyId: string): Promise<WithUid<Order>[]> {
         const firestore = firebaseFirestore();
@@ -27,6 +44,6 @@ export default function useOrders() {
         return find<Order>(collection, orderId);
     }
 
-    return {findOrdersForCompany, findOrder};
+    return {findOrdersForCompany, findOrder, refreshOrders, setAllOrderHistory};
 
 }
