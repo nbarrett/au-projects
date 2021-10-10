@@ -1,4 +1,4 @@
-import { Grid, TextareaAutosize, TextField, } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid, TextareaAutosize, TextField, } from "@material-ui/core";
 import * as React from "react";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import useUniqueValues from "../../hooks/use-unique-values";
@@ -12,7 +12,7 @@ export default function CompanyDetails() {
     const uniqueValues = useUniqueValues(companyData.documents);
     return (
         <Grid container spacing={3}>
-            <Grid item xs={10}>
+            <Grid item xs={12}>
                 <TextField
                     fullWidth
                     autoComplete="off"
@@ -23,7 +23,13 @@ export default function CompanyDetails() {
                     variant="outlined"
                 />
             </Grid>
-            <Grid item xs={2}>
+            <Grid item xs={6}>
+                <FormControlLabel control={<Checkbox
+                    onChange={(event, value) => document.changeField("data.compoundOwner", value)}
+                    checked={document.document?.data?.compoundOwner || false}
+                />} label={`Company is a Compound Owner`}/>
+            </Grid>
+            <Grid item xs={6}>
                 <TextField
                     fullWidth
                     autoComplete="off"

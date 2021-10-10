@@ -283,7 +283,7 @@ export default function ProductsDataGrid() {
                 fullWidth
                 value={products.findProduct(id)?.data[field] || ""}
                 onChange={(event) => onChange(props, event)}>
-                {companyData.documents.filter(item => item.data.code).map((company) => (
+                {companyData.documents.filter(item => item.data.compoundOwner).map((company) => (
                     <MenuItem key={company.uid}
                               value={company.uid}>
                         {companyCodeAndName(company)}

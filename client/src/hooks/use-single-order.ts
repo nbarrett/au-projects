@@ -6,18 +6,20 @@ import { log } from "../util/logging-config";
 import { Order, OrderItem, OrderStatus, OrderStatusDescriptions } from "../models/order-models";
 import { orderState } from "../atoms/order-atoms";
 import cloneDeep from "lodash/cloneDeep";
-import max from "lodash/max";
 import set from "lodash/set";
 import isUndefined from "lodash/isUndefined";
 import { nowAsValue } from "../util/dates";
 import { collection } from "./use-orders";
 import { newDocument } from "../mappings/document-mappings";
 import useCurrentUser from "./use-current-user";
+import useCompanyData from "./use-company-data";
+import { Company } from "../models/company-models";
 
 export default function useSingleOrder() {
     const currentUser = useCurrentUser();
     const [document, setDocument] = useRecoilState<WithUid<Order>>(orderState);
     const reset = useResetRecoilState(orderState);
+    const companyData = useCompanyData();
 
     useEffect(() => {
         log.debug("Order change:", document);
@@ -40,9 +42,11 @@ export default function useSingleOrder() {
         return remove<Order>(collection, order.uid);
     }
 
-    async function newOrderNumber(): Promise<number> {
+    async function newOrderNumber(): Promise<string> {
         const all = await findAll<Order>(collection);
-        return (max<number>(all.map(item => item.data.orderNumber)) || 0) + 1;
+        const company: WithUid<Company> = companyData.companyForUid(currentUser.document.data?.companyId);
+        const orderCount: number = all.filter(order => order.data.companyId === currentUser.document.data?.companyId)?.length || 0;
+        return company.data.code + (orderCount + 1).toString().padStart(6, "0");
     }
 
     function findOrder(uid: string): void {

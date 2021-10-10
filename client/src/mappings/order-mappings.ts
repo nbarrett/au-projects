@@ -34,7 +34,7 @@ export function documentExistsIn(allOrderHistory: WithUid<Order>[], document: Wi
 
 export function applyDocumentToOrderHistory(allOrderHistory: WithUid<Order>[], document: WithUid<Order>): WithUid<Order>[] {
     const replace = documentExistsIn(allOrderHistory, document);
-    if (document.data?.orderNumber > 0) {
+    if (document.data?.orderNumber) {
         if (document.markedForDelete) {
             return allOrderHistory.filter(existingOrder => existingOrder.data?.orderNumber !== document.data?.orderNumber);
         } else if (replace) {

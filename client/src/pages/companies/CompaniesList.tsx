@@ -32,10 +32,13 @@ import useUsers from "../../hooks/use-users";
 import NamedAvatar from "../users/NamedAvatar";
 import useSelectedItems from "../../hooks/use-selected-items";
 import TableContainer from "@material-ui/core/TableContainer";
+import { toAppRoute } from "../../mappings/route-mappings";
+import { AppRoute } from "../../models/route-models";
+import CheckIcon from "@material-ui/icons/Check";
 
 export default function CompaniesList() {
   const navigate = useNavigate();
-  const users = useUsers()
+  const users = useUsers();
   const companies = useRecoilValue<WithUid<Company>[]>(companiesState);
   const [limit, setLimit] = useState<number>(10);
   const [page, setPage] = useState<number>(0);
@@ -89,6 +92,7 @@ export default function CompaniesList() {
                     <TableCell>Action</TableCell>
                     <TableCell>Name</TableCell>
                     <TableCell>Code</TableCell>
+                    <TableCell>Compound Owner</TableCell>
                     <TableCell>Address</TableCell>
                     <TableCell>Primary Contact</TableCell>
                     <TableCell>Phone</TableCell>
@@ -115,7 +119,7 @@ export default function CompaniesList() {
                         <TableCell>
                           <Tooltip title={`Edit ${company.data.name}`}>
                             <IconButton onClick={() => {
-                              navigate(`/app/companies/${company.uid}`);
+                              navigate(toAppRoute(AppRoute.COMPANIES, company.uid));
                             }}>
                               <EditIcon
                                   color="action"/>
@@ -136,6 +140,11 @@ export default function CompaniesList() {
                         </TableCell>
                         <TableCell>
                           {company.data.code}
+                        </TableCell>
+                        <TableCell>
+                          {company.data.compoundOwner ? <IconButton>
+                            <CheckIcon color="action"/>
+                          </IconButton> : null}
                         </TableCell>
                         <TableCell>
                           {`${companyAddress(company.data)}`}

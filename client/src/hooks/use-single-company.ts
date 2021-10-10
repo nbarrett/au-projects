@@ -23,7 +23,7 @@ export default function useSingleCompany() {
 
     function findCompany(uid: string): void {
         find<Company>("companies", uid).then((response) => {
-            log.debug("response was:", response);
+            log.debug("document:", response);
             setDocument(response);
         });
     }

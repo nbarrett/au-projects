@@ -120,10 +120,18 @@ export default function AppRoutes() {
 
   const validRoutes = ROUTES.map(item => item?.children?.map(item => toAppRoute(item.path as AppRoute))).flat(2);
 
+  function routeNotValid(): boolean {
+    return !validRoutes.find(route => {
+      const valid = location.pathname.startsWith(route);
+      log.debug("routeValid:location.pathname", location.pathname, "route:", route, "valid:", valid);
+      return valid;
+    });
+  }
+
   useEffect(() => {
     log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles);
     if (!loading) {
-      if (!user && !validRoutes.includes(location.pathname)) {
+      if (!user && routeNotValid()) {
         log.debug("AppRoutes - redirecting non-logged in user at path", location.pathname, "to", toAppRoute(AppRoute.LOGIN));
         navigateIfRequiredTo(AppRoute.LOGIN);
       } else if (user && !userRoles.pendingUserRoles) {
@@ -135,7 +143,7 @@ export default function AppRoutes() {
             setShowVerifyEmail(true);
             logout("email not verified", true);
           });
-        } else if (!isEmpty(currentUserRoles.data) && !validRoutes.includes(location.pathname)) {
+        } else if (!isEmpty(currentUserRoles.data) && routeNotValid()) {
           log.debug("AppRoutes - location.pathname", location.pathname, "is not valid");
           navigateIfRequiredTo(AppRoute.HOME);
         } else if (isEmpty(currentUserRoles.data) && currentUserRoles.uid) {

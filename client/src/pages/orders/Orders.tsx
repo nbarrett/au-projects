@@ -66,7 +66,7 @@ import { sortBy } from "../../util/arrays";
 import useCurrentUser from "../../hooks/use-current-user";
 import useSnackbar from "../../hooks/use-snackbar";
 
-export function Orders(props) {
+export function Orders() {
     const users = useUsers();
     const currentUser = useCurrentUser();
     const order = useSingleOrder();
@@ -238,9 +238,10 @@ export function Orders(props) {
                     return label;
                 }}
                 renderOption={(props, product: WithUid<PricedProduct>, {selected}) => {
+                    const showSecondary = false;
                     return <li {...props}><ListItemText key={product?.uid}
                                                         primary={productCodings.productCode(product?.data)}
-                                                        secondary={productCodings.productDescription(product?.data) + ", Specific Gravity: " + product.data.specificGravity}/>
+                                                        secondary={showSecondary ? productCodings.productDescription(product?.data) + ", Specific Gravity: " + product.data.specificGravity : null}/>
                     </li>;
                 }}
                 options={props.options}
@@ -437,7 +438,7 @@ export function Orders(props) {
           </Helmet>
           <Grid sx={contentContainer} container spacing={3}>
               <Grid item xs={12}>
-                  <Card {...props}>
+                  <Card>
                       <CardHeader title={
                           <OrderTabs/>}/>
                       <TableContainer>

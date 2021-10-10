@@ -1,7 +1,7 @@
 import { HasAuditTimestamps, HasAuditUsers } from "./common-models";
 
 export interface Order extends HasAuditTimestamps, HasAuditUsers {
-    orderNumber: number;
+    orderNumber: string;
     status: OrderStatus;
     companyId: string;
     items: OrderItem[]
