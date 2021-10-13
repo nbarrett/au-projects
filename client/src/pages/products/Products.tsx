@@ -26,6 +26,7 @@ import Typography from "@material-ui/core/Typography";
 import { useNavigate } from "react-router-dom";
 import { toFullScreenRoute } from "../../mappings/route-mappings";
 import { AppRoute } from "../../models/route-models";
+import { useUpdateUrl } from "../../hooks/use-url-updating";
 
 export default function Products() {
     const navigate = useNavigate();
@@ -36,6 +37,7 @@ export default function Products() {
     const [viewAs, setViewAs] = useState<string>("table");
     const pageSizes: number[] = [5].concat(range(10, products.documents.length + 10, 10));
     const [itemsPerPage, setItemsPerPage] = useState<number>(20);
+    const updateUrl = useUpdateUrl();
 
     useEffect(() => {
         const filteredProducts = fullTextSearch(products.documents, navbarSearch.search);
@@ -63,7 +65,7 @@ export default function Products() {
 
     useEffect(() => {
         if (viewAs === "full-screen") {
-            navigate(toFullScreenRoute(AppRoute.PRODUCTS));
+            updateUrl({path: toFullScreenRoute(AppRoute.PRODUCTS)});
         }
     }, [viewAs]);
 

@@ -50,7 +50,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                         <TextField
                             InputProps={{
                                 inputComponent: TextareaAutosize,
-                                rows: 3
+                                rows: 7
                             }}
                             fullWidth
                             label="Description"
@@ -72,6 +72,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                                 startAdornment: <InputAdornment position="start">R</InputAdornment>,
                             }}
                             fullWidth
+                            size={"small"}
                             label="Cost Per KG"
                             name="data.costPerKg"
                             type="number"
@@ -93,6 +94,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                             InputProps={{
                                 startAdornment: <InputAdornment position="start">R</InputAdornment>,
                             }}
+                            size={"small"}
                             fullWidth
                             disabled
                             label="Price Per KG"
@@ -135,6 +137,7 @@ export default function ProductCardEdit(props: { product: WithUid<Product>, rest
                     <Grid item md={6} xs={12}>
                         <TextField
                             fullWidth
+                            size={"small"}
                             label="Media"
                             name="data.media"
                             onChange={editing.productChange}

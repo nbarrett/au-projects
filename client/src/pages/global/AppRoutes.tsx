@@ -108,7 +108,7 @@ export default function AppRoutes() {
         .concat(PUBLIC_ROUTES)
   };
 
-  const FULL_SCREEN_ROUTES = currentUserRoles?.data?.backOffice ? {
+  const FULL_SCREEN_ROUTES: RouteObject = currentUserRoles?.data?.backOffice ? {
     path: toFullScreenRoute(AppRoute.PRODUCTS),
     element: <ProductsDataGrid/>,
   } : {};
@@ -118,7 +118,7 @@ export default function AppRoutes() {
     FULL_SCREEN_ROUTES,
   ].filter(route => !isEmpty(route));
 
-  const validRoutes = ROUTES.map(item => item?.children?.map(item => toAppRoute(item.path as AppRoute))).flat(2);
+  const validRoutes = ROUTES.map((item: RouteObject) => [toAppRoute(item.path as AppRoute)].concat(item?.children?.map(item => toAppRoute(item.path as AppRoute)))).flat(2);
 
   function routeNotValid(): boolean {
     return !validRoutes.find(route => {
