@@ -1,5 +1,5 @@
-import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 
 export default function Logo() {
   const useStyles = makeStyles((theme: Theme) => ({

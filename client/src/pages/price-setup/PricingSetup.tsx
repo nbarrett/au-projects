@@ -12,18 +12,18 @@ import {
     TableHead,
     TableRow,
     Tooltip
-} from "@material-ui/core";
+} from "@mui/material";
 import React, { useEffect } from "react";
 import { EditableTableCell } from "./EditableTableCell";
 import { log } from "../../util/logging-config";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 import usePricingTierMarkupData from "../../hooks/use-product-markup-data";
 import { CellAddress, WithUid } from "../../models/common-models";
 import { PricingTier } from "../../models/product-models";
-import AddchartIcon from "@material-ui/icons/Addchart";
+import AddchartIcon from "@mui/icons-material/Addchart";
 import { Helmet } from "react-helmet";
-import SaveIcon from "@material-ui/icons/Save";
-import UndoIcon from "@material-ui/icons/Undo";
+import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 import { set } from "lodash";
 import { asNumber } from "../../util/numbers";
 import useSnackbar from "../../hooks/use-snackbar";

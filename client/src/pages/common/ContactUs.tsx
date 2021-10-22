@@ -1,6 +1,6 @@
-import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
-import { Link } from "@material-ui/core";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import { Link } from "@mui/material";
 import { PRIMARY_LIGHT } from "../../theme/theme";
 
 export function ContactUs() {

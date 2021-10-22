@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardActions, CardContent, Divider, Grid, Typography, } from "@material-ui/core";
+import { Avatar, Button, Card, CardActions, CardContent, Divider, Grid, Typography, } from "@mui/material";
 import useCurrentUser from "../../hooks/use-current-user";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import useSnackbar from "../../hooks/use-snackbar";

@@ -1,5 +1,5 @@
 import { HasAuditTimestamps, WithUid } from "./common-models";
-import { GridColDef } from "@material-ui/data-grid";
+import { GridColDef } from "@mui/x-data-grid";
 
 export interface Product extends HasAuditTimestamps {
     title?: string;

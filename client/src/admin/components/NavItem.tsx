@@ -1,13 +1,13 @@
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import Collapse from "@material-ui/core/Collapse";
-import ExpandMore from "@material-ui/icons/ExpandMore";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import Collapse from "@mui/material/Collapse";
+import ExpandMore from "@mui/icons-material/ExpandMore";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import * as React from "react";
 import { MenuItem } from "../../models/menu-models";
 import MenuButton from "./MenuButton";
-import Box from "@material-ui/core/Box";
+import Box from "@mui/material/Box";
 import { useLocation } from "react-router-dom";
 import { log } from "../../util/logging-config";
 

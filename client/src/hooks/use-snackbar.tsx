@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect } from "react";
 import { SnackbarNotificationMessage } from "../models/snackbar-notification-models";
-import { AlertColor } from "@material-ui/core/Alert/Alert";
+import { AlertColor } from "@mui/material/Alert/Alert";
 import { log } from "../util/logging-config";
 import { useRecoilState } from "recoil";
 import { snackbarMessageState } from "../atoms/snackbar-atoms";

@@ -15,7 +15,7 @@ import {
   TableRow,
   Tooltip,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { Company } from "../../models/company-models";
 import { UserData } from "../../models/user-models";
 import { FirebaseUser } from "../../models/authentication-models";
@@ -25,16 +25,16 @@ import { WithUid } from "../../models/common-models";
 import { companiesState } from "../../atoms/company-atoms";
 import { companyAddress, companyId } from "../../mappings/company-mappings";
 import { log } from "../../util/logging-config";
-import EditIcon from "@material-ui/icons/Edit";
+import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate } from "react-router-dom";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import useUsers from "../../hooks/use-users";
 import NamedAvatar from "../users/NamedAvatar";
 import useSelectedItems from "../../hooks/use-selected-items";
-import TableContainer from "@material-ui/core/TableContainer";
+import TableContainer from "@mui/material/TableContainer";
 import { toAppRoute } from "../../mappings/route-mappings";
 import { AppRoute } from "../../models/route-models";
-import CheckIcon from "@material-ui/icons/Check";
+import CheckIcon from "@mui/icons-material/Check";
 
 export default function CompaniesList() {
   const navigate = useNavigate();

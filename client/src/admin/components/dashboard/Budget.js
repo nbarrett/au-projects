@@ -5,10 +5,10 @@ import {
   CardContent,
   Grid,
   Typography,
-} from "@material-ui/core";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
-import MoneyIcon from "@material-ui/icons/Money";
-import { red } from "@material-ui/core/colors";
+} from "@mui/material";
+import ArrowDownwardIcon from "@mui/icons-material/ArrowDownward";
+import MoneyIcon from "@mui/icons-material/Money";
+import { red } from "@mui/material/colors";
 
 const Budget = (props) => (
   <Card sx={{ height: "100%" }} {...props}>

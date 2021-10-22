@@ -6,15 +6,17 @@ import { companyId } from "../mappings/company-mappings";
 import { UserRoles } from "../models/user-models";
 import useCurrentUser from "./use-current-user";
 import useUserRoles from "./use-user-roles";
-import { useSetRecoilState } from "recoil";
 import { ordersState } from "../atoms/order-atoms";
+import { useRecoilState } from "recoil";
 
 export const collection = "orders";
-export default function useOrders() {
+
+export default function useOrders(): UseOrders {
 
     const currentUser = useCurrentUser();
     const currentUserRoles: WithUid<UserRoles> = useUserRoles().forCurrentUser();
-    const setAllOrderHistory = useSetRecoilState<WithUid<Order>[]>(ordersState);
+    const [allOrderHistory, setAllOrderHistory] = useRecoilState<WithUid<Order>[]>(ordersState);
+    const firestore = firebaseFirestore();
 
     function refreshOrders(): Promise<void> {
         if (currentUser.document.data?.companyId) {
@@ -26,7 +28,6 @@ export default function useOrders() {
     }
 
     async function findOrdersForCompany(currentUserRoles: WithUid<UserRoles>, companyId: string): Promise<WithUid<Order>[]> {
-        const firestore = firebaseFirestore();
         const query = currentUserRoles?.data?.backOffice ? firestore.collection(collection) : firestore.collection(collection).where("companyId", "==", companyId);
         const collectionDocuments: WithUid<Order>[] = await query.get()
             .then((querySnapshot) => {
@@ -44,6 +45,21 @@ export default function useOrders() {
         return find<Order>(collection, orderId);
     }
 
-    return {findOrdersForCompany, findOrder, refreshOrders, setAllOrderHistory};
+    return {
+        findOrdersForCompany,
+        findOrder,
+        refreshOrders,
+        setAllOrderHistory,
+        allOrderHistory
+    };
 
 }
+
+export interface UseOrders {
+    findOrdersForCompany: (currentUserRoles: WithUid<UserRoles>, companyId: string) => Promise<WithUid<Order>[]>;
+    findOrder: (orderId: string) => Promise<WithUid<Order>>;
+    refreshOrders: () => Promise<void>;
+    setAllOrderHistory: (valOrUpdater: (((currVal: WithUid<Order>[]) => WithUid<Order>[]) | WithUid<Order>[])) => void;
+    allOrderHistory: WithUid<Order>[];
+}
+

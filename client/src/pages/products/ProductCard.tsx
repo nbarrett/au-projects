@@ -1,6 +1,6 @@
-import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, Tooltip, Typography, } from "@material-ui/core";
-import AccessTimeIcon from "@material-ui/icons/AccessTime";
-import EditIcon from "@material-ui/icons/Edit";
+import { Avatar, Box, Card, CardContent, Divider, Grid, IconButton, Tooltip, Typography, } from "@mui/material";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EditIcon from "@mui/icons-material/Edit";
 import { Product } from "../../models/product-models";
 import * as React from "react";
 import { timeAgo } from "../../util/dates";

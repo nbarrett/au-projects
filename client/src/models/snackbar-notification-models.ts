@@ -1,4 +1,4 @@
-import { AlertColor } from "@material-ui/core/Alert/Alert";
+import { AlertColor } from "@mui/material/Alert/Alert";
 
 export interface SnackbarNotificationMessage {
   variant: AlertColor;

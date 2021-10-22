@@ -7,7 +7,7 @@ import { log } from "../util/logging-config";
 import { usersState } from "../atoms/user-atoms";
 import { UserData } from "../models/user-models";
 import { sortBy } from "../util/arrays";
-import { GridValueGetterParams } from "@material-ui/data-grid";
+import { GridValueGetterParams } from "@mui/x-data-grid";
 import NamedAvatar from "../pages/users/NamedAvatar";
 import cloneDeep from "lodash/cloneDeep";
 

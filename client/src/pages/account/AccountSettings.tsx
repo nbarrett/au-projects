@@ -9,7 +9,7 @@ import {
   FormControlLabel,
   Grid,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import useSnackbar from "../../hooks/use-snackbar";
 
 

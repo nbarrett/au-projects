@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Avatar, Box, Typography, } from "@material-ui/core";
+import { Avatar, Box, Typography, } from "@mui/material";
 import { fullNameForUser, initialsForUser } from "../../util/strings";
 import { UserData } from "../../models/user-models";
 

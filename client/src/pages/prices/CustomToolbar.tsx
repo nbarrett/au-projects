@@ -1,5 +1,5 @@
 import CompanySelector from "../common/CompanySelector";
-import { GridToolbar, GridToolbarContainer } from "@material-ui/data-grid";
+import { GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
 import * as React from "react";
 
 export function CustomToolbar() {

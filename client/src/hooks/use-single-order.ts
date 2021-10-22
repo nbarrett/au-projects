@@ -1,25 +1,26 @@
-import { WithUid } from "../models/common-models";
+import { FieldValue, WithUid } from "../models/common-models";
 import { find, findAll, remove, save } from "../data-services/firebase-services";
 import { useEffect } from "react";
 import { useRecoilState, useResetRecoilState } from "recoil";
 import { log } from "../util/logging-config";
-import { Order, OrderItem, OrderStatus, OrderStatusDescriptions } from "../models/order-models";
+import { LineItemStatus, Order, OrderItem, OrderStatus, OrderStatusDescriptions } from "../models/order-models";
 import { orderState } from "../atoms/order-atoms";
 import cloneDeep from "lodash/cloneDeep";
 import set from "lodash/set";
 import isUndefined from "lodash/isUndefined";
 import { nowAsValue } from "../util/dates";
-import { collection } from "./use-orders";
+import useOrders, { collection } from "./use-orders";
 import { newDocument } from "../mappings/document-mappings";
 import useCurrentUser from "./use-current-user";
 import useCompanyData from "./use-company-data";
 import { Company } from "../models/company-models";
 
-export default function useSingleOrder() {
+export default function useSingleOrder(): UseSingleOrder {
     const currentUser = useCurrentUser();
     const [document, setDocument] = useRecoilState<WithUid<Order>>(orderState);
     const reset = useResetRecoilState(orderState);
     const companyData = useCompanyData();
+    const orders = useOrders();
 
     useEffect(() => {
         log.debug("Order change:", document);
@@ -31,9 +32,9 @@ export default function useSingleOrder() {
             return save<Order>(collection, order);
         } else {
             log.debug("saving order and changing status to", OrderStatusDescriptions[orderStatus]);
-            const document = mutableOrder(order);
+            const document = orderForUpdate(order);
             document.data.status = orderStatus;
-            return save<Order>(collection, document);
+            return save<Order>(collection, document).then(() => orders.refreshOrders());
         }
     }
 
@@ -56,36 +57,76 @@ export default function useSingleOrder() {
         });
     }
 
-    function mutableOrder(order?: WithUid<Order>): WithUid<Order> {
+    function orderForUpdate(order?: WithUid<Order>): WithUid<Order> {
         return cloneDeep(order || document);
     }
 
     function changeField(order: WithUid<Order>, field: string, value: any) {
         log.debug("change:field:", field, "value:", value, "typeof:", typeof value);
-        const mutable = mutableOrder(order);
+        const mutable = orderForUpdate(order);
         set(mutable, field, value);
         setDocument(mutable);
     }
 
-    function changeOrderItemField(order: WithUid<Order>, index: number, field: string, value: any) {
-        log.debug("changeOrderItemField:index", index, "field:", field, "value:", value, "typeof:", typeof value);
-        const mutable: WithUid<Order> = mutableOrder(order);
-        mutable.data.items[index][field] = value;
+    function changeOrderItemField(order: WithUid<Order>, orderItemIndex: number, field: string, value: any) {
+        log.debug("changeOrderItemField:orderItemIndex", orderItemIndex, "field:", field, "value:", value, "typeof:", typeof value);
+        const mutable: WithUid<Order> = orderForUpdate(order);
+        mutable.data.items[orderItemIndex][field] = value;
         setDocument(mutable);
     }
 
-    function deleteOrderItem(order: WithUid<Order>, index: number) {
-        log.debug("deleteOrderItem:index:", index);
-        const mutable: WithUid<Order> = mutableOrder(order);
-        mutable.data.items = mutable.data.items.filter((item, itemIndex) => {
-            log.debug("deleteOrderItem:itemIndex:", itemIndex, "index", index);
-            return itemIndex !== index;
+    function findOrderItem(order: WithUid<Order>, orderItem: OrderItem) {
+        const mutableOrder: WithUid<Order> = orderForUpdate(order);
+        const mutableOrderItem = mutableOrder.data.items.find(item => item.createdAt === orderItem.createdAt);
+        log.debug("findOrderItem:mutableOrder", mutableOrder, "mutableOrderItem:", mutableOrderItem);
+        return {mutableOrder, mutableOrderItem};
+    }
+
+    function changeCallOffField(order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number, ...fieldValues: FieldValue[]) {
+        log.debug("changeCallOffField:orderItem", orderItem, "callOffItemIndex:", callOffItemIndex, "fieldValues:", fieldValues);
+        const {mutableOrder, mutableOrderItem} = findOrderItem(order, orderItem);
+        fieldValues.forEach(fieldValue => {
+            mutableOrderItem.callOffs[callOffItemIndex][fieldValue.field] = fieldValue.value;
         });
-        setDocument(mutable);
+
+        setDocument(mutableOrder);
+    }
+
+    function createCallOffEvent(order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number, lineItemStatus: LineItemStatus) {
+        log.debug("createCallOffEvent:orderItem", orderItem, "callOffItemIndex:", callOffItemIndex, "status:", lineItemStatus);
+        const {mutableOrder, mutableOrderItem} = findOrderItem(order, orderItem);
+        mutableOrderItem.callOffs[callOffItemIndex].events.push({timestamp: nowAsValue(), status: lineItemStatus});
+        setDocument(mutableOrder);
+    }
+
+    function deleteOrderItem(order: WithUid<Order>, orderItem: OrderItem) {
+        log.debug("deleteOrderItem:orderItem", orderItem);
+        const {mutableOrder, mutableOrderItem} = findOrderItem(order, orderItem);
+        mutableOrder.data.items = mutableOrder.data.items.filter((item) => mutableOrderItem !== item);
+        setDocument(mutableOrder);
+    }
+
+    function createCallOff(order: WithUid<Order>, orderItem: OrderItem) {
+        log.debug("createCallOff:orderItem:", orderItem);
+        const {mutableOrder, mutableOrderItem} = findOrderItem(order, orderItem);
+        if (!mutableOrderItem.callOffs) {
+            mutableOrderItem.callOffs = [];
+        }
+        const callOff = {quantityRemaining: orderItem.quantity, quantity: 0, events: []};
+        mutableOrderItem.callOffs.push(callOff);
+        log.debug("createCallOff:orderItem:", orderItem, callOff, "orderItem:", orderItem);
+        setDocument(mutableOrder);
+    }
+
+    function deleteCallOff(order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number) {
+        log.debug("deleteCallOff:orderItem:", orderItem, "callOffItemIndex:", callOffItemIndex);
+        const {mutableOrder, mutableOrderItem} = findOrderItem(order, orderItem);
+        mutableOrderItem.callOffs = (mutableOrderItem?.callOffs || []).filter((item, index) => index !== callOffItemIndex);
+        setDocument(mutableOrder);
     }
 
     async function addOrder(status?: OrderStatus) {
-        const order = mutableOrder(newDocument<Order>());
+        const order = orderForUpdate(newDocument<Order>());
         order.data.orderNumber = await newOrderNumber();
         order.data.companyId = currentUser.document.data.companyId;
         order.data.createdBy = currentUser.document.uid;
@@ -97,17 +138,18 @@ export default function useSingleOrder() {
 
     function resetAndMarkForDelete() {
         reset();
-        const order = mutableOrder();
+        const order = orderForUpdate();
         order.markedForDelete = true;
         setDocument(order)
     }
 
     function addLineItem(order: WithUid<Order>) {
         const orderItem: OrderItem = {};
-        const mutable = mutableOrder(order);
+        const mutable = orderForUpdate(order);
         orderItem.createdAt = nowAsValue();
         orderItem.createdBy = currentUser.document.uid;
         orderItem.quantity = 1;
+        orderItem.callOffs = [];
         mutable.data.updatedAt = nowAsValue();
         mutable.data.updatedBy = currentUser.document.uid;
         mutable.data.updatedBy = currentUser.document.uid;
@@ -116,19 +158,49 @@ export default function useSingleOrder() {
         setDocument(mutable);
     }
 
+    function submit(order: WithUid<Order>): Promise<any> {
+        return saveOrder(order, OrderStatus.SUBMITTED);
+    }
+
     return {
-        reset,
-        resetAndMarkForDelete,
         addLineItem,
         addOrder,
-        findOrder,
-        saveOrder,
-        deleteOrder,
-        document,
-        setDocument,
+        changeCallOffField,
         changeField,
         changeOrderItemField,
-        deleteOrderItem
+        createCallOff,
+        deleteCallOff,
+        createCallOffEvent,
+        deleteOrder,
+        deleteOrderItem,
+        document,
+        findOrder,
+        reset,
+        resetAndMarkForDelete,
+        saveOrder,
+        setDocument,
+        submit
     };
 
 }
+
+export interface UseSingleOrder {
+    addLineItem: (order: WithUid<Order>) => void;
+    addOrder: (status?: OrderStatus) => Promise<void>;
+    changeCallOffField: (order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number, ...fieldValues: FieldValue[]) => void;
+    changeField: (order: WithUid<Order>, field: string, value: any) => void;
+    changeOrderItemField: (order: WithUid<Order>, orderItemIndex: number, field: string, value: any) => void;
+    createCallOff: (order: WithUid<Order>, orderItem: OrderItem) => void;
+    createCallOffEvent: (order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number, status: LineItemStatus) => void;
+    deleteCallOff: (order: WithUid<Order>, orderItem: OrderItem, callOffItemIndex: number) => void;
+    deleteOrder: (order: WithUid<Order>) => Promise<any>;
+    deleteOrderItem: (order: WithUid<Order>, orderItem: OrderItem) => void;
+    document: WithUid<Order>;
+    findOrder: (uid: string) => void;
+    reset: () => void;
+    resetAndMarkForDelete: () => void;
+    saveOrder: (order: WithUid<Order>, orderStatus?: OrderStatus) => Promise<any>;
+    setDocument: (valOrUpdater: (((currVal: WithUid<Order>) => WithUid<Order>) | WithUid<Order>)) => void;
+    submit: (order: WithUid<Order>) => Promise<any>;
+}
+

@@ -1,7 +1,7 @@
 import { BrowserRouter } from "react-router-dom";
 import GlobalStyles from "../../admin/components/GlobalStyles";
 import React, { Suspense } from "react";
-import { CssBaseline, ThemeProvider } from "@material-ui/core";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { RecoilRoot } from "recoil";
 import { theme } from "../../theme";
 import LoadingDiv from "../../components/LoadingDiv";

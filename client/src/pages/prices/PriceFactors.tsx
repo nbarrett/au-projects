@@ -1,17 +1,17 @@
 import * as React from "react";
 import { useState } from "react";
-import { Theme } from "@material-ui/core/styles";
-import { Card, Grid, InputAdornment, TextField, } from "@material-ui/core";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
+import { Card, Grid, InputAdornment, TextField, } from "@mui/material";
 import { log } from "../../util/logging-config";
-import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 import CompanySelector from "../common/CompanySelector";
 
 export default function PriceFactors() {
-  const [percentLosses, setPercentLosses] = useState<number>(10);
-  const [markup, setMarkup] = useState<number>(192.5);
+    const [percentLosses, setPercentLosses] = useState<number>(10);
+    const [markup, setMarkup] = useState<number>(192.5);
 
-  const cardStyle = {p: 4, m: 2};
+    const cardStyle = {p: 4, m: 2};
 
   const useStyles = makeStyles((theme: Theme) => ({
     input: {

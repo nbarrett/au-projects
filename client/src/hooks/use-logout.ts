@@ -20,7 +20,7 @@ export function useLogout() {
                 log.debug("after logout from", from, "user:", debugCurrentUser(), "route:", location.pathname);
                 if (refreshWindowAfter) {
                     log.debug("refreshing window to ensure user is cleared from browser session")
-                    window.location.reload(false);
+                    window.location.reload();
                 }
                 navigateIfRequiredTo(AppRoute.LOGIN);
             })

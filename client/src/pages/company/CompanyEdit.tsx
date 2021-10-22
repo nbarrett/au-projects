@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { Box, Container, Grid } from "@material-ui/core";
+import { Box, Container, Grid } from "@mui/material";
 import CompanyImage from "./CompanyImage";
 import { Company } from "../../models/company-models";
 import { useParams } from "react-router";

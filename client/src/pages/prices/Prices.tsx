@@ -1,20 +1,19 @@
 import * as React from "react";
 import { useState } from "react";
-import { Grid, } from "@material-ui/core";
-import useProducts from "../../hooks/use-products";
+import { Grid, } from "@mui/material";
 import { Product } from "../../models/product-models";
 import { isNumber } from "lodash";
 import { log } from "../../util/logging-config";
 import { useNavbarSearch } from "../../hooks/use-navbar-search";
 import useSingleCompany from "../../hooks/use-single-company";
 import { asCurrencyFromGrid, asPercent, pricePerKgFromGrid } from "../../mappings/product-mappings";
-import { DataGrid, GridColDef } from "@material-ui/data-grid";
-import { makeStyles } from "@material-ui/styles";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import useProductCoding from "../../hooks/use-product-coding";
 import { CustomToolbar } from "./CustomToolbar";
 import { contentContainer } from "../../admin/components/GlobalStyles";
 import useDataGrid from "../../hooks/use-data-grid";
 import usePricedProducts from "../../hooks/use-priced-products";
+import { makeStyles } from "@mui/styles";
 
 export default function Prices() {
   const dataGrid = useDataGrid();
@@ -56,7 +55,7 @@ export default function Prices() {
       field: "productCode",
       type: "string",
       headerName: "Product Code",
-      valueFormatter: productCodings.productCodeFromGrid,
+      renderCell: productCodings.productCodeFromGrid,
       flex: 1,
       minWidth,
     },
@@ -64,7 +63,7 @@ export default function Prices() {
       field: "description",
       type: "string",
       headerName: "Product Description",
-      valueFormatter: productCodings.productDescriptionGrid,
+      renderCell: productCodings.productDescriptionGrid,
       sortComparator,
       flex: 2,
       minWidth,
@@ -81,7 +80,7 @@ export default function Prices() {
       field: "costPerKg",
       type: "number",
       headerName: "Cost Per Kg",
-      valueFormatter: asCurrencyFromGrid,
+      renderCell: asCurrencyFromGrid,
       sortComparator,
       flex: 1,
       minWidth,
@@ -90,7 +89,7 @@ export default function Prices() {
       field: "salePricePerKg",
       type: "number",
       headerName: "Sale Price Per Kg",
-      valueFormatter: asCurrencyFromGrid,
+      renderCell: asCurrencyFromGrid,
       sortComparator,
       flex: 1,
       minWidth,
@@ -100,7 +99,7 @@ export default function Prices() {
       hide: true,
       type: "number",
       headerName: "Price Per Kg",
-      valueFormatter: pricePerKgFromGrid,
+      renderCell: pricePerKgFromGrid,
       sortComparator,
       flex: 1,
       minWidth,
@@ -109,7 +108,7 @@ export default function Prices() {
       field: "markup",
       hide: true,
       headerName: "Product Markup",
-      valueFormatter: asPercent,
+      renderCell: asPercent,
       sortComparator,
       flex: 1,
       minWidth,
@@ -128,7 +127,7 @@ export default function Prices() {
       type: "number",
       hide: true,
       headerName: "Pricing Factor",
-      valueFormatter: asPercent,
+      renderCell: asPercent,
       sortComparator,
       flex: 2,
       minWidth,

@@ -1,4 +1,4 @@
-import { createStyles, makeStyles } from "@material-ui/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 
 export default function GlobalStyles() {
   const useStyles = makeStyles(() =>
@@ -39,9 +39,8 @@ export const cellStyle = {
   p: 0.1, m: 0, width: 130,
   color: "white",
   backgroundColor: "white",
-  // opacity: [0.9, 0.8, 0.7],
   "&:hover": {
     backgroundColor: "white",
   }
 };
-export const contentContainer = {marginTop: 1, width: window.innerWidth - 280};
+export const contentContainer = {marginTop: 1, width: window.innerWidth - 280, height: window.innerHeight - 100};

@@ -10,15 +10,15 @@ import {
     TextField,
     Tooltip,
     Typography,
-} from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
-import UndoIcon from "@material-ui/icons/Undo";
+} from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 import { Product } from "../../models/product-models";
 import * as React from "react";
 import useProductEditing from "../../hooks/use-product-editing";
 import { remove, save } from "../../data-services/firebase-services";
 import { WithUid } from "../../models/common-models";
-import DeleteIcon from "@material-ui/icons/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import { pricePerKg } from "../../mappings/product-mappings";
 import useUniqueValues from "../../hooks/use-unique-values";

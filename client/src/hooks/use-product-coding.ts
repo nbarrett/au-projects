@@ -11,7 +11,7 @@ import isNumber from "lodash/isNumber";
 import isUndefined from "lodash/isUndefined";
 import { sortBy } from "../util/arrays";
 import { productCodingMapState, productCodingState } from "../atoms/product-atoms";
-import { GridCellParams, GridColDef, GridValueGetterParams } from "@material-ui/data-grid";
+import { GridColDef, GridRenderCellParams, GridValueGetterParams } from "@mui/x-data-grid";
 import useCompanyData from "./use-company-data";
 
 export default function useProductCoding(subscribeToUpdates?: boolean) {
@@ -95,6 +95,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
     }
 
     function productCode(product: Product) {
+        log.debug("product:", product);
         return product ? defaultString("",
             companyData.companyForUid(product.compoundOwner)?.data?.code,
             "-",
@@ -129,7 +130,7 @@ export default function useProductCoding(subscribeToUpdates?: boolean) {
         return fields.map(item => item ? item : "").filter(item => item.length > 0).join(separator);
     }
 
-    function ProductCoding(props: GridCellParams) {
+    function ProductCoding(props: GridRenderCellParams) {
         const {value} = props;
         log.debug("ProductCoding:", value);
         return productCodingForUid(value as string)?.data?.name;

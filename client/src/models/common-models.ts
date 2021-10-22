@@ -83,3 +83,8 @@ export interface NamedParameter {
     name: StoredValue | string;
     value: any;
 }
+
+export interface FieldValue {
+    field: string;
+    value: any;
+}

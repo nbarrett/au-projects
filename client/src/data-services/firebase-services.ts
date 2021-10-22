@@ -67,7 +67,7 @@ export async function saveAllWithId<T>(collection: string, documents: WithUid<T>
     return Promise.all(documents.map(document => createWithId<T>(collection, document, batch)));
 }
 
-export async function update<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<boolean> {
+export async function update<T extends HasAuditTimestamps>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<boolean> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.updatedAt = nowAsValue();
@@ -95,7 +95,7 @@ export async function remove<T>(collection: string, uid: string, batch?: firebas
     return uid;
 }
 
-export async function create<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
+export async function create<T extends HasAuditTimestamps>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.createdAt = nowAsValue();
@@ -111,7 +111,7 @@ export async function create<T>(collection: string, document: WithUid<T>, batch?
     return userDoc;
 }
 
-export async function createWithId<T>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<void> {
+export async function createWithId<T extends HasAuditTimestamps>(collection: string, document: WithUid<T>, batch?: firebase.firestore.WriteBatch): Promise<void> {
     const mutableData: WithUid<T> = cloneDeep(document);
     if (hasAuditTimestamps(mutableData.data)) {
         mutableData.data.createdAt = nowAsValue();

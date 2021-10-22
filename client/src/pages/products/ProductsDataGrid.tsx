@@ -2,43 +2,46 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import {
     DataGrid,
-    GridCellParams,
     GridColDef,
     GridEditRowsModel,
+    GridRenderCellParams,
     GridSelectionModel,
     GridToolbar,
     GridToolbarContainer
-} from "@material-ui/data-grid";
+} from "@mui/x-data-grid";
 import useProducts from "../../hooks/use-products";
 import { GridColumnVisibilityChangeParams, WithUid } from "../../models/common-models";
 import { Product, ProductCoding, ProductCodingType } from "../../models/product-models";
 import { log } from "../../util/logging-config";
-import { IconButton, Select, Tooltip } from "@material-ui/core";
-import SaveIcon from "@material-ui/icons/Save";
-import UndoIcon from "@material-ui/icons/Undo";
+import { IconButton, Select, Tooltip } from "@mui/material";
+import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 import map from "lodash/map";
 import { asCurrencyFromGrid, asPercent, pricePerKgFromGrid } from "../../mappings/product-mappings";
 import { isNumber } from "lodash";
-import { makeStyles } from "@material-ui/styles";
-import MenuItem from "@material-ui/core/MenuItem";
+import { makeStyles } from "@mui/styles";
+import MenuItem from "@mui/material/MenuItem";
 import useCompanyData from "../../hooks/use-company-data";
 import { companyCodeAndName } from "../../mappings/company-mappings";
 import useProductCoding from "../../hooks/use-product-coding";
 import useDataGrid from "../../hooks/use-data-grid";
 import Loading from "../common/Loading";
 import DeleteManyIcon from "../common/DeleteManyIcon";
-import AddchartIcon from "@material-ui/icons/Addchart";
+import AddchartIcon from "@mui/icons-material/Addchart";
 import { useLocation, useNavigate } from "react-router-dom";
-import FullscreenExitIcon from "@material-ui/icons/FullscreenExit";
+import FullscreenExitIcon from "@mui/icons-material/FullscreenExit";
+import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import { AppRoute, FULL_SCREEN } from "../../models/route-models";
 import useSnackbar from "../../hooks/use-snackbar";
+import { useUpdateUrl } from "../../hooks/use-url-updating";
+import { toAppRoute, toFullScreenRoute } from "../../mappings/route-mappings";
 
 export default function ProductsDataGrid() {
     const products = useProducts();
     const location = useLocation();
-    const navigate = useNavigate();
     const companyData = useCompanyData();
     const dataGrid = useDataGrid();
+    const updateUrl = useUpdateUrl();
     const productCodings = useProductCoding(false);
     const inputRows = products.documents.filter(item => !item.markedForDelete).map(item => dataGrid.toRow<Product>(item));
     const snackbar = useSnackbar();
@@ -84,7 +87,7 @@ export default function ProductsDataGrid() {
             type: "string",
             headerName: "Product Code",
             sortComparator: stringSortComparator,
-            valueFormatter: productCodings.productCodeFromGrid,
+            renderCell: productCodings.productCodeFromGrid,
             flex: 1,
             minWidth: 180,
         },
@@ -179,7 +182,7 @@ export default function ProductsDataGrid() {
             editable: true,
             type: "number",
             headerName: "Cost Per Kg",
-            valueFormatter: asCurrencyFromGrid,
+            renderCell: asCurrencyFromGrid,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -189,7 +192,7 @@ export default function ProductsDataGrid() {
             editable: true,
             type: "number",
             headerName: "Product Markup",
-            valueFormatter: asPercent,
+            renderCell: asPercent,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -199,7 +202,7 @@ export default function ProductsDataGrid() {
             editable: false,
             type: "number",
             headerName: "Price Per Kg",
-            valueFormatter: pricePerKgFromGrid,
+            renderCell: pricePerKgFromGrid,
             sortComparator,
             flex: 1,
             minWidth: 180,
@@ -219,11 +222,6 @@ export default function ProductsDataGrid() {
     const containerHeight = location.pathname.includes(FULL_SCREEN) ? 0 : 200;
     const classes = makeStyles(
         {
-            root: {
-                display: "flex",
-                alignItems: "center",
-                paddingRight: 16,
-            },
             tableCell: {
                 padding: 15,
                 height: window.innerHeight - containerHeight,
@@ -267,7 +265,7 @@ export default function ProductsDataGrid() {
         }))
     }
 
-    function onChange(gridCellParams: GridCellParams, event) {
+    function onChange(gridCellParams: GridRenderCellParams, event) {
         const {id, field, api} = gridCellParams;
         log.debug("id:", id, "field:", field, "changed value:", event.target.value);
         api.setEditCellValue({id, field, value: event.target.value}, event);
@@ -275,7 +273,7 @@ export default function ProductsDataGrid() {
         api.setCellMode(id, field, "view");
     }
 
-    function CompoundOwnerSelect(props: GridCellParams) {
+    function CompoundOwnerSelect(props: GridRenderCellParams) {
         const {id, value, field} = props;
         log.debug("CompoundOwnerSelect:", id, field, value);
         return (
@@ -293,37 +291,37 @@ export default function ProductsDataGrid() {
         );
     }
 
-    function ProductTypeSelect(props: GridCellParams) {
+    function ProductTypeSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.TYPE)}
                                   gridCellParams={props}/>;
     }
 
-    function ProductCompoundSelect(props: GridCellParams) {
+    function ProductCompoundSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.COMPOUND)}
                                   gridCellParams={props}/>;
     }
 
-    function ProductColourSelect(props: GridCellParams) {
+    function ProductColourSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.COLOUR)}
                                   gridCellParams={props}/>;
     }
 
-    function ProductHardnessSelect(props: GridCellParams) {
+    function ProductHardnessSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.HARDNESS)}
-                                  gridCellParams={props}/>
+                                  gridCellParams={props}/>;
     }
 
-    function ProductGradeSelect(props: GridCellParams) {
+    function ProductGradeSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.GRADE)}
-                                  gridCellParams={props}/>
+                                  gridCellParams={props}/>;
     }
 
-    function CuringMethodSelect(props: GridCellParams) {
+    function CuringMethodSelect(props: GridRenderCellParams) {
         return <ProductCodeSelect codingsForType={productCodings.productCodingsForType(ProductCodingType.CURING_METHOD)}
-                                  gridCellParams={props}/>
+                                  gridCellParams={props}/>;
     }
 
-    function ProductCodeSelect(props: { gridCellParams: GridCellParams, codingsForType: WithUid<ProductCoding>[] }) {
+    function ProductCodeSelect(props: { gridCellParams: GridRenderCellParams, codingsForType: WithUid<ProductCoding>[] }) {
         const {id, value, field} = props.gridCellParams;
         log.debug("ProductCodeSelect:", id, field, value);
         return (
@@ -340,7 +338,7 @@ export default function ProductsDataGrid() {
             </Select>);
     }
 
-    function CompoundOwner(props: GridCellParams) {
+    function CompoundOwner(props: GridRenderCellParams) {
         const {value} = props;
         log.debug("ProductCoding:", value);
         return companyCodeAndName(companyData.companyForUid(value as string));
@@ -374,10 +372,16 @@ export default function ProductsDataGrid() {
                 </IconButton>
                 <GridToolbar/>
                 {location.pathname.includes(FULL_SCREEN) && <IconButton onClick={() => {
-                    navigate(`/${AppRoute.PRODUCTS}`);
+                    updateUrl({path: toAppRoute(AppRoute.PRODUCTS)});
                 }}>
                     <Tooltip title={`Exit full screen`}>
                         <FullscreenExitIcon color="secondary"/></Tooltip>
+                </IconButton>}
+                {!location.pathname.includes(FULL_SCREEN) && <IconButton onClick={() => {
+                    updateUrl({path: toFullScreenRoute(AppRoute.PRODUCTS)});
+                }}>
+                    <Tooltip title={`View full screen`}>
+                        <FullscreenIcon color="secondary"/></Tooltip>
                 </IconButton>}
             </GridToolbarContainer>
         );

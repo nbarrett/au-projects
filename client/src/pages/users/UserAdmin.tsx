@@ -1,10 +1,10 @@
-import { Checkbox, Grid, IconButton, MenuItem, TextField, Tooltip, Typography } from "@material-ui/core";
+import { Checkbox, Grid, IconButton, MenuItem, TextField, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { log } from "../../util/logging-config";
 import { WithUid } from "../../models/common-models";
 import { Helmet } from "react-helmet";
-import SaveIcon from "@material-ui/icons/Save";
-import UndoIcon from "@material-ui/icons/Undo";
+import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 import {
     DataGrid,
     GridColDef,
@@ -13,8 +13,8 @@ import {
     GridToolbar,
     GridToolbarContainer,
     GridValueGetterParams
-} from "@material-ui/data-grid";
-import { makeStyles } from "@material-ui/styles";
+} from "@mui/x-data-grid";
+import { makeStyles } from "@mui/styles";
 import map from "lodash/map";
 import cloneDeep from "lodash/cloneDeep";
 import { pluraliseWithCount } from "../../util/strings";

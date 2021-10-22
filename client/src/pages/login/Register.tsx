@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { log } from "../../util/logging-config";
 
-import { Box, Button, Checkbox, Container, FormHelperText, Link, TextField, Typography, } from "@material-ui/core";
+import { Box, Button, Checkbox, Container, FormHelperText, Link, TextField, Typography, } from "@mui/material";
 import { useFirebaseUser } from "../../hooks/use-firebase-user";
 import { useSignupWithEmail } from "../../hooks/use-login";
 import { toAppRoute } from "../../mappings/route-mappings";

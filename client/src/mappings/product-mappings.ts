@@ -2,7 +2,7 @@ import { WithUid } from "../models/common-models";
 import { PricedProduct, PricingTier, Product, ProductCodingType } from "../models/product-models";
 import { asNumber } from "../util/numbers";
 import { log } from "../util/logging-config";
-import { GridValueGetterParams } from "@material-ui/data-grid";
+import { GridValueGetterParams } from "@mui/x-data-grid";
 import kebabCase from "lodash/kebabCase";
 import { stringifyObject } from "../util/strings";
 import { omit } from "lodash";
@@ -18,7 +18,7 @@ export function productDetails(product: WithUid<Product>): string {
 
 export function pricePerKgFromGrid(params: GridValueGetterParams): string {
     const product = params.row as Product;
-    const number = pricePerKgFunction(product.costPerKg, product.markup);
+    const number = pricePerKgFunction(product?.costPerKg, product?.markup);
     return number ? "R " + number.toFixed(2) : undefined;
 }
 
@@ -57,10 +57,6 @@ export function salePricePerKg(product: WithUid<Product>, pricingTier: PricingTi
 export function priceWithLosses(product: WithUid<Product>, percentLosses: number) {
     const costPerKg = product?.data?.costPerKg || 0;
     return costPerKg + (costPerKg * percentLosses / 100);
-}
-
-export function thicknessPrice(product: WithUid<Product>, thickness: number, percentLosses: number) {
-    return priceWithLosses(product, percentLosses) * product.data.specificGravity * thickness;
 }
 
 export function toPricedProduct(product: WithUid<Product>, pricingTier: PricingTier): WithUid<PricedProduct> {

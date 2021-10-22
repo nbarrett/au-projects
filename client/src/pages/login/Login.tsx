@@ -2,7 +2,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import * as Yup from "yup";
 import { Formik } from "formik";
-import { Box, Button, Container, Grid, Link, TextField, Typography, } from "@material-ui/core";
+import { Box, Button, Container, Grid, Link, TextField, Typography, } from "@mui/material";
 import { log } from "../../util/logging-config";
 import { useEffect, useState } from "react";
 import { useLogout } from "../../hooks/use-logout";

@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography, } from "@material-ui/core";
+import { Avatar, Box, Button, Card, CardActions, CardContent, Divider, Typography, } from "@mui/material";
 import useSingleCompany from "../../hooks/use-single-company";
 import useSnackbar from "../../hooks/use-snackbar";
 

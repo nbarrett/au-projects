@@ -10,10 +10,10 @@ import {
     ListItemText,
     Tooltip,
     Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { fullNameForUser, initialsForUser } from "../../util/strings";
 import useUsers from "../../hooks/use-users";
-import ContactMailIcon from "@material-ui/icons/ContactMail";
+import ContactMailIcon from "@mui/icons-material/ContactMail";
 import useSingleCompany from "../../hooks/use-single-company";
 
 export default function CompanyUserList() {

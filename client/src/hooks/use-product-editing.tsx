@@ -6,8 +6,8 @@ import { log } from "../util/logging-config";
 import { WithUid } from "../models/common-models";
 import { Product } from "../models/product-models";
 import { cloneDeep, set } from "lodash";
-import { createStyles, makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
+import { createStyles, makeStyles } from "@mui/styles";
+import { Theme } from "@mui/material/styles";
 
 export default function useProductEditing() {
 

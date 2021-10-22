@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useEffect } from "react";
-import { ListItemText, MenuItem, TextField, } from "@material-ui/core";
+import { ListItemText, MenuItem, TextField, } from "@mui/material";
 import useCompanyData from "../../hooks/use-company-data";
 import { WithUid } from "../../models/common-models";
 import { Company } from "../../models/company-models";

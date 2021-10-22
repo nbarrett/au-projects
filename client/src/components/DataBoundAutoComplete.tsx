@@ -1,16 +1,14 @@
-import { Autocomplete, AutocompleteRenderInputParams, TextField, } from "@material-ui/core";
+import { Autocomplete, AutocompleteRenderInputParams, TextField, } from "@mui/material";
 import * as React from "react";
 import { get } from "lodash";
 import { WithUid } from "../models/common-models";
-import { InputProps as StandardInputProps } from "@material-ui/core/Input/Input";
-import { AutocompletePropsSizeOverrides } from "@material-ui/core/Autocomplete/Autocomplete";
-import { OverridableStringUnion } from "@material-ui/types";
-import { SxProps } from "@material-ui/system";
-import { Theme } from "@material-ui/core/styles";
+import { InputProps as StandardInputProps } from "@mui/material/Input/Input";
+import { Theme } from "@mui/material/styles";
+import { SxProps } from "@mui/system";
 
 export function DataBoundAutoComplete<T>(props: {
     sx?: SxProps<Theme>,
-    size?: OverridableStringUnion<"small" | "medium", AutocompletePropsSizeOverrides>; field: string, label?: string, variant?: any, type: string, document: WithUid<T>,
+    size?: any; field: string, label?: string, variant?: any, type: string, document: WithUid<T>,
     options: any[], onChange: (field: string, value: any, numeric: boolean) => void, inputProps?: Partial<StandardInputProps>
 }) {
 

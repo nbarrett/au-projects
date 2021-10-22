@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { Box, Container, Grid } from "@material-ui/core";
+import { Box, Container, Grid } from "@mui/material";
 import Budget from "../../admin/components/dashboard/Budget";
 import TotalCustomers from "../../admin/components/dashboard/TotalCustomers";
 import TasksProgress from "../../admin/components/dashboard/TasksProgress";

@@ -1,8 +1,8 @@
 import { WithUid } from "../../models/common-models";
 import { Product } from "../../models/product-models";
-import Box from "@material-ui/core/Box";
-import { Avatar } from "@material-ui/core";
-import Typography from "@material-ui/core/Typography";
+import Box from "@mui/material/Box";
+import { Avatar } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import * as React from "react";
 
 export function TitledMedia(props: { product?: WithUid<Product>, hideTitle?:boolean }) {

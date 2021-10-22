@@ -1,6 +1,6 @@
-import { Avatar, Card, CardContent, Grid, Typography } from "@material-ui/core";
-import AttachMoneyIcon from "@material-ui/icons/AttachMoney";
-import { indigo } from "@material-ui/core/colors";
+import { Avatar, Card, CardContent, Grid, Typography } from "@mui/material";
+import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
+import { indigo } from "@mui/material/colors";
 
 const TotalProfit = (props) => (
   <Card {...props}>

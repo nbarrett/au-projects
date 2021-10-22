@@ -1,4 +1,4 @@
-import { Avatar, Box, Typography } from "@material-ui/core";
+import { Avatar, Box, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import * as React from "react";
 import useCurrentUser from "../../hooks/use-current-user";

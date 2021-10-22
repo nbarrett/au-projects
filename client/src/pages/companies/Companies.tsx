@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet";
-import { Box, Container } from "@material-ui/core";
+import { Box, Container } from "@mui/material";
 import { useSetRecoilState } from "recoil";
 import * as React from "react";
 import { useEffect } from "react";

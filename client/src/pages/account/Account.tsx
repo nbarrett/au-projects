@@ -1,20 +1,20 @@
 import { Helmet } from "react-helmet";
-import { Box, Container, Grid } from "@material-ui/core";
+import { Box, Container, Grid } from "@mui/material";
 import AccountUploadImage from "./AccountUploadImage";
 import AccountPersonalDetails from "./AccountPersonalDetails";
-import Tabs from "@material-ui/core/Tabs";
+import Tabs from "@mui/material/Tabs";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import Tab from "@material-ui/core/Tab";
-import { makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
+import Tab from "@mui/material/Tab";
+import { Theme } from "@mui/material/styles";
+import { makeStyles } from "@mui/styles";
 import { StoredValue } from "../../util/ui-stored-values";
 import { log } from "../../util/logging-config";
 import max from "lodash/max";
 import { useUpdateUrl } from "../../hooks/use-url-updating";
 import { useUrls } from "../../hooks/use-urls";
 import { AccountTab, AccountTabDescriptions, allTabs } from "../../models/account-models";
-import Typography from "@material-ui/core/Typography";
+import Typography from "@mui/material/Typography";
 import { AccountSettingsChangePassword } from "./AccountSettingsChangePassword";
 import { AccountSettings } from "./AccountSettings";
 

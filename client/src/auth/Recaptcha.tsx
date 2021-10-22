@@ -1,20 +1,17 @@
-import {
-  FormControl,
-  FormHelperText,
-} from "@material-ui/core";
+import { FormControl, FormHelperText, } from "@mui/material";
 import { useEffect, useRef } from "react";
 import { useBooleanState } from "react-use-object-state";
 import firebase from "firebase";
-import { createStyles, makeStyles } from "@material-ui/styles";
-import { Theme } from "@material-ui/core/styles";
+import { Theme } from "@mui/material/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    recaptcha: {
-      marginBottom: theme.spacing(2),
-      width: 304,
-    },
-  })
+    createStyles({
+        recaptcha: {
+            marginBottom: theme.spacing(2),
+            width: 304,
+        },
+    })
 );
 
 type WindowWithRecaptcha = Window &

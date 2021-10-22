@@ -1,4 +1,4 @@
-import { Box, Divider, Drawer, List, } from "@material-ui/core";
+import { Box, Divider, Drawer, List, } from "@mui/material";
 import { useRecoilState } from "recoil";
 import { mobileNavOpenState } from "../../atoms/dashboard-atoms";
 import { lgDownHidden, lgUpHidden } from "../../display/display";

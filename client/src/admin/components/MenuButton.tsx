@@ -1,9 +1,9 @@
 import { MenuItem } from "../../models/menu-models";
-import { Button } from "@material-ui/core";
+import { Button } from "@mui/material";
 import { NavLink, useLocation } from "react-router-dom";
-import { SxProps } from "@material-ui/system";
-import { Theme } from "@material-ui/core/styles";
+import { Theme } from "@mui/material/styles";
 import { log } from "../../util/logging-config";
+import { SxProps } from "@mui/system";
 
 export default function MenuButton(props: { menuItem: MenuItem, omitIcon?: boolean }) {
     const location = useLocation();

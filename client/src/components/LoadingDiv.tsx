@@ -1,6 +1,6 @@
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from "@mui/material";
 import clsx from "clsx";
-import { createStyles, makeStyles } from "@material-ui/styles";
+import { createStyles, makeStyles } from "@mui/styles";
 
 type LoadingDivProps = {
   fullPage?: boolean;

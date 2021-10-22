@@ -6,17 +6,17 @@ import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import { log } from "../util/logging-config";
 
-export default function useCompanyData() {
+export default function useCompanyData(): CompanyData {
     const [documents, setDocuments] = useRecoilState<WithUid<Company>[]>(companiesState);
     const collection = "companies";
     useEffect(() => {
         log.debug("Companies initial render:", documents);
-        const unsub = subscribe<Company>(collection, setDocuments)
+        const unsub = subscribe<Company>(collection, setDocuments);
         return (() => {
             log.debug("unsub");
-            unsub()
-        })
-    }, [])
+            unsub();
+        });
+    }, []);
 
     useEffect(() => {
         log.debug("Companies change:", documents);
@@ -33,6 +33,19 @@ export default function useCompanyData() {
         return documents?.find(company => company?.uid === uid);
     }
 
-    return {saveAllCompanies, companyForUid, documents, setDocuments}
+    return {
+        saveAllCompanies,
+        companyForUid,
+        documents,
+        setDocuments
+    };
 
 }
+
+export interface CompanyData {
+    saveAllCompanies: () => void;
+    companyForUid: (uid: string) => WithUid<Company>;
+    documents: WithUid<Company>[];
+    setDocuments: (valOrUpdater: (((currVal: WithUid<Company>[]) => WithUid<Company>[]) | WithUid<Company>[])) => void;
+}
+

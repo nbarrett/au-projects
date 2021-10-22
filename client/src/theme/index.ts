@@ -1,8 +1,8 @@
-import { createTheme } from "@material-ui/core/styles";
+import { createTheme } from "@mui/material/styles";
 import shadows from "./shadows";
 import typography from "./typography";
 import { ADMIN_BACKGROUND } from "./theme";
-import { colors } from "@material-ui/core";
+import { colors } from "@mui/material";
 
 export const theme = createTheme({
   palette: {

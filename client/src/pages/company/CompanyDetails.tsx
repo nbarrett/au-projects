@@ -1,10 +1,11 @@
-import { Checkbox, FormControlLabel, Grid, TextareaAutosize, TextField, } from "@material-ui/core";
+import { Checkbox, FormControlLabel, Grid, TextareaAutosize, TextField, } from "@mui/material";
 import * as React from "react";
 import { DataBoundAutoComplete } from "../../components/DataBoundAutoComplete";
 import useUniqueValues from "../../hooks/use-unique-values";
 import useSingleCompany from "../../hooks/use-single-company";
 import { Company } from "../../models/company-models";
 import useCompanyData from "../../hooks/use-company-data";
+import { booleanOf } from "../../util/strings";
 
 export default function CompanyDetails() {
     const document = useSingleCompany();
@@ -26,7 +27,7 @@ export default function CompanyDetails() {
             <Grid item xs={6}>
                 <FormControlLabel control={<Checkbox
                     onChange={(event, value) => document.changeField("data.compoundOwner", value)}
-                    checked={document.document?.data?.compoundOwner || false}
+                    checked={booleanOf(document.document?.data?.compoundOwner) || false}
                 />} label={`Company is a Compound Owner`}/>
             </Grid>
             <Grid item xs={6}>

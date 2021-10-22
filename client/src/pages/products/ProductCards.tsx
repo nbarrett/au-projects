@@ -1,4 +1,4 @@
-import { Grid, } from "@material-ui/core";
+import { Grid, } from "@mui/material";
 import { Product } from "../../models/product-models";
 import * as React from "react";
 import { WithUid } from "../../models/common-models";

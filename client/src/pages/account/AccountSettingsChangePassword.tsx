@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Button, Card, CardContent, CardHeader, Divider, TextField, } from "@material-ui/core";
+import { Box, Button, Card, CardContent, CardHeader, Divider, TextField, } from "@mui/material";
 
 export function AccountSettingsChangePassword(props: any) {
 

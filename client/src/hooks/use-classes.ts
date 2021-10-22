@@ -1,6 +1,6 @@
-import {createStyles, Theme} from "@material-ui/core/styles";
-import { makeStyles } from "@material-ui/styles";
-import { green } from "@material-ui/core/colors";
+import { createStyles, makeStyles } from "@mui/styles";
+import { green } from "@mui/material/colors";
+import { Theme } from "@mui/material/styles";
 
 export function useClasses() {
 

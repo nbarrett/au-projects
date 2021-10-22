@@ -1,8 +1,8 @@
 import * as React from "react";
-import { IconButton, Tooltip } from "@material-ui/core";
+import { IconButton, Tooltip } from "@mui/material";
 import { pluralise, pluraliseWithCount } from "../../util/strings";
-import DeleteIcon from "@material-ui/icons/Delete";
-import { GridSelectionModel } from "@material-ui/data-grid";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { GridSelectionModel } from "@mui/x-data-grid";
 import useSnackbar from "../../hooks/use-snackbar";
 
 export default function DeleteManyIcon(props: { hide?: boolean, selectionModel: GridSelectionModel, markForDelete: () => any, singular: string, plural?: string }) {

@@ -1,8 +1,8 @@
-import Snackbar from "@material-ui/core/Snackbar";
+import Snackbar from "@mui/material/Snackbar";
 import * as React from "react";
-import MuiAlert, { AlertProps } from "@material-ui/core/Alert";
-import { TransitionProps } from "@material-ui/core/transitions/transition";
-import { Slide } from "@material-ui/core";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import { TransitionProps } from "@mui/material/transitions/transition";
+import { Slide } from "@mui/material";
 import { useRecoilValue, useResetRecoilState } from "recoil";
 import { SnackbarNotificationMessage } from "../../models/snackbar-notification-models";
 import { snackbarMessageState } from "../../atoms/snackbar-atoms";

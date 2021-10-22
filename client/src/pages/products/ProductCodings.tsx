@@ -1,21 +1,15 @@
-import { Grid, IconButton, Tooltip, Typography } from "@material-ui/core";
+import { Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { log } from "../../util/logging-config";
 import { WithUid } from "../../models/common-models";
 import { ProductCoding, productCodingColumns, ProductCodingType } from "../../models/product-models";
-import AddchartIcon from "@material-ui/icons/Addchart";
+import AddchartIcon from "@mui/icons-material/Addchart";
 import { Helmet } from "react-helmet";
-import SaveIcon from "@material-ui/icons/Save";
-import UndoIcon from "@material-ui/icons/Undo";
+import SaveIcon from "@mui/icons-material/Save";
+import UndoIcon from "@mui/icons-material/Undo";
 
-import {
-    DataGrid,
-    GridEditRowsModel,
-    GridSelectionModel,
-    GridToolbar,
-    GridToolbarContainer
-} from "@material-ui/data-grid";
-import { makeStyles } from "@material-ui/styles";
+import { DataGrid, GridEditRowsModel, GridSelectionModel, GridToolbar, GridToolbarContainer } from "@mui/x-data-grid";
+import { makeStyles } from "@mui/styles";
 import map from "lodash/map";
 import cloneDeep from "lodash/cloneDeep";
 import { sortBy } from "../../util/arrays";
@@ -35,17 +29,11 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
     const codingTitle = titleCase(props.productCodingType);
     const classes = makeStyles(
         {
-            root: {
-                display: "flex",
-                alignItems: "center",
-                paddingRight: 16,
-            },
             title: {
-                fontWeight: "bold",
+                fontWeight: "bold"
             },
             tableCell: {
                 padding: 15,
-                height: window.innerHeight - 200,
                 backgroundColor: "white"
             },
         }
@@ -67,8 +55,6 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
             markedForDelete: true
         } : coding));
     }
-
-
 
     const saveOptions =
         <>
@@ -153,6 +139,6 @@ export function ProductCodings(props: { productCodingType: ProductCodingType }) 
                           columns={productCodingColumns}/>
             </Grid>
         </Grid>
-    </>
+    </>;
 
 }
