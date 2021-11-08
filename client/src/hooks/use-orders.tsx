@@ -30,13 +30,10 @@ export default function useOrders(): UseOrders {
     async function findOrdersForCompany(currentUserRoles: WithUid<UserRoles>, companyId: string): Promise<WithUid<Order>[]> {
         const query = currentUserRoles?.data?.backOffice ? firestore.collection(collection) : firestore.collection(collection).where("companyId", "==", companyId);
         const collectionDocuments: WithUid<Order>[] = await query.get()
-            .then((querySnapshot) => {
-                return querySnapshot.docs.map((documentSnapshot) => {
-                    return ({
-                        uid: documentSnapshot.id, data: documentSnapshot.data() as Order
-                    });
-                });
-            });
+            .then((querySnapshot) =>
+                querySnapshot.docs.map((documentSnapshot) => ({
+                    uid: documentSnapshot.id, data: documentSnapshot.data() as Order
+                })));
         log.debug("For companyId:", companyId, "found", collectionDocuments.length, `${collection}:`, collectionDocuments);
         return collectionDocuments;
     }

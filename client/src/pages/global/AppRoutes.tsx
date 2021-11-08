@@ -118,23 +118,32 @@ export default function AppRoutes() {
     FULL_SCREEN_ROUTES,
   ].filter(route => !isEmpty(route));
 
-  const validRoutes = ROUTES.map((item: RouteObject) => [toAppRoute(item.path as AppRoute)].concat(item?.children?.map(item => toAppRoute(item.path as AppRoute)))).flat(2);
+  const validRoutes = ROUTES.map((item: RouteObject) => [toAppRoute(item.path as AppRoute)].concat(item?.children?.map(item => toAppRoute(item.path as AppRoute)))).flat(2)
+      .filter(item => item && item !== "/");
 
-  function routeNotValid(): boolean {
-    return !validRoutes.find(route => {
+  function isRouteValid(): boolean {
+    return !!validRoutes.find(route => {
       const valid = location.pathname.startsWith(route);
-      log.debug("routeValid:location.pathname", location.pathname, "route:", route, "valid:", valid);
+      log.debug("isRouteValid:location.pathname", location.pathname, "route:", route, "valid:", valid);
       return valid;
     });
   }
 
   useEffect(() => {
-    log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles);
+    log.debug("AppRoutes:initial render user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles);
+  }, []);
+
+  useEffect(() => {
+    const routeValid = isRouteValid();
+    const rolesDefined = !isEmpty(currentUserRoles.data);
+    const rolesDefinedAndRouteInvalid = rolesDefined && !routeValid;
+    log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles, "isRouteValid:", !routeValid, "location.pathname", location.pathname, "rolesDefined:", rolesDefined);
     if (!loading) {
-      if (!user && routeNotValid()) {
+      if (!user && !routeValid) {
         log.debug("AppRoutes - redirecting non-logged in user at path", location.pathname, "to", toAppRoute(AppRoute.LOGIN));
         navigateIfRequiredTo(AppRoute.LOGIN);
       } else if (user && !userRoles.pendingUserRoles) {
+        log.debug("inner logic");
         if (showVerifyEmail) {
           log.debug("AppRoutes - no action - showVerifyEmail:", showVerifyEmail, "validRoutes:", validRoutes, "user:", debugCurrentUser());
           navigateIfRequiredTo(AppRoute.LOGIN);
@@ -143,19 +152,19 @@ export default function AppRoutes() {
             setShowVerifyEmail(true);
             logout("email not verified", true);
           });
-        } else if (!isEmpty(currentUserRoles.data) && routeNotValid()) {
-          log.debug("AppRoutes - location.pathname", location.pathname, "is not valid");
+        } else if (rolesDefinedAndRouteInvalid) {
+          log.debug("AppRoutes - location.pathname", location.pathname, "invalid route for user with roles");
           navigateIfRequiredTo(AppRoute.HOME);
-        } else if (isEmpty(currentUserRoles.data) && currentUserRoles.uid) {
+        } else if (!rolesDefined && currentUserRoles.uid) {
           log.debug("AppRoutes:useEffect user:", debugCurrentUser(), "no user roles:", currentUserRoles);
           setShowVerifyEmail(false);
           notificationMessages.showNoSystemAccessNotification(user, () => logout("No System Access", true));
         } else {
-          log.debug("AppRoutes:useEffect no action path:", debugCurrentUser(), "user roles:", currentUserRoles, "userRoles.pendingUserRoles:", userRoles.pendingUserRoles, "submittedCount:", submittedCount);
+          log.debug("AppRoutes:no action due to no matching navigation logic:user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles, "location.pathname", location.pathname, "routeValid:", routeValid, "rolesDefined:", rolesDefined, "rolesDefinedAndRouteInvalid:", rolesDefinedAndRouteInvalid);
         }
       }
     } else {
-      log.debug("AppRoutes:useEffect no action path:loading:", loading, "pendingUserRoles:", userRoles.pendingUserRoles);
+      log.debug("AppRoutes:no action due to loading:user:", debugCurrentUser(), "user roles:", currentUserRoles, "validRoutes:", validRoutes, "pendingUserRoles:", userRoles.pendingUserRoles, "isRouteValid:", !routeValid, "location.pathname", location.pathname, "rolesDefined:", rolesDefined, "rolesDefinedAndRouteInvalid:", rolesDefinedAndRouteInvalid);
     }
   }, [user, loading, currentUserRoles, userRoles.pendingUserRoles, showVerifyEmail, submittedCount]);
 

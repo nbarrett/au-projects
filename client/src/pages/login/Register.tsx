@@ -32,18 +32,17 @@ export default function Register() {
                 }}
             >
                 <Container maxWidth="sm">
-                    <Formik
-                        initialValues={{
-                            email: "",
-                            firstName: "",
-                            lastName: "",
-                            password: "",
-                            policy: false,
-                        }}
-                        validationSchema={Yup.object().shape({
-                            email: Yup.string()
-                                .email("Must be a valid email")
-                                .max(255)
+                    <Formik initialValues={{
+                        email: "",
+                        firstName: "",
+                        lastName: "",
+                        password: "",
+                        policy: false,
+                    }}
+                            validationSchema={Yup.object().shape({
+                                email: Yup.string()
+                                    .email("Must be a valid email")
+                                    .max(255)
                                 .required("Email is required"),
                             firstName: Yup.string()
                                 .max(255)
@@ -52,7 +51,7 @@ export default function Register() {
                             password: Yup.string().max(255).required("password is required"),
                             policy: Yup.boolean().oneOf([true], "This field must be checked"),
                         })}
-                        onSubmit={(values, actions) => {
+                            onSubmit={(values, actions) => {
                             signupWithEmail({
                                 email: values.email,
                                 password: values.password,

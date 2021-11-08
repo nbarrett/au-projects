@@ -29,7 +29,7 @@ export default function useSingleOrder(): UseSingleOrder {
     function saveOrder(order: WithUid<Order>, orderStatus?: OrderStatus): Promise<any> {
         if (isUndefined(orderStatus)) {
             log.debug("saving order with existing status", OrderStatusDescriptions[order.data.status]);
-            return save<Order>(collection, order);
+            return save<Order>(collection, order).then(() => orders.refreshOrders());
         } else {
             log.debug("saving order and changing status to", OrderStatusDescriptions[orderStatus]);
             const document = orderForUpdate(order);
@@ -40,7 +40,7 @@ export default function useSingleOrder(): UseSingleOrder {
 
     function deleteOrder(order: WithUid<Order>): Promise<any> {
         log.debug("deleting order with existing status", OrderStatusDescriptions[order.data.status]);
-        return remove<Order>(collection, order.uid);
+        return remove<Order>(collection, order.uid).then(() => orders.refreshOrders());
     }
 
     async function newOrderNumber(): Promise<string> {
